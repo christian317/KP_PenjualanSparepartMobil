@@ -1,0 +1,2043 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SparePartKu – Preview UI</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <style>
+    /* ======== ROOT VARIABLES ======== */
+    :root {
+      --red: #D62828;
+      --red-dark: #A61C1C;
+      --navy: #1A2332;
+      --navy-light: #243040;
+      --accent: #F77F00;
+      --light: #F4F6F9;
+      --card-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+      --radius: 12px;
+    }
+
+    * {
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    .brand-font {
+      font-family: 'Barlow Condensed', sans-serif;
+    }
+
+    body {
+      background: var(--light);
+    }
+
+    /* ======== PAGE NAV (demo only) ======== */
+    #page-nav {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--navy);
+      border-radius: 50px;
+      padding: 8px 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      z-index: 9999;
+      display: flex;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    #page-nav button {
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    #page-nav button.active,
+    #page-nav button:hover {
+      background: var(--red);
+      color: white;
+    }
+
+    .page {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* ======== TOPBAR ======== */
+    .topbar {
+      background: var(--navy);
+      padding: 0 24px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .brand {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: white;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+    }
+
+    .brand span {
+      color: var(--red);
+    }
+
+    .topbar-nav a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 6px;
+      transition: all .2s;
+    }
+
+    .topbar-nav a:hover,
+    .topbar-nav a.active {
+      color: white;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .cart-btn {
+      position: relative;
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .cart-btn:hover {
+      background: var(--red-dark);
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: var(--accent);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ======== SIDEBAR ADMIN ======== */
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      min-height: 100vh;
+      background: var(--navy);
+      position: sticky;
+      top: 0;
+      flex-shrink: 0;
+    }
+
+    .sidebar-brand {
+      padding: 18px 20px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .sidebar-brand .brand {
+      font-size: 20px;
+    }
+
+    .sidebar-badge {
+      font-size: 10px;
+      background: var(--red);
+      color: white;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-left: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+    }
+
+    .sidebar-section {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.3);
+      padding: 16px 20px 6px;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all .15s;
+    }
+
+    .sidebar-link:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: white;
+    }
+
+    .sidebar-link.active {
+      background: rgba(214, 40, 40, 0.12);
+      color: white;
+      border-left-color: var(--red);
+    }
+
+    .sidebar-link i {
+      width: 18px;
+      font-size: 15px;
+    }
+
+    .admin-content {
+      flex: 1;
+      padding: 28px;
+      overflow: auto;
+    }
+
+    /* ======== CARDS ======== */
+    .card {
+      border: none;
+      border-radius: var(--radius);
+      box-shadow: var(--card-shadow);
+    }
+
+    .card-header {
+      background: white;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: var(--radius) var(--radius) 0 0 !important;
+      font-weight: 600;
+      padding: 14px 18px;
+    }
+
+    .stat-card {
+      border-radius: var(--radius);
+      background: white;
+      box-shadow: var(--card-shadow);
+      padding: 20px;
+      border-left: 4px solid var(--red);
+    }
+
+    .stat-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .stat-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    /* ======== TABLES ======== */
+    .table thead th {
+      background: var(--navy);
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border: none;
+      padding: 11px 14px;
+    }
+
+    .table thead th:first-child {
+      border-radius: 8px 0 0 0;
+    }
+
+    .table thead th:last-child {
+      border-radius: 0 8px 0 0;
+    }
+
+    .table tbody td {
+      padding: 12px 14px;
+      vertical-align: middle;
+      font-size: 14px;
+      border-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .table tbody tr:hover {
+      background: rgba(214, 40, 40, 0.03);
+    }
+
+    /* ======== BADGES ======== */
+    .badge {
+      font-weight: 600;
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 6px;
+    }
+
+    .badge-status-confirmed {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .badge-status-preparing {
+      background: #fff3e0;
+      color: #e65100;
+    }
+
+    .badge-status-shipping {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+
+    .badge-status-completed {
+      background: #e8f5e9;
+      color: #1b5e20;
+    }
+
+    .badge-status-pending {
+      background: #fff8e1;
+      color: #f57f17;
+    }
+
+    /* ======== PRODUCT CARDS ======== */
+    .product-card {
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: white;
+      box-shadow: var(--card-shadow);
+      transition: all .25s;
+      cursor: pointer;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+    }
+
+    .product-img {
+      height: 160px;
+      background: #f0f2f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .product-img .img-placeholder {
+      font-size: 48px;
+      color: #bdc3cb;
+    }
+
+    .product-img .stock-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+    }
+
+    .product-body {
+      padding: 14px;
+    }
+
+    .product-cat {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .product-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.2;
+      margin-bottom: 3px;
+    }
+
+    .product-brand {
+      font-size: 12px;
+      color: #7a8594;
+      margin-bottom: 10px;
+    }
+
+    .product-price {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--red);
+    }
+
+    .product-price small {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 400;
+      color: #999;
+    }
+
+    .btn-add-cart {
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .btn-add-cart:hover {
+      background: var(--red-dark);
+    }
+
+    /* ======== FORMS ======== */
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 5px;
+    }
+
+    .form-control,
+    .form-select {
+      border-radius: 8px;
+      border: 1.5px solid #e2e6ea;
+      font-size: 14px;
+      padding: 9px 13px;
+      transition: border-color .2s;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(214, 40, 40, 0.1);
+    }
+
+    .input-group-text {
+      background: #f4f6f9;
+      border: 1.5px solid #e2e6ea;
+      border-radius: 8px 0 0 8px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* ======== BUTTONS ======== */
+    .btn-primary-red {
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .btn-primary-red:hover {
+      background: var(--red-dark);
+    }
+
+    .btn-outline-navy {
+      background: transparent;
+      color: var(--navy);
+      border: 1.5px solid var(--navy);
+      border-radius: 8px;
+      padding: 7px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .btn-outline-navy:hover {
+      background: var(--navy);
+      color: white;
+    }
+
+    .btn-sm-action {
+      border: none;
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .15s;
+    }
+
+    /* ======== LOGIN PAGE ======== */
+    .login-bg {
+      min-height: 100vh;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-bg::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(214, 40, 40, 0.15) 0%, transparent 70%);
+    }
+
+    .login-bg::after {
+      content: '';
+      position: absolute;
+      bottom: -80px;
+      left: -80px;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(247, 127, 0, 0.08) 0%, transparent 70%);
+    }
+
+    .login-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-brand {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    .login-brand span {
+      color: var(--red);
+    }
+
+    .login-tabs {
+      display: flex;
+      gap: 4px;
+      background: #f4f6f9;
+      padding: 4px;
+      border-radius: 10px;
+      margin-bottom: 24px;
+    }
+
+    .login-tab {
+      flex: 1;
+      text-align: center;
+      padding: 8px;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 600;
+      color: #888;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .login-tab.active {
+      background: white;
+      color: var(--navy);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ======== CART SIDEBAR ======== */
+    .cart-sidebar {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--card-shadow);
+      position: sticky;
+      top: 80px;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .cart-item-img {
+      width: 48px;
+      height: 48px;
+      background: #f4f6f9;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .cart-total {
+      background: var(--navy);
+      color: white;
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 14px;
+    }
+
+    /* ======== FILTER SIDEBAR ======== */
+    .filter-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .filter-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 0;
+      font-size: 13px;
+      color: #555;
+      cursor: pointer;
+    }
+
+    .filter-item input {
+      accent-color: var(--red);
+    }
+
+    /* ======== PAGE HEADER ======== */
+    .page-header {
+      background: var(--navy);
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      border-radius: 0;
+    }
+
+    .page-header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* ======== MISC ======== */
+    .search-bar {
+      position: relative;
+    }
+
+    .search-bar input {
+      padding-left: 40px;
+      border-radius: 10px;
+    }
+
+    .search-bar i {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #bbb;
+    }
+
+    .empty-state i {
+      font-size: 64px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .section-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      background: var(--red);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    /* ======== QUANTITY INPUT ======== */
+    .qty-input {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .qty-btn {
+      width: 28px;
+      height: 28px;
+      border: 1.5px solid #e2e6ea;
+      background: white;
+      border-radius: 6px;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--navy);
+      font-weight: 700;
+      transition: all .15s;
+    }
+
+    .qty-btn:hover {
+      background: var(--red);
+      border-color: var(--red);
+      color: white;
+    }
+
+    .qty-val {
+      width: 36px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* ======== ALERTS ======== */
+    .alert-toast {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      z-index: 9998;
+      min-width: 300px;
+      border-radius: 10px;
+      display: none;
+      animation: slideIn .3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* ======== IMAGE UPLOAD PREVIEW ======== */
+    .img-upload-area {
+      border: 2px dashed #dde;
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      background: #fafbfc;
+    }
+
+    .img-upload-area:hover {
+      border-color: var(--red);
+      background: #fff5f5;
+    }
+
+    /* ======== RESPONSIVE ======== */
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+
+      #page-nav {
+        font-size: 11px;
+        padding: 6px 10px;
+      }
+
+      #page-nav button {
+        padding: 5px 8px;
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============================================================ -->
+  <!-- TOAST NOTIFICATION -->
+  <!-- ============================================================ -->
+  <div id="toast" class="alert alert-success alert-toast d-flex align-items-center gap-2 shadow">
+    <i class="bi bi-check-circle-fill"></i>
+    <span id="toast-msg">Berhasil ditambahkan ke keranjang!</span>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE NAV (Demo Navigation) -->
+  <!-- ============================================================ -->
+  <div id="page-nav">
+    <button class="active" onclick="showPage('login')"><i class="bi bi-person-circle"></i> Login</button>
+    <button onclick="showPage('register')"><i class="bi bi-person-plus"></i> Register</button>
+    <button onclick="showPage('catalog')"><i class="bi bi-grid"></i> Katalog</button>
+    <button onclick="showPage('cart')"><i class="bi bi-cart3"></i> Keranjang</button>
+    <button onclick="showPage('gudang')"><i class="bi bi-speedometer2"></i> Admin Gudang</button>
+    <button onclick="showPage('addproduct')"><i class="bi bi-plus-circle"></i> Tambah Produk</button>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 1: LOGIN -->
+  <!-- ============================================================ -->
+  <div id="page-login" class="page active">
+    <div class="login-bg">
+      <div class="login-card">
+        <div class="text-center mb-4">
+          <div class="login-brand"><i class="bi bi-car-front-fill me-1"></i>Spare<span>PartKu</span></div>
+          <p class="text-muted mt-1 mb-0" style="font-size:13px">Platform Sparepart Mobil Terpercaya</p>
+        </div>
+
+        <div class="login-tabs">
+          <button class="login-tab active" id="tab-login" onclick="switchTab('login')">Masuk</button>
+          <button class="login-tab" id="tab-reg" onclick="switchTab('reg')">Daftar</button>
+        </div>
+
+        <div id="form-login">
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+              <input type="email" class="form-control" placeholder="email@bengkel.com" value="pelanggan@sparepart.com">
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="form-label">Password</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-lock"></i></span>
+              <input type="password" class="form-control" value="password" placeholder="••••••••">
+              <button class="btn btn-outline-secondary" type="button"
+                style="border-radius:0 8px 8px 0;border:1.5px solid #e2e6ea;border-left:none;"><i
+                  class="bi bi-eye"></i></button>
+            </div>
+          </div>
+          <button class="btn-primary-red w-100" onclick="showToast('Login berhasil! Selamat datang.')">
+            <i class="bi bi-box-arrow-in-right me-2"></i>Masuk
+          </button>
+          <div class="text-center mt-4">
+            <span style="font-size:12px;color:#aaa;">Login sebagai:</span>
+            <div class="d-flex gap-2 mt-2 justify-content-center flex-wrap">
+              <span class="badge" style="background:#1A2332;cursor:pointer;padding:6px 12px;"
+                onclick="showPage('catalog')">👤 Pelanggan</span>
+              <span class="badge" style="background:#2c3e50;cursor:pointer;padding:6px 12px;"
+                onclick="showPage('gudang')">📦 Admin Gudang</span>
+              <span class="badge" style="background:#1a3a2c;cursor:pointer;padding:6px 12px;">💰 Admin Keuangan</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 2: REGISTER -->
+  <!-- ============================================================ -->
+  <div id="page-register" class="page">
+    <div class="login-bg">
+      <div class="login-card" style="max-width:500px;">
+        <div class="text-center mb-4">
+          <div class="login-brand"><i class="bi bi-car-front-fill me-1"></i>Spare<span>PartKu</span></div>
+          <p class="text-muted mt-1 mb-0" style="font-size:13px">Daftar Akun Pelanggan Baru</p>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-6">
+            <label class="form-label">Nama Lengkap *</label>
+            <input class="form-control" placeholder="Budi Santoso" value="Budi Santoso">
+          </div>
+          <div class="col-6">
+            <label class="form-label">Nama Toko/Bengkel</label>
+            <input class="form-control" placeholder="Bengkel Maju Jaya" value="Bengkel Maju Jaya">
+          </div>
+          <div class="col-6">
+            <label class="form-label">Email *</label>
+            <input type="email" class="form-control" placeholder="email@bengkel.com">
+          </div>
+          <div class="col-6">
+            <label class="form-label">No. Telepon *</label>
+            <input class="form-control" placeholder="08xxxxxxxxxx" value="081234567890">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Alamat Lengkap *</label>
+            <textarea class="form-control" rows="2"
+              placeholder="Jl. Merdeka No. 10, Jakarta Selatan">Jl. Merdeka No. 10, Jakarta Selatan</textarea>
+          </div>
+          <div class="col-6">
+            <label class="form-label">Password *</label>
+            <input type="password" class="form-control" value="password" placeholder="Min 8 karakter">
+          </div>
+          <div class="col-6">
+            <label class="form-label">Konfirmasi Password *</label>
+            <input type="password" class="form-control" value="password">
+          </div>
+          <div class="col-12">
+            <div class="d-flex align-items-start gap-2 p-3 rounded"
+              style="background:#fff8f0;border:1px solid #ffe0b2;">
+              <i class="bi bi-info-circle text-warning mt-1"></i>
+              <small style="color:#7a5c00;">Akun baru didaftarkan sebagai <b>Pelanggan Reguler</b>. Untuk upgrade ke
+                <b>Pelanggan Mitra</b> (bisa Kontrabón), hubungi tim kami.</small>
+            </div>
+          </div>
+          <div class="col-12">
+            <button class="btn-primary-red w-100" onclick="showToast('Pendaftaran berhasil! Silakan login.')">
+              <i class="bi bi-person-check me-2"></i>Daftar Sekarang
+            </button>
+            <p class="text-center mt-3 mb-0" style="font-size:13px;color:#888;">
+              Sudah punya akun? <a href="#" onclick="showPage('login')" style="color:var(--red);font-weight:600;">Masuk
+                di sini</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 3: KATALOG PRODUK -->
+  <!-- ============================================================ -->
+  <div id="page-catalog" class="page">
+    <!-- Topbar -->
+    <div class="topbar">
+      <a href="#" class="brand"><i class="bi bi-car-front-fill me-1"></i>Spare<span>PartKu</span></a>
+      <div class="topbar-nav d-none d-md-flex gap-1">
+        <a href="#" class="active">Katalog</a>
+        <a href="#" onclick="showPage('cart')">Pesanan Saya</a>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center gap-2" style="font-size:13px;color:rgba(255,255,255,0.7);">
+          <div class="avatar">B</div>
+          <span>Budi Santoso</span>
+          <span class="badge" style="background:var(--accent);font-size:10px;color:white;">Mitra</span>
+        </div>
+        <button class="cart-btn" onclick="showPage('cart')">
+          <i class="bi bi-cart3 me-1"></i>Keranjang
+          <span class="cart-count">3</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Hero Banner -->
+    <div style="background:linear-gradient(135deg,var(--navy) 0%,#2c3e50 100%);padding:28px 28px 24px;">
+      <div
+        style="max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+        <div>
+          <div
+            style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;color:white;line-height:1.1;">
+            🔧 Katalog Sparepart Mobil
+          </div>
+          <p style="color:rgba(255,255,255,0.6);margin:6px 0 0;font-size:14px;">{{ $products->total() ?? 'Ratusan' }}
+            produk berkualitas tersedia untuk kendaraan Anda</p>
+          <div class="d-flex gap-2 mt-3 flex-wrap">
+            <span class="badge"
+              style="background:rgba(247,127,0,0.2);color:#F77F00;border:1px solid #F77F00;padding:5px 12px;font-size:12px;">
+              <i class="bi bi-star-fill me-1"></i>Pelanggan Mitra – Tersedia Kontrabón 3 Bulan
+            </span>
+          </div>
+        </div>
+        <div style="opacity:0.1;font-size:80px;line-height:1;">⚙️</div>
+      </div>
+    </div>
+
+    <div style="max-width:1400px;margin:0 auto;padding:24px 28px 100px;">
+      <!-- Search + Filter bar -->
+      <div class="row g-3 mb-4">
+        <div class="col-md-5">
+          <div class="search-bar">
+            <i class="bi bi-search"></i>
+            <input class="form-control" placeholder="Cari produk, merek, SKU…">
+          </div>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select">
+            <option>Semua Kategori</option>
+            <option>Mesin</option>
+            <option>Rem & Kopling</option>
+            <option selected>Suspensi</option>
+            <option>Kelistrikan</option>
+            <option>Filter & Oli</option>
+            <option>Eksterior</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <select class="form-select">
+            <option>Nama A–Z</option>
+            <option>Harga Terendah</option>
+            <option>Harga Tertinggi</option>
+          </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-center">
+          <span style="font-size:13px;color:#888;">Menampilkan <b>17</b> produk</span>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <!-- Filter Sidebar -->
+        <div class="col-md-2">
+          <div class="filter-card">
+            <div class="filter-title">Kategori</div>
+            <label class="filter-item"><input type="radio" name="cat" checked> Semua</label>
+            <label class="filter-item"><input type="radio" name="cat"> Mesin</label>
+            <label class="filter-item"><input type="radio" name="cat"> Rem & Kopling</label>
+            <label class="filter-item"><input type="radio" name="cat"> Suspensi</label>
+            <label class="filter-item"><input type="radio" name="cat"> Kelistrikan</label>
+            <label class="filter-item"><input type="radio" name="cat"> Filter & Oli</label>
+
+            <div class="filter-title mt-3">Merek</div>
+            <label class="filter-item"><input type="checkbox" checked> NGK</label>
+            <label class="filter-item"><input type="checkbox" checked> Brembo</label>
+            <label class="filter-item"><input type="checkbox"> Monroe</label>
+            <label class="filter-item"><input type="checkbox"> Bosch</label>
+            <label class="filter-item"><input type="checkbox"> Toyota</label>
+
+            <div class="filter-title mt-3">Harga</div>
+            <label class="filter-item" style="font-size:12px;">Min</label>
+            <input type="number" class="form-control form-control-sm mb-1" placeholder="Rp 0">
+            <label class="filter-item" style="font-size:12px;">Max</label>
+            <input type="number" class="form-control form-control-sm" placeholder="Rp 999.000">
+          </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="col-md-10">
+          <div class="row row-cols-2 row-cols-md-3 row-cols-xl-4 g-3">
+
+            <!-- Product 1 -->
+            <div class="col">
+              <div class="product-card">
+                <div class="product-img">
+                  <i class="bi bi-gear-wide-connected img-placeholder"></i>
+                  <span class="stock-badge badge bg-success">Stok: 150</span>
+                </div>
+                <div class="product-body">
+                  <div class="product-cat">Mesin</div>
+                  <div class="product-name">Busi Iridium NGK</div>
+                  <div class="product-brand">NGK · SKU: NGK-IRI-001</div>
+                  <div class="product-price">Rp 85.000 <small>/pcs</small></div>
+                  <button class="btn-add-cart" onclick="addToCart('Busi Iridium NGK')">
+                    <i class="bi bi-cart-plus me-1"></i>Tambah ke Keranjang
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Product 2 -->
+            <div class="col">
+              <div class="product-card">
+                <div class="product-img" style="background:#fff5f0;">
+                  <i class="bi bi-disc img-placeholder" style="color:#F77F00;"></i>
+                  <span class="stock-badge badge" style="background:var(--accent);">Stok: 80</span>
+                </div>
+                <div class="product-body">
+                  <div class="product-cat">Rem & Kopling</div>
+                  <div class="product-name">Kampas Rem Depan Brembo</div>
+                  <div class="product-brand">Brembo · SKU: BRM-PAD-001</div>
+                  <div class="product-price">Rp 275.000 <small>/set</small></div>
+                  <button class="btn-add-cart" onclick="addToCart('Kampas Rem Brembo')">
+                    <i class="bi bi-cart-plus me-1"></i>Tambah ke Keranjang
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Product 3 -->
+            <div class="col">
+              <div class="product-card">
+                <div class="product-img" style="background:#f0f5ff;">
+                  <i class="bi bi-arrows-vertical img-placeholder" style="color:#457b9d;"></i>
+                  <span class="stock-badge badge bg-success">Stok: 35</span>
+                </div>
+                <div class="product-body">
+                  <div class="product-cat">Suspensi</div>
+                  <div class="product-name">Shock Absorber Depan Monroe</div>
+                  <div class="product-brand">Monroe · SKU: MNR-SHK-001</div>
+                  <div class="product-price">Rp 650.000 <small>/pcs</small></div>
+                  <button class="btn-add-cart" onclick="addToCart('Shock Absorber Monroe')">
+                    <i class="bi bi-cart-plus me-1"></i>Tambah ke Keranjang
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Product 4 -->
+            <div class="col">
+              <div class="product-card">
+                <div class="product-img" style="background:#fffbf0;">
+                  <i class="bi bi-battery-charging img-placeholder" style="color:#ffc107;"></i>
+                  <span class="stock-badge badge bg-success">Stok: 25</span>
+                </div>
+                <div class="product-body">
+                  <div class="product-cat">Kelistrikan</div>
+                  <div class="product-name">Aki Mobil GS Astra 45Ah</div>
+                  <div class="product-brand">GS Astra · SKU: GS-BTR-045</div>
+                  <div class="product-price">Rp 850.000 <small>/pcs</small></div>
+                  <button class="btn-add-cart" onclick="addToCart('Aki GS Astra 45Ah')">
+                    <i class="bi bi-cart-plus me-1"></i>Tambah ke Keranjang
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Product 5 -->
+            <div class="col">
+              <div class="product-card">
+                <div class="product-img" style="background:#f0fff4;">
+                  <i class="bi bi-funnel img-placeholder" style="color:#28a745;"></i>
+                </div>
+                <div class="product-body">
+                  <div class="product-cat">Filter & Oli</div>
+                  <div class="product-name">Filter Oli Sakura Universal</div>
+                  <div class="product-brand">Sakura · SKU: FLT-OIL-001</div>
+                  <div class="product-price">Rp 35.000 <small>/pcs</small></div>
+                  <button class="btn-add-cart" onclick="addToCart('Filter Oli Sakura')">
+                    <i class="bi bi-cart-plus me-1"></i>Tambah ke Keranjang
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Product 6 - Low Stock -->
+            <div class="col">
+              <div class="product-card">
+                <div class="product-img" style="background:#fff5f5;">
+                  <i class="bi bi-gear img-placeholder" style="color:#dc3545;"></i>
+                  <span class="stock-badge badge bg-danger">Stok Tipis: 3</span>
+                </div>
+                <div class="product-body">
+                  <div class="product-cat">Mesin</div>
+                  <div class="product-name">Gasket Head Cylinder</div>
+                  <div class="product-brand">Fel-Pro · SKU: GSK-HC-001</div>
+                  <div class="product-price">Rp 450.000 <small>/pcs</small></div>
+                  <button class="btn-add-cart" onclick="addToCart('Gasket Head Cylinder')">
+                    <i class="bi bi-cart-plus me-1"></i>Tambah ke Keranjang
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Product 7 -->
+            <div class="col">
+              <div class="product-card">
+                <div class="product-img">
+                  <i class="bi bi-droplet-fill img-placeholder" style="color:#6f42c1;"></i>
+                </div>
+                <div class="product-body">
+                  <div class="product-cat">Filter & Oli</div>
+                  <div class="product-name">Oli Shell Helix 10W-40 4L</div>
+                  <div class="product-brand">Shell · SKU: OLI-SHL-4L</div>
+                  <div class="product-price">Rp 185.000 <small>/liter</small></div>
+                  <button class="btn-add-cart" onclick="addToCart('Oli Shell Helix 4L')">
+                    <i class="bi bi-cart-plus me-1"></i>Tambah ke Keranjang
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Product 8 - Out of Stock -->
+            <div class="col">
+              <div class="product-card" style="opacity:0.65;">
+                <div class="product-img" style="background:#f5f5f5;">
+                  <i class="bi bi-wrench img-placeholder"></i>
+                  <span class="stock-badge badge bg-secondary">Habis</span>
+                </div>
+                <div class="product-body">
+                  <div class="product-cat">Mesin</div>
+                  <div class="product-name">Piston Set Honda Jazz</div>
+                  <div class="product-brand">Honda · SKU: HND-PST-001</div>
+                  <div class="product-price">Rp 850.000 <small>/set</small></div>
+                  <button class="btn-add-cart" disabled style="background:#ccc;cursor:not-allowed;">
+                    <i class="bi bi-x-circle me-1"></i>Stok Habis
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="d-flex justify-content-center mt-4">
+            <nav>
+              <ul class="pagination pagination-sm">
+                <li class="page-item disabled"><a class="page-link">«</a></li>
+                <li class="page-item active"><a class="page-link"
+                    style="background:var(--red);border-color:var(--red);">1</a></li>
+                <li class="page-item"><a class="page-link">2</a></li>
+                <li class="page-item"><a class="page-link">3</a></li>
+                <li class="page-item"><a class="page-link">»</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 4: KERANJANG -->
+  <!-- ============================================================ -->
+  <div id="page-cart" class="page">
+    <div class="topbar">
+      <a href="#" class="brand" onclick="showPage('catalog')"><i
+          class="bi bi-car-front-fill me-1"></i>Spare<span>PartKu</span></a>
+      <div class="topbar-nav d-none d-md-flex gap-1">
+        <a href="#" onclick="showPage('catalog')">Katalog</a>
+        <a href="#" class="active">Keranjang</a>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <div class="avatar">B</div>
+        <span style="color:rgba(255,255,255,0.8);font-size:13px;">Budi Santoso</span>
+      </div>
+    </div>
+
+    <div style="max-width:1100px;margin:0 auto;padding:28px 20px 100px;">
+      <div class="d-flex align-items-center gap-3 mb-4">
+        <button onclick="showPage('catalog')"
+          style="background:none;border:none;color:var(--red);font-size:14px;font-weight:600;cursor:pointer;padding:0;"><i
+            class="bi bi-arrow-left me-1"></i>Lanjut Belanja</button>
+        <h4 class="section-title mb-0"><i class="bi bi-cart3 me-2"></i>Keranjang Belanja</h4>
+        <span class="badge" style="background:#f0f2f5;color:#555;font-size:12px;">3 Item</span>
+      </div>
+
+      <div class="row g-4">
+        <!-- Cart Items -->
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span>Daftar Produk</span>
+              <button style="background:none;border:none;color:var(--red);font-size:13px;cursor:pointer;">Hapus
+                Semua</button>
+            </div>
+            <div class="card-body p-0">
+              <table class="table mb-0">
+                <thead>
+                  <tr>
+                    <th class="ps-3">Produk</th>
+                    <th class="text-center">Jumlah</th>
+                    <th class="text-end">Subtotal</th>
+                    <th style="width:40px;"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="ps-3">
+                      <div class="d-flex gap-3 align-items-center">
+                        <div
+                          style="width:52px;height:52px;background:#f4f6f9;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;">
+                          ⚙️</div>
+                        <div>
+                          <div style="font-weight:600;font-size:14px;">Busi Iridium NGK</div>
+                          <div style="font-size:12px;color:#999;">NGK · SKU: NGK-IRI-001</div>
+                          <div style="font-size:13px;color:var(--red);font-weight:700;">Rp 85.000</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-center align-middle">
+                      <div class="qty-input justify-content-center">
+                        <button class="qty-btn">−</button>
+                        <span class="qty-val">2</span>
+                        <button class="qty-btn">+</button>
+                      </div>
+                    </td>
+                    <td class="text-end align-middle" style="font-weight:700;color:var(--red);font-size:15px;">Rp
+                      170.000</td>
+                    <td class="align-middle text-center">
+                      <button style="background:none;border:none;color:#ccc;cursor:pointer;font-size:16px;"
+                        onclick="showToast('Produk dihapus dari keranjang.')">
+                        <i class="bi bi-trash3"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="ps-3">
+                      <div class="d-flex gap-3 align-items-center">
+                        <div
+                          style="width:52px;height:52px;background:#fff5f0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;">
+                          🔴</div>
+                        <div>
+                          <div style="font-weight:600;font-size:14px;">Kampas Rem Depan Brembo</div>
+                          <div style="font-size:12px;color:#999;">Brembo · SKU: BRM-PAD-001</div>
+                          <div style="font-size:13px;color:var(--red);font-weight:700;">Rp 275.000</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-center align-middle">
+                      <div class="qty-input justify-content-center">
+                        <button class="qty-btn">−</button>
+                        <span class="qty-val">1</span>
+                        <button class="qty-btn">+</button>
+                      </div>
+                    </td>
+                    <td class="text-end align-middle" style="font-weight:700;color:var(--red);font-size:15px;">Rp
+                      275.000</td>
+                    <td class="align-middle text-center">
+                      <button style="background:none;border:none;color:#ccc;cursor:pointer;font-size:16px;">
+                        <i class="bi bi-trash3"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="ps-3">
+                      <div class="d-flex gap-3 align-items-center">
+                        <div
+                          style="width:52px;height:52px;background:#fffbf0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;">
+                          🔋</div>
+                        <div>
+                          <div style="font-weight:600;font-size:14px;">Aki Mobil GS Astra 45Ah</div>
+                          <div style="font-size:12px;color:#999;">GS Astra · SKU: GS-BTR-045</div>
+                          <div style="font-size:13px;color:var(--red);font-weight:700;">Rp 850.000</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-center align-middle">
+                      <div class="qty-input justify-content-center">
+                        <button class="qty-btn">−</button>
+                        <span class="qty-val">1</span>
+                        <button class="qty-btn">+</button>
+                      </div>
+                    </td>
+                    <td class="text-end align-middle" style="font-weight:700;color:var(--red);font-size:15px;">Rp
+                      850.000</td>
+                    <td class="align-middle text-center">
+                      <button style="background:none;border:none;color:#ccc;cursor:pointer;font-size:16px;">
+                        <i class="bi bi-trash3"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="col-md-4">
+          <div class="cart-sidebar">
+            <div class="section-title mb-3">Ringkasan</div>
+            <div class="d-flex justify-content-between mb-2" style="font-size:14px;">
+              <span class="text-muted">Subtotal (3 produk)</span>
+              <span>Rp 1.295.000</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2" style="font-size:14px;">
+              <span class="text-muted">Ongkos Kirim</span>
+              <span class="text-success fw-600">Gratis</span>
+            </div>
+            <hr>
+            <div class="cart-total">
+              <div class="d-flex justify-content-between align-items-center">
+                <span style="font-size:14px;opacity:0.7;">Total Pembayaran</span>
+              </div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;margin:4px 0;">Rp
+                1.295.000</div>
+            </div>
+
+            <div class="mt-3">
+              <label class="form-label" style="font-size:12px;">Metode Pembayaran</label>
+              <div class="d-flex flex-column gap-2">
+                <label
+                  style="display:flex;align-items:center;gap:10px;padding:10px;border:2px solid var(--red);border-radius:9px;background:#fff5f5;cursor:pointer;">
+                  <input type="radio" name="pay" checked style="accent-color:var(--red);">
+                  <div>
+                    <div style="font-size:13px;font-weight:700;">Bayar Sekarang (Cash)</div>
+                    <div style="font-size:11px;color:#888;">Transfer/E-wallet via Midtrans</div>
+                  </div>
+                </label>
+                <label
+                  style="display:flex;align-items:center;gap:10px;padding:10px;border:2px solid #e0e0e0;border-radius:9px;cursor:pointer;">
+                  <input type="radio" name="pay" style="accent-color:var(--red);">
+                  <div>
+                    <div style="font-size:13px;font-weight:700;">Kontrabón <span
+                        style="background:#e3f2fd;color:#1565c0;font-size:10px;padding:2px 6px;border-radius:4px;margin-left:4px;">Mitra</span>
+                    </div>
+                    <div style="font-size:11px;color:#888;">Jatuh tempo 3 bulan</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <button class="btn-primary-red w-100 mt-3"
+              onclick="showToast('Pesanan berhasil dibuat! No. SPK20240112001')">
+              <i class="bi bi-bag-check me-2"></i>Buat Pesanan
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 5: DASHBOARD ADMIN GUDANG -->
+  <!-- ============================================================ -->
+  <div id="page-gudang" class="page">
+    <div class="admin-layout">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-brand">
+          <span class="brand"><i class="bi bi-car-front-fill me-1"></i>Spare<span>PartKu</span></span>
+          <span class="sidebar-badge">GUDANG</span>
+        </div>
+
+        <div class="sidebar-section">Menu</div>
+        <a href="#" class="sidebar-link active"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="#" class="sidebar-link" onclick="showPage('gudang')"><i class="bi bi-list-ul"></i> Kelola Pesanan <span
+            class="ms-auto badge" style="background:var(--red);color:white;font-size:10px;">12</span></a>
+        <a href="#" class="sidebar-link" onclick="showPage('addproduct')"><i class="bi bi-box-seam"></i> Produk &
+          Stok</a>
+        <a href="#" class="sidebar-link"><i class="bi bi-arrow-return-left"></i> Pengajuan Refund <span
+            class="ms-auto badge" style="background:var(--accent);color:white;font-size:10px;">2</span></a>
+
+        <div class="sidebar-section">Akun</div>
+        <a href="#" class="sidebar-link" onclick="showPage('login')"><i class="bi bi-box-arrow-right"></i> Logout</a>
+
+        <div style="position:absolute;bottom:16px;left:0;right:0;padding:0 16px;">
+          <div
+            style="background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;">
+            <div class="avatar" style="width:32px;height:32px;font-size:12px;">A</div>
+            <div>
+              <div style="color:white;font-size:13px;font-weight:600;">Admin Gudang</div>
+              <div style="color:rgba(255,255,255,0.4);font-size:11px;">gudang@sparepart.com</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="admin-content" style="padding-bottom:100px;">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-start mb-4">
+          <div>
+            <h4 class="section-title mb-1">Dashboard Gudang</h4>
+            <p class="text-muted mb-0" style="font-size:13px;"><i class="bi bi-calendar3 me-1"></i>Jumat, 12 Januari
+              2024</p>
+          </div>
+          <div class="d-flex gap-2">
+            <button onclick="showToast('Laporan diunduh!')" class="btn-outline-navy"
+              style="font-size:13px;padding:7px 14px;"><i class="bi bi-download me-1"></i>Export</button>
+            <button onclick="showPage('addproduct')" class="btn-primary-red" style="font-size:13px;padding:7px 16px;"><i
+                class="bi bi-plus me-1"></i>Tambah Produk</button>
+          </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-md-3">
+            <div class="stat-card" style="border-color:#ffc107;">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div style="font-size:12px;color:#888;font-weight:600;margin-bottom:6px;">PERLU DIPROSES</div>
+                  <div class="stat-num" style="color:var(--navy);">8</div>
+                  <div style="font-size:12px;color:#aaa;margin-top:4px;">Pesanan masuk</div>
+                </div>
+                <div class="stat-icon" style="background:#fff8e1;">
+                  <i class="bi bi-hourglass-split text-warning"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card" style="border-color:#0dcaf0;">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div style="font-size:12px;color:#888;font-weight:600;margin-bottom:6px;">SEDANG DIKIRIM</div>
+                  <div class="stat-num" style="color:var(--navy);">4</div>
+                  <div style="font-size:12px;color:#aaa;margin-top:4px;">Dalam pengiriman</div>
+                </div>
+                <div class="stat-icon" style="background:#e3f2fd;">
+                  <i class="bi bi-truck text-info"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card" style="border-color:#198754;">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div style="font-size:12px;color:#888;font-weight:600;margin-bottom:6px;">SELESAI HARI INI</div>
+                  <div class="stat-num" style="color:var(--navy);">12</div>
+                  <div style="font-size:12px;color:#aaa;margin-top:4px;">Pesanan selesai</div>
+                </div>
+                <div class="stat-icon" style="background:#e8f5e9;">
+                  <i class="bi bi-bag-check text-success"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div style="font-size:12px;color:#888;font-weight:600;margin-bottom:6px;">STOK MENIPIS</div>
+                  <div class="stat-num" style="color:var(--red);">3</div>
+                  <div style="font-size:12px;color:#aaa;margin-top:4px;">Produk &lt; 10 stok</div>
+                </div>
+                <div class="stat-icon" style="background:#ffebee;">
+                  <i class="bi bi-exclamation-triangle text-danger"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="card mb-4">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-list-ul me-2" style="color:var(--red);"></i>Pesanan Aktif</span>
+            <div class="d-flex gap-2">
+              <select class="form-select form-select-sm" style="width:160px;">
+                <option>Semua Status</option>
+                <option>Dikonfirmasi</option>
+                <option>Dipersiapkan</option>
+                <option>Sedang Dikirim</option>
+              </select>
+              <input type="date" class="form-control form-control-sm" style="width:140px;" value="2024-01-12">
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table mb-0">
+              <thead>
+                <tr>
+                  <th class="ps-3">No. Pesanan</th>
+                  <th>Pelanggan</th>
+                  <th>Item</th>
+                  <th>Total</th>
+                  <th>Bayar</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="ps-3"><span style="font-weight:700;font-size:13px;">SPK20240112001</span><br><small
+                      class="text-muted">12/01/24 09:15</small></td>
+                  <td>
+                    <div style="font-weight:600;font-size:13px;">Budi Santoso</div>
+                    <div style="font-size:11px;color:#888;">Bengkel Maju Jaya</div>
+                  </td>
+                  <td><span class="badge" style="background:#f0f2f5;color:#555;">3 item</span></td>
+                  <td style="font-weight:700;color:var(--red);font-size:14px;">Rp 1.295.000</td>
+                  <td><span class="badge" style="background:#e8f5e9;color:#2e7d32;">Cash</span></td>
+                  <td><span class="badge badge-status-confirmed">Dikonfirmasi</span></td>
+                  <td>
+                    <div class="d-flex gap-1">
+                      <button class="btn-sm-action" style="background:#e3f2fd;color:#1565c0;"
+                        onclick="showToast('Detail pesanan dibuka.')"><i class="bi bi-eye"></i></button>
+                      <button class="btn-sm-action" style="background:#fff3e0;color:#e65100;"
+                        onclick="window.open('#','_blank')"><i class="bi bi-printer"></i></button>
+                      <button class="btn-sm-action" style="background:#fff8e1;color:#f57f17;"
+                        onclick="showToast('Status diubah: Dipersiapkan ✓')">Proses</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="ps-3"><span style="font-weight:700;font-size:13px;">SPK20240112002</span><br><small
+                      class="text-muted">12/01/24 10:30</small></td>
+                  <td>
+                    <div style="font-weight:600;font-size:13px;">Andi Wijaya</div>
+                    <div style="font-size:11px;color:#888;">Bengkel Andi Motor</div>
+                  </td>
+                  <td><span class="badge" style="background:#f0f2f5;color:#555;">1 item</span></td>
+                  <td style="font-weight:700;color:var(--red);font-size:14px;">Rp 850.000</td>
+                  <td><span class="badge" style="background:#e3f2fd;color:#1565c0;">Kontrabón</span></td>
+                  <td><span class="badge badge-status-preparing">Dipersiapkan</span></td>
+                  <td>
+                    <div class="d-flex gap-1">
+                      <button class="btn-sm-action" style="background:#e3f2fd;color:#1565c0;"><i
+                          class="bi bi-eye"></i></button>
+                      <button class="btn-sm-action" style="background:#fff3e0;color:#e65100;"><i
+                          class="bi bi-printer"></i></button>
+                      <button class="btn-sm-action" style="background:#e3f2fd;color:#1565c0;"
+                        onclick="showToast('Status diubah: Sedang Dikirim 🚚')">Kirim</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="ps-3"><span style="font-weight:700;font-size:13px;">SPK20240112003</span><br><small
+                      class="text-muted">12/01/24 11:00</small></td>
+                  <td>
+                    <div style="font-weight:600;font-size:13px;">Siti Rahma</div>
+                    <div style="font-size:11px;color:#888;">Bengkel Siti Auto</div>
+                  </td>
+                  <td><span class="badge" style="background:#f0f2f5;color:#555;">5 item</span></td>
+                  <td style="font-weight:700;color:var(--red);font-size:14px;">Rp 3.450.000</td>
+                  <td><span class="badge" style="background:#e8f5e9;color:#2e7d32;">Cash</span></td>
+                  <td><span class="badge badge-status-shipping">Dikirim</span></td>
+                  <td>
+                    <div class="d-flex gap-1">
+                      <button class="btn-sm-action" style="background:#e3f2fd;color:#1565c0;"><i
+                          class="bi bi-eye"></i></button>
+                      <button class="btn-sm-action" style="background:#fff3e0;color:#e65100;"><i
+                          class="bi bi-printer"></i></button>
+                      <button class="btn-sm-action" style="background:#e8f5e9;color:#2e7d32;" disabled
+                        style="opacity:0.4;">Selesai</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="ps-3"><span style="font-weight:700;font-size:13px;">SPK20240111045</span><br><small
+                      class="text-muted">11/01/24 14:20</small></td>
+                  <td>
+                    <div style="font-weight:600;font-size:13px;">Hendra Kusuma</div>
+                    <div style="font-size:11px;color:#888;">Bengkel HK Jaya</div>
+                  </td>
+                  <td><span class="badge" style="background:#f0f2f5;color:#555;">2 item</span></td>
+                  <td style="font-weight:700;color:var(--red);font-size:14px;">Rp 725.000</td>
+                  <td><span class="badge" style="background:#e3f2fd;color:#1565c0;">Kontrabón</span></td>
+                  <td><span class="badge" style="background:#ffebee;color:#c62828;">Refund</span></td>
+                  <td>
+                    <div class="d-flex gap-1">
+                      <button class="btn-sm-action" style="background:#e3f2fd;color:#1565c0;"><i
+                          class="bi bi-eye"></i></button>
+                      <button class="btn-sm-action" style="background:#ffebee;color:#c62828;"
+                        onclick="showToast('Detail refund dibuka.')">Review</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer bg-white d-flex justify-content-between align-items-center"
+            style="font-size:13px;color:#888;">
+            <span>Menampilkan 4 dari 24 pesanan</span>
+            <nav>
+              <ul class="pagination pagination-sm mb-0">
+                <li class="page-item disabled"><a class="page-link">«</a></li>
+                <li class="page-item active"><a class="page-link"
+                    style="background:var(--red);border-color:var(--red);">1</a></li>
+                <li class="page-item"><a class="page-link">2</a></li>
+                <li class="page-item"><a class="page-link">3</a></li>
+                <li class="page-item"><a class="page-link">»</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <!-- Low Stock Warning -->
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center" style="background:#fff8f0;">
+            <span><i class="bi bi-exclamation-triangle me-2" style="color:var(--accent);"></i>Peringatan Stok
+              Menipis</span>
+            <button onclick="showPage('addproduct')" class="btn-primary-red"
+              style="font-size:12px;padding:5px 12px;border-radius:6px;">Kelola Produk</button>
+          </div>
+          <div class="table-responsive">
+            <table class="table mb-0">
+              <thead>
+                <tr>
+                  <th class="ps-3">Produk</th>
+                  <th>SKU</th>
+                  <th>Kategori</th>
+                  <th>Stok Tersisa</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="ps-3" style="font-weight:600;font-size:13px;">Gasket Head Cylinder</td>
+                  <td style="font-size:12px;color:#888;">GSK-HC-001</td>
+                  <td><span class="badge" style="background:#f0f2f5;color:#555;">Mesin</span></td>
+                  <td><span class="badge bg-danger">3 pcs</span></td>
+                  <td><button class="btn-sm-action" style="background:#e8f5e9;color:#2e7d32;font-size:12px;"
+                      onclick="showToast('Formulir update stok dibuka.')">Update Stok</button></td>
+                </tr>
+                <tr>
+                  <td class="ps-3" style="font-weight:600;font-size:13px;">Piston Set Honda Jazz</td>
+                  <td style="font-size:12px;color:#888;">HND-PST-001</td>
+                  <td><span class="badge" style="background:#f0f2f5;color:#555;">Mesin</span></td>
+                  <td><span class="badge bg-danger">0 set</span></td>
+                  <td><button class="btn-sm-action" style="background:#e8f5e9;color:#2e7d32;font-size:12px;"
+                      onclick="showToast('Formulir update stok dibuka.')">Update Stok</button></td>
+                </tr>
+                <tr>
+                  <td class="ps-3" style="font-weight:600;font-size:13px;">Alternator Toyota Avanza</td>
+                  <td style="font-size:12px;color:#888;">ALT-AVZ-001</td>
+                  <td><span class="badge" style="background:#f0f2f5;color:#555;">Kelistrikan</span></td>
+                  <td><span class="badge" style="background:#fff3e0;color:#e65100;">7 pcs</span></td>
+                  <td><button class="btn-sm-action" style="background:#e8f5e9;color:#2e7d32;font-size:12px;"
+                      onclick="showToast('Formulir update stok dibuka.')">Update Stok</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 6: TAMBAH / EDIT PRODUK -->
+  <!-- ============================================================ -->
+  <div id="page-addproduct" class="page">
+    <div class="admin-layout">
+      <!-- Sidebar sama -->
+      <div class="sidebar">
+        <div class="sidebar-brand">
+          <span class="brand"><i class="bi bi-car-front-fill me-1"></i>Spare<span>PartKu</span></span>
+          <span class="sidebar-badge">GUDANG</span>
+        </div>
+        <div class="sidebar-section">Menu</div>
+        <a href="#" class="sidebar-link" onclick="showPage('gudang')"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="#" class="sidebar-link" onclick="showPage('gudang')"><i class="bi bi-list-ul"></i> Kelola Pesanan</a>
+        <a href="#" class="sidebar-link active"><i class="bi bi-box-seam"></i> Produk & Stok</a>
+        <a href="#" class="sidebar-link"><i class="bi bi-arrow-return-left"></i> Pengajuan Refund</a>
+        <div class="sidebar-section">Akun</div>
+        <a href="#" class="sidebar-link" onclick="showPage('login')"><i class="bi bi-box-arrow-right"></i> Logout</a>
+      </div>
+
+      <!-- Content -->
+      <div class="admin-content" style="padding-bottom:100px;">
+        <div class="d-flex align-items-center gap-3 mb-4">
+          <button onclick="showPage('gudang')"
+            style="background:#f0f2f5;border:none;border-radius:8px;padding:8px 12px;cursor:pointer;color:#555;"><i
+              class="bi bi-arrow-left"></i></button>
+          <div>
+            <h4 class="section-title mb-0">Tambah Produk Baru</h4>
+            <p class="text-muted mb-0" style="font-size:13px;">Isi data produk sparepart dengan lengkap</p>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <!-- Form -->
+          <div class="col-md-8">
+            <div class="card">
+              <div class="card-header"><i class="bi bi-info-circle me-2" style="color:var(--red);"></i>Informasi Produk
+              </div>
+              <div class="card-body">
+                <div class="row g-3">
+                  <div class="col-md-8">
+                    <label class="form-label">Nama Produk *</label>
+                    <input class="form-control" placeholder="Contoh: Busi Iridium NGK BKR6EIX"
+                      value="Timing Belt Toyota Innova">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">SKU *</label>
+                    <input class="form-control" placeholder="Contoh: NGK-IRI-001" value="TYT-TB-002">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Kategori *</label>
+                    <select class="form-select">
+                      <option>-- Pilih Kategori --</option>
+                      <option selected>Mesin</option>
+                      <option>Rem & Kopling</option>
+                      <option>Suspensi</option>
+                      <option>Kelistrikan</option>
+                      <option>Filter & Oli</option>
+                      <option>Eksterior</option>
+                      <option>Aksesoris</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Merek / Brand</label>
+                    <input class="form-control" placeholder="Contoh: NGK, Brembo, Monroe..." value="Toyota Genuine">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Harga Jual (Rp) *</label>
+                    <div class="input-group">
+                      <span class="input-group-text">Rp</span>
+                      <input class="form-control" type="number" value="320000" placeholder="0">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Stok Awal *</label>
+                    <div class="input-group">
+                      <input class="form-control" type="number" value="45" placeholder="0">
+                      <span class="input-group-text" style="border-radius:0 8px 8px 0;">unit</span>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Satuan *</label>
+                    <select class="form-select">
+                      <option>pcs</option>
+                      <option selected>set</option>
+                      <option>liter</option>
+                      <option>kg</option>
+                      <option>meter</option>
+                      <option>lembar</option>
+                    </select>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Deskripsi Produk</label>
+                    <textarea class="form-control" rows="3"
+                      placeholder="Jelaskan detail produk, kesesuaian kendaraan, dll...">Timing belt original Toyota untuk berbagai tipe Innova dan Avanza. Garansi keaslian produk. Cocok untuk mesin 1TR-FE dan 2TR-FE.</textarea>
+                  </div>
+                  <div class="col-12 d-flex align-items-center gap-3">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" checked style="width:40px;height:20px;">
+                      <label class="form-check-label" style="font-size:14px;font-weight:500;">Produk Aktif (tampil di
+                        katalog)</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Image + Submit -->
+          <div class="col-md-4">
+            <div class="card mb-3">
+              <div class="card-header"><i class="bi bi-image me-2" style="color:var(--red);"></i>Foto Produk</div>
+              <div class="card-body">
+                <div class="img-upload-area" onclick="showToast('Dialog upload foto dibuka.')">
+                  <i class="bi bi-cloud-upload" style="font-size:36px;color:#bbb;"></i>
+                  <div style="font-size:13px;color:#888;margin-top:8px;font-weight:600;">Klik untuk upload foto</div>
+                  <div style="font-size:11px;color:#bbb;margin-top:4px;">PNG, JPG, WEBP · Maks 2MB</div>
+                </div>
+                <div class="mt-2 p-2 rounded d-flex align-items-center gap-2"
+                  style="background:#e8f5e9;font-size:12px;color:#2e7d32;">
+                  <i class="bi bi-check-circle-fill"></i> timing-belt-toyota.jpg (340 KB)
+                  <button style="background:none;border:none;color:#c62828;cursor:pointer;margin-left:auto;"><i
+                      class="bi bi-x"></i></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card mb-3">
+              <div class="card-header"><i class="bi bi-eye me-2" style="color:var(--red);"></i>Preview Produk</div>
+              <div class="card-body">
+                <div class="product-card" style="cursor:default;box-shadow:none;">
+                  <div class="product-img" style="height:130px;background:#f4f6f9;">
+                    <i class="bi bi-gear-wide-connected img-placeholder" style="font-size:40px;"></i>
+                  </div>
+                  <div class="product-body" style="padding:12px;">
+                    <div class="product-cat">Mesin</div>
+                    <div class="product-name">Timing Belt Toyota Innova</div>
+                    <div class="product-brand">Toyota Genuine · TYT-TB-002</div>
+                    <div class="product-price">Rp 320.000 <small>/set</small></div>
+                    <div style="font-size:12px;color:#888;margin-top:6px;"><i class="bi bi-box2 me-1"></i>Stok: 45 set
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="d-grid gap-2">
+              <button class="btn-primary-red" style="padding:11px;" onclick="showToast('Produk berhasil disimpan! ✓')">
+                <i class="bi bi-check-circle me-2"></i>Simpan Produk
+              </button>
+              <button onclick="showPage('gudang')"
+                style="background:#f0f2f5;border:none;border-radius:8px;padding:10px;font-weight:600;color:#555;cursor:pointer;font-size:14px;">
+                Batal
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Existing Products Table -->
+        <div class="card mt-4">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-box-seam me-2" style="color:var(--red);"></i>Daftar Produk</span>
+            <div class="d-flex gap-2">
+              <div class="search-bar">
+                <i class="bi bi-search"></i>
+                <input class="form-control form-control-sm" style="padding-left:34px;width:200px;"
+                  placeholder="Cari produk...">
+              </div>
+              <select class="form-select form-select-sm" style="width:140px;">
+                <option>Semua Kategori</option>
+                <option>Mesin</option>
+                <option>Rem & Kopling</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table mb-0">
+              <thead>
+                <tr>
+                  <th class="ps-3" style="width:60px;">Foto</th>
+                  <th>Nama Produk</th>
+                  <th>SKU</th>
+                  <th>Kategori</th>
+                  <th>Harga</th>
+                  <th>Stok</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="ps-3">
+                    <div
+                      style="width:44px;height:44px;background:#f4f6f9;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;">
+                      ⚙️</div>
+                  </td>
+                  <td>
+                    <div style="font-weight:600;font-size:13px;">Busi Iridium NGK</div>
+                    <div style="font-size:11px;color:#888;">NGK</div>
+                  </td>
+                  <td style="font-size:12px;color:#888;">NGK-IRI-001</td>
+                  <td><span class="badge" style="background:#f0f2f5;color:#555;border:1px solid #dde;">Mesin</span></td>
+                  <td style="font-weight:700;color:var(--red);font-size:13px;">Rp 85.000</td>
+                  <td><span class="badge bg-success">150 pcs</span></td>
+                  <td><span class="badge" style="background:#e8f5e9;color:#2e7d32;">Aktif</span></td>
+                  <td>
+                    <div class="d-flex gap-1">
+                      <button class="btn-sm-action" style="background:#e3f2fd;color:#1565c0;"
+                        onclick="showToast('Form edit produk dibuka.')"><i class="bi bi-pencil"></i></button>
+                      <button class="btn-sm-action" style="background:#ffebee;color:#c62828;"
+                        onclick="showToast('Produk dihapus.')"><i class="bi bi-trash3"></i></button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="ps-3">
+                    <div
+                      style="width:44px;height:44px;background:#fff5f0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;">
+                      🔴</div>
+                  </td>
+                  <td>
+                    <div style="font-weight:600;font-size:13px;">Kampas Rem Depan Brembo</div>
+                    <div style="font-size:11px;color:#888;">Brembo</div>
+                  </td>
+                  <td style="font-size:12px;color:#888;">BRM-PAD-001</td>
+                  <td><span class="badge" style="background:#f0f2f5;color:#555;border:1px solid #dde;">Rem &
+                      Kopling</span></td>
+                  <td style="font-weight:700;color:var(--red);font-size:13px;">Rp 275.000</td>
+                  <td><span class="badge bg-success">80 set</span></td>
+                  <td><span class="badge" style="background:#e8f5e9;color:#2e7d32;">Aktif</span></td>
+                  <td>
+                    <div class="d-flex gap-1">
+                      <button class="btn-sm-action" style="background:#e3f2fd;color:#1565c0;"><i
+                          class="bi bi-pencil"></i></button>
+                      <button class="btn-sm-action" style="background:#ffebee;color:#c62828;"><i
+                          class="bi bi-trash3"></i></button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="ps-3">
+                    <div
+                      style="width:44px;height:44px;background:#fff5f5;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;">
+                      ⚙️</div>
+                  </td>
+                  <td>
+                    <div style="font-weight:600;font-size:13px;">Piston Set Honda Jazz</div>
+                    <div style="font-size:11px;color:#888;">Honda</div>
+                  </td>
+                  <td style="font-size:12px;color:#888;">HND-PST-001</td>
+                  <td><span class="badge" style="background:#f0f2f5;color:#555;border:1px solid #dde;">Mesin</span></td>
+                  <td style="font-weight:700;color:var(--red);font-size:13px;">Rp 850.000</td>
+                  <td><span class="badge bg-danger">0 set</span></td>
+                  <td><span class="badge" style="background:#e8f5e9;color:#2e7d32;">Aktif</span></td>
+                  <td>
+                    <div class="d-flex gap-1">
+                      <button class="btn-sm-action" style="background:#e3f2fd;color:#1565c0;"><i
+                          class="bi bi-pencil"></i></button>
+                      <button class="btn-sm-action" style="background:#ffebee;color:#c62828;"><i
+                          class="bi bi-trash3"></i></button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- JS -->
+  <!-- ======================================================= -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function showPage(name) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + name).classList.add('active');
+      document.querySelectorAll('#page-nav button').forEach(b => b.classList.remove('active'));
+      const map = { login: 0, register: 1, catalog: 2, cart: 3, gudang: 4, addproduct: 5 };
+      const btns = document.querySelectorAll('#page-nav button');
+      if (map[name] !== undefined) btns[map[name]].classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function switchTab(tab) {
+      document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+      document.getElementById('tab-reg').classList.toggle('active', tab === 'reg');
+    }
+
+    function addToCart(name) {
+      showToast(name + ' ditambahkan ke keranjang! 🛒');
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      t.style.display = 'flex';
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { t.style.display = 'none'; }, 3000);
+    }
+  </script>
+</body>
+
+</html>
