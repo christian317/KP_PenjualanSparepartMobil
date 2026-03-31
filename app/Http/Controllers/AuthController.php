@@ -21,52 +21,67 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-
-        $user = DB::table('user')
+        // =========================
+        // 1. CEK ADMIN
+        // =========================
+        $admin = DB::table('user_admin')
             ->where('email', $request->email)
             ->first();
 
-        if (!$user) {
-            return back()->with('error', 'Email tidak ditemukan');
+        if ($admin && Hash::check($request->password, $admin->password)) {
+
+            Session::put('user_id', $admin->id);
+            Session::put('role', 'admin');
+            Session::put('role_id', $admin->role_id);
+
+            // redirect sesuai role admin
+            if ($admin->role_id == 1) {
+                return redirect()->route('admin.index');
+            } elseif ($admin->role_id == 2) {
+                return redirect()->route('keuangan.index');
+            }
         }
 
-        if (!Hash::check($request->password, $user->password)) {
-            return back()->with('error', 'Password salah!');
-        }
+        // =========================
+        // 2. CEK PELANGGAN
+        // =========================
+        $pelanggan = DB::table('user_pelanggan')
+            ->where('email', $request->email)
+            ->first();
 
-        Session::put('user_id', $user->id);
-        Session::put('role_id', $user->role_id);
-        Session::put('nama', $user->nama);
+        if ($pelanggan && Hash::check($request->password, $pelanggan->password)) {
 
-        if ($user->role_id == 1) {
-            return redirect()->route('admin.index');
-        } elseif ($user->role_id == 2) {
-            return redirect()->route('keuangan.index');
-        } elseif ($user->role_id == 3) {
+            Session::put('user_id', $pelanggan->id);
+            Session::put('role', 'pelanggan');
+            Session::put('nama', $pelanggan->nama);
+            Session::put('status_bengkel', $pelanggan->status_bengkel);
+
             return redirect()->route('pelanggan.index');
         }
+
+        return back()->with('error', 'Email atau password salah!');
     }
 
     public function register(Request $request)
     {
-
         $request->validate([
             'nama' => 'required|string|max:255',
-            'email' => 'required|email|unique:user,email',
+            'nama_toko' => 'required|string|max:255',
+            'email' => 'required|email|unique:user_pelanggan,email',
             'password' => 'required|min:8',
             'telepon' => 'required|string|max:20',
             'alamat' => 'required|string'
         ]);
 
-        DB::table('user')->insert([
-            'role_id' => 3, // pelanggan
+        DB::table('user_pelanggan')->insert([
             'nama' => $request->nama,
-            'email' => $request->email,
             'nama_toko' => $request->nama_toko,
+            'email' => $request->email,
             'password' => Hash::make($request->password),
             'telepon' => $request->telepon,
             'alamat' => $request->alamat,
-            'status' => 'aktif'
+            'status' => '1',
+            'status_bengkel' => '0'
         ]);
 
         return redirect()->route('login')->with('success', 'Registrasi berhasil');

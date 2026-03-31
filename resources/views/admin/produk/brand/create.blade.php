@@ -1,0 +1,91 @@
+@extends('layouts.app')
+
+@section('content')
+    <div class="col px-4 pt-4 pb-5 bg-light min-vh-100">
+
+        <div class="sticky-top py-3 mb-4"
+            style="background-color: #f8f9fa; z-index: 1020; margin-top: -1.5rem; padding-top: 1.5rem !important;">
+            <div class="d-flex align-items-center gap-3">
+                <a href="{{ route('admin.produk.index') }}"
+                    class="btn btn-light border rounded-3 px-3 py-2 text-secondary shadow-sm">
+                    <i class="bi bi-arrow-left"></i>
+                </a>
+                <div>
+                    <h4 class="fw-bold mb-0 text-dark">Tambah Brand Baru</h4>
+                    <p class="text-muted mb-0 small">Isi data Brand sparepart dengan lengkap</p>
+                </div>
+            </div>
+        </div>
+        
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm">
+                <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        <div class="row g-4">
+            <div class="col-md-8">
+                <div class="card border-0 shadow-sm rounded-3">
+                    <div class="card-header bg-white py-3 border-bottom">
+                        <div class="fw-bold d-flex align-items-center text-dark">
+                            <i class="bi bi-info-circle me-2 text-danger"></i>Informasi Brand
+                        </div>
+                    </div>
+                    <form method="POST" action="/admin.produk.brand.store">
+                        @csrf
+                        <div class="card-body p-4">
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <label class="form-label fw-semibold small text-secondary">Nama Brand</label>
+                                    <input name="nama" type="text" class="form-control rounded-3 py-2" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold small text-secondary">Deskripsi Produk</label>
+                                    <textarea name="deskripsi" type="text" class="form-control rounded-3" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2" style="margin-top: 15px">
+                                <button type="submit" class="btn btn-danger py-2 fw-bold rounded-3 shadow-sm border-0"
+                                    style="background-color: #3c3cff;">
+                                    <i class="bi bi-check-circle me-2"></i>Simpan Brand
+                                </button>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <div class="card border-0 shadow-sm rounded-3 mt-4">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <span class="fw-bold"><i class="bi bi-box-seam me-2 text-danger"></i>Daftar Brand</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light text-secondary small">
+                            <tr>
+                                <th>NAMA BRAND</th>
+                                <th>Deskripsi</th>
+                                <th class="text-center">AKSI</th>
+                            </tr>
+                        </thead>
+                        <tbody class="small">
+                            @foreach ($brand as $item)
+                                <tr>
+                                    <td class="text-muted">{{ $item->nama }}</td>
+                                    <td class="text-muted">{{ $item->deskripsi }}</td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <a href="/admin/produk/brand/edit/{{ $item->id }}" class="btn btn-sm btn-info bg-opacity-10 border-0 text-info px-2"><i
+                                                    class="bi bi-pencil"></i></a>
+                                            <a href="/admin/produk/brand/delete/{{ $item->id }}" class="btn btn-sm btn-danger bg-opacity-10 border-0 text-danger px-2"><i
+                                                    class="bi bi-trash3"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection

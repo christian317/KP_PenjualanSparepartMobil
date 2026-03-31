@@ -1,3 +1,5 @@
+@if(Session::get('role_id') == 1) {{-- Angka 1 biasanya ID untuk Admin --}}
+
 <aside class="sidebar-desktop bg-dark text-white d-flex flex-column border-end border-secondary">
     <div class="px-3 py-3 border-bottom border-secondary">
         <div class="fw-bold fs-5 text-truncate">
@@ -9,17 +11,39 @@
     <div class="flex-grow-1 py-2 overflow-auto">
         <div class="text-uppercase text-secondary px-3 py-2" style="font-size:10px;">Menu</div>
 
-        <a href="{{ route('admin.index') }}" class="d-flex align-items-center gap-2 px-3 py-2 text-white text-decoration-none bg-danger bg-opacity-25 border-start border-danger border-3">
+        <!-- Dashboard -->
+        <a href="{{ route('admin.index') }}"
+            class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+       {{ Request::routeIs('admin.index') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
             <i class="bi bi-speedometer2"></i> Dashboard
         </a>
-        <a href="#" class="d-flex align-items-center gap-2 px-3 py-2 text-white-50 text-decoration-none">
+
+        {{-- Kelola User --}}
+        <a href="{{ route('admin.user.index') }}"
+            class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+       {{ Request::routeIs('admin.user.index') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+            <i class="bi bi-people"></i> Kelola User
+        </a>
+
+
+        <!-- Pesanan -->
+        <a href="#"
+            class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+       {{ Request::routeIs('admin.pesanan*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
             <i class="bi bi-list-ul"></i> Kelola Pesanan
             <span class="ms-auto badge bg-danger" style="font-size:10px;">12</span>
         </a>
-        <a href="{{ route('admin.produk.index') }}" class="d-flex align-items-center gap-2 px-3 py-2 text-white-50 text-decoration-none">
+
+        <!-- Produk -->
+        <a href="{{ route('admin.produk.index') }}"
+            class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+       {{ Request::routeIs('admin.produk*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
             <i class="bi bi-box-seam"></i> Produk & Stok
         </a>
+
         <div class="text-uppercase text-secondary px-3 py-2 mt-2" style="font-size:10px;">Akun</div>
+
+        <!-- Logout -->
         <a href="{{ route('logout') }}"
             class="d-flex align-items-center gap-2 px-3 py-2 text-white-50 text-decoration-none">
             <i class="bi bi-box-arrow-right"></i> Logout
@@ -58,3 +82,4 @@
         </div>
     </div>
 </div>
+@endif
