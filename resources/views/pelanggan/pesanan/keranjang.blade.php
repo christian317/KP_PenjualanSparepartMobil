@@ -114,35 +114,8 @@
                             <span class="fw-bold">Total Bayar</span>
                             <h5 class="fw-bold text-danger mb-0" id="totalBayar">Rp 0</h5>
                         </div>
-                        {{-- <label class="form-label text-muted small fw-semibold text-uppercase mb-2"
-                            style="font-size:11px;letter-spacing:.5px;">Metode Pembayaran</label>
-                        <div class="d-flex flex-column gap-2 mb-3">
 
-                            <label
-                                class="d-flex align-items-center gap-3 p-3 rounded-3 border border-danger bg-danger bg-opacity-10 cursor-pointer">
-                                <input type="radio" name="pay" checked class="form-check-input mt-0 flex-shrink-0"
-                                    style="accent-color:#dc3545;">
-                                <div>
-                                    <div class="fw-bold small">Bayar Sekarang (Cash)</div>
-                                    <div class="text-muted" style="font-size:11px;">Transfer/E-wallet via Midtrans</div>
-                                </div>
-                            </label>
-
-                            <label class="d-flex align-items-center gap-3 p-3 rounded-3 border bg-white cursor-pointer">
-                                <input type="radio" name="pay" class="form-check-input mt-0 flex-shrink-0"
-                                    style="accent-color:#dc3545;">
-                                <div>
-                                    <div class="fw-bold small d-flex align-items-center gap-1">
-                                        Kontrabon
-                                        <span class="badge bg-primary bg-opacity-25 text-primary border-0"
-                                            style="font-size:10px;">Mitra</span>
-                                    </div>
-                                    <div class="text-muted" style="font-size:11px;">Jatuh tempo 3 bulan</div>
-                                </div>
-                            </label>
-
-                        </div> --}}
-                        <button class="btn btn-danger w-100 fw-bold py-2 shadow-sm rounded-3" id="btnCheckout"
+                        <button type="button" class="btn btn-danger w-100 fw-bold py-2 shadow-sm rounded-3" id="btnCheckout"
                             {{ count($cart) == 0 ? 'disabled' : '' }}>
                             Check Out<i class="bi bi-arrow-right ms-1"></i>
                         </button>
@@ -160,6 +133,9 @@
 
         </div>
     </div>
+
+    <form id="formCheckout" action="{{ route('pelanggan.pesanan.checkout') }}" method="GET" class="d-none">
+        </form>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -215,6 +191,31 @@
             });
 
             calculateTotal();
+
+            // PERBAIKAN 3: Menangani proses submit ke Controller
+            btnCheckout.addEventListener('click', function() {
+                const form = document.getElementById('formCheckout');
+                form.innerHTML = ''; // Bersihkan isi form jika tombol diklik ulang
+                
+                let adaYangDicentang = false;
+
+                checkboxes.forEach(cb => {
+                    if (cb.checked) {
+                        adaYangDicentang = true;
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'produk_terpilih[]';
+                        input.value = cb.getAttribute('data-id'); 
+                        form.appendChild(input);
+                    }
+                });
+
+                if (adaYangDicentang) {
+                    form.submit(); // Kirim data produk yang dicentang
+                } else {
+                    alert('Silakan pilih minimal satu produk untuk di-checkout.');
+                }
+            });
         });
     </script>
 @endsection

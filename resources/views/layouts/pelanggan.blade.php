@@ -55,7 +55,12 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link {{ Request::is('/') ? 'active' : '' }}"
                             href="/">Katalog</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Pesanan Saya</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('pelanggan.pesanan.index') }}">Pesanan Saya</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('pelanggan.pesanan.daftar_tagihan') }}">
+                            <i class="bi bi-wallet2"></i> Tagihan Saya
+                        </a>
+                    </li>
                 </ul>
 
                 <div class="d-flex align-items-center gap-3">
@@ -67,7 +72,7 @@
                             $displayCount = 0;
 
                             if ($userIdForBadge) {
-                                $displayCount = \Illuminate\Support\Facades\DB::table('keranjang')
+                                $displayCount = DB::table('keranjang')
                                     ->where('user_id', $userIdForBadge)
                                     ->count();
                             }

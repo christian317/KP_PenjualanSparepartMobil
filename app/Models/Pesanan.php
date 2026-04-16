@@ -8,14 +8,21 @@ class Pesanan extends Model
 {
     protected $table = 'pesanan';
     protected $primaryKey = 'nomor_pesanan';
+    public $incrementing = false;
+    protected $keyType = 'string';
+    
     protected $fillable = [
+        'nomor_pesanan',
         'user_pelanggan_id',
-        'user_admin_id',
+        'user_admin',
         'tanggal_pemesanan',
         'metode_pembayaran',
-        'status',
+        'status_pembayaran',
+        'status_pesanan',
         'catatan',
     ];
+
+    public $timestamps = false;
 
     public function UserPelanggan()
     {

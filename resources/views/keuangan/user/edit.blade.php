@@ -6,7 +6,7 @@
         <div class="sticky-top py-3 mb-4"
             style="background-color: #f8f9fa; z-index: 1020; margin-top: -1.5rem; padding-top: 1.5rem !important;">
             <div class="d-flex align-items-center gap-3">
-                <a href="{{ route('admin.user.index') }}"
+                <a href="{{ route('keuangan.user.index') }}"
                     class="btn btn-light border rounded-3 px-3 py-2 text-secondary shadow-sm">
                     <i class="bi bi-arrow-left"></i>
                 </a>
@@ -17,10 +17,10 @@
             </div>
         </div>
 
-        {{-- Route disesuaikan untuk update, kirimkan parameter ID dan method PUT --}}
-        <form action="{{ route('admin.user.update', $user->id) }}" method="POST">
+        <form action="{{ route('keuangan.user.update', $user->id) }}" method="POST">
             @csrf
-            {{-- TIPE USER (Disabled agar tidak mengubah tipe user yang sudah ada) --}}
+            
+            {{-- TIPE USER --}}
             <div class="mb-4">
                 <div class="card border-0 shadow-sm rounded-3">
                     <div class="card-body p-3">
@@ -58,7 +58,6 @@
                                     <label class="form-label fw-semibold small text-secondary">Role / Akses</label>
                                     <select name="role_id" class="form-select rounded-3 py-2">
                                         <option value="">-- Pilih Role --</option>
-                                        {{-- Gunakan isset() atau ?? untuk menghindari error property undefined --}}
                                         <option value="1"
                                             {{ old('role_id', $user->role_id ?? '') == 1 ? 'selected' : '' }}>Admin Gudang
                                         </option>
@@ -84,8 +83,7 @@
 
                                 {{-- TELEPON --}}
                                 <div class="col-md-6" id="field_telepon">
-                                    <label class="form-label fw-semibold small text-secondary">No. Telepon /
-                                        WhatsApp</label>
+                                    <label class="form-label fw-semibold small text-secondary">No. Telepon / WhatsApp</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light border-end-0 text-muted">+62</span>
                                         <input name="telepon" type="number" class="form-control rounded-end-3 py-2"
@@ -95,11 +93,9 @@
 
                                 {{-- PASSWORD --}}
                                 <div class="col-md-12">
-                                    <label class="form-label fw-semibold small text-secondary">Password Baru
-                                        (Opsional)</label>
+                                    <label class="form-label fw-semibold small text-secondary">Password Baru (Opsional)</label>
                                     <input name="password" type="password" class="form-control rounded-3 py-2">
-                                    <div class="form-text small" style="font-size: 10px;">Kosongkan jika tidak ingin
-                                        mengubah password</div>
+                                    <div class="form-text small" style="font-size: 10px;">Kosongkan jika tidak ingin mengubah password</div>
                                 </div>
 
                                 {{-- ALAMAT --}}
@@ -111,14 +107,20 @@
                                 {{-- STATUS BENGKEL --}}
                                 <div class="col-md-6" id="field_bengkel">
                                     <label class="form-label fw-semibold small text-secondary">Status Bengkel</label>
-                                    <select name="status_bengkel" class="form-select rounded-3">
-                                        <option value="reguler"
-                                            {{ old('status_bengkel', $user->status_bengkel ?? '') == '0' ? 'selected' : '' }}>
-                                            Reguler</option>
-                                        <option value="mitra"
-                                            {{ old('status_bengkel', $user->status_bengkel ?? '') == '1' ? 'selected' : '' }}>
-                                            Mitra</option>
+                                    <select name="status_bengkel" id="status_bengkel" class="form-select rounded-3">
+                                        <option value="0" {{ old('status_bengkel', $user->status_bengkel ?? '') == '0' ? 'selected' : '' }}>Reguler</option>
+                                        <option value="1" {{ old('status_bengkel', $user->status_bengkel ?? '') == '1' ? 'selected' : '' }}>Mitra</option>
                                     </select>
+                                </div>
+
+                                {{-- LIMIT HUTANG (HANYA MUNCUL JIKA MITRA) --}}
+                                <div class="col-md-6" id="field_limit" style="display: none;">
+                                    <label class="form-label fw-semibold small text-secondary">Limit Hutang (Plafon)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0 text-muted">Rp</span>
+                                        <input name="limit_hutang" id="input_limit_hutang" type="number" class="form-control rounded-end-3 py-2" 
+                                            value="{{ old('limit_hutang', $user->limit_hutang ?? '') }}" placeholder="0">
+                                    </div>
                                 </div>
 
                                 {{-- STATUS --}}
@@ -126,8 +128,7 @@
                                     <input type="hidden" name="status" value="0">
                                     <div class="form-check form-switch">
                                         <input name="status" class="form-check-input border-secondary" type="checkbox"
-                                            value="1"
-                                            {{ old('status', $user->status ?? '') == '1' ? 'checked' : '' }}
+                                            value="1" {{ old('status', $user->status ?? '') == '1' ? 'checked' : '' }}
                                             style="transform: scale(1.2);">
                                         <label class="form-check-label ms-2 fw-medium">User Aktif (Dapat Login)</label>
                                     </div>
@@ -144,8 +145,7 @@
                         <div class="card-body p-4">
                             <h5 class="fw-bold"><i class="bi bi-lightbulb me-2"></i>Informasi</h5>
                             <p class="small mb-0 opacity-75">
-                                Mengubah email atau password akan berdampak pada akses login pengguna. Pastikan data yang
-                                dimasukkan sudah benar.
+                                Mengubah email atau password akan berdampak pada akses login pengguna. Pastikan data yang dimasukkan sudah benar.
                             </p>
                         </div>
                     </div>
@@ -170,7 +170,7 @@
                         <button type="submit" class="btn btn-danger py-2 fw-bold rounded-3 shadow-sm border-0">
                             <i class="bi bi-check-lg me-2"></i>Simpan Perubahan
                         </button>
-                        <a href="{{ route('admin.user.index') }}"
+                        <a href="{{ route('keuangan.user.index') }}"
                             class="btn btn-light py-2 fw-semibold rounded-3 text-secondary border">
                             Batal
                         </a>
@@ -182,8 +182,10 @@
 
     {{-- SCRIPT --}}
     <script>
-        // Ambil dari input hidden karena select utama di-disable
         const tipeUserVal = document.getElementById('tipe_user_hidden').value;
+        const statusBengkel = document.getElementById('status_bengkel');
+        const fieldLimit = document.getElementById('field_limit');
+        const inputLimitHutang = document.getElementById('input_limit_hutang');
 
         function toggleForm() {
             let isAdmin = tipeUserVal === 'admin';
@@ -195,9 +197,26 @@
             document.getElementById('field_status').style.display = isAdmin ? 'none' : 'block';
 
             document.getElementById('role_admin').style.display = isAdmin ? 'block' : 'none';
+
+            toggleLimit();
         }
 
-        // Jalankan saat load
+        function toggleLimit() {
+            let isAdmin = tipeUserVal === 'admin';
+            let isMitra = statusBengkel && statusBengkel.value === '1';
+
+            if (!isAdmin && isMitra) {
+                fieldLimit.style.display = 'block';
+            } else {
+                fieldLimit.style.display = 'none';
+                if(inputLimitHutang) inputLimitHutang.value = '';
+            }
+        }
+
+        if(statusBengkel) {
+            statusBengkel.addEventListener('change', toggleLimit);
+        }
+        
         window.onload = toggleForm;
     </script>
 @endsection

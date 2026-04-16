@@ -6,7 +6,7 @@
     <div class="sticky-top py-3 mb-4"
         style="background-color: #f8f9fa; z-index: 1020; margin-top: -1.5rem; padding-top: 1.5rem !important;">
         <div class="d-flex align-items-center gap-3">
-            <a href="{{ route('admin.user.index') }}"
+            <a href="{{ route('keuangan.user.index') }}"
                 class="btn btn-light border rounded-3 px-3 py-2 text-secondary shadow-sm">
                 <i class="bi bi-arrow-left"></i>
             </a>
@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    <form action="{{ route('admin.user.store') }}" method="POST">
+    <form action="{{ route('keuangan.user.store') }}" method="POST">
         @csrf
 
         {{-- PILIH TIPE USER --}}
@@ -46,7 +46,7 @@
                         <div class="row g-3">
 
                             {{-- NAMA --}}
-                            <div class="col-md-12   ">
+                            <div class="col-md-12">
                                 <label class="form-label fw-semibold small text-secondary">Nama Lengkap</label>
                                 <input name="nama" type="text" class="form-control rounded-3 py-2" required>
                             </div>
@@ -98,10 +98,19 @@
                             {{-- STATUS BENGKEL --}}
                             <div class="col-md-6" id="field_bengkel">
                                 <label class="form-label fw-semibold small text-secondary">Status Bengkel</label>
-                                <select name="status_bengkel" class="form-select rounded-3">
+                                <select name="status_bengkel" id="status_bengkel" class="form-select rounded-3">
                                     <option value="0">Reguler</option>
                                     <option value="1">Mitra</option>
                                 </select>
+                            </div>
+
+                            {{-- LIMIT HUTANG (HANYA MUNCUL JIKA MITRA) --}}
+                            <div class="col-md-6" id="field_limit" style="display: none;">
+                                <label class="form-label fw-semibold small text-secondary">Limit Hutang (Plafon)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted">Rp</span>
+                                    <input name="limit_hutang" id="input_limit_hutang" type="number" class="form-control rounded-end-3 py-2" placeholder="0">
+                                </div>
                             </div>
 
                             {{-- STATUS --}}
@@ -150,7 +159,7 @@
                     <button type="submit" class="btn btn-danger py-2 fw-bold rounded-3 shadow-sm border-0">
                         <i class="bi bi-person-check me-2"></i>Simpan User Baru
                     </button>
-                    <a href="{{ route('admin.user.index') }}"
+                    <a href="{{ route('keuangan.user.index') }}"
                         class="btn btn-light py-2 fw-semibold rounded-3 text-secondary border">
                         Batal
                     </a>
@@ -163,6 +172,9 @@
 {{-- SCRIPT --}}
 <script>
     const tipeUser = document.getElementById('tipe_user');
+    const statusBengkel = document.getElementById('status_bengkel');
+    const fieldLimit = document.getElementById('field_limit');
+    const inputLimitHutang = document.getElementById('input_limit_hutang');
 
     function toggleForm() {
         let isAdmin = tipeUser.value === 'admin';
@@ -174,9 +186,24 @@
         document.getElementById('field_status').style.display = isAdmin ? 'none' : 'block';
 
         document.getElementById('role_admin').style.display = isAdmin ? 'block' : 'none';
+
+        toggleLimit(); 
+    }
+
+    function toggleLimit() {
+        let isAdmin = tipeUser.value === 'admin';
+        let isMitra = statusBengkel.value === '1';
+
+        if (!isAdmin && isMitra) {
+            fieldLimit.style.display = 'block';
+        } else {
+            fieldLimit.style.display = 'none';
+            inputLimitHutang.value = ''; 
+        }
     }
 
     tipeUser.addEventListener('change', toggleForm);
+    statusBengkel.addEventListener('change', toggleLimit);
     window.onload = toggleForm;
 </script>
 @endsection

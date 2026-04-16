@@ -56,7 +56,7 @@
                         </div>
                         <div class="col-6 col-md-4">
                             <div class="small text-muted">Model Kendaraan</div>
-                            <div class="fw-bold text-dark">{{ $item->part_model }}</div>
+                            <div class="fw-bold text-dark">{{ $item->jenisMobil->nama ?? 'N/A' }}</div>
                         </div>
                     </div>
 
@@ -67,24 +67,24 @@
                         </div>
                     </div>
 
-@if ($item->stok_produk > 0)
-    <form action="{{ route('pelanggan.pesanan.keranjang.tambah') }}" method="POST">
-        @csrf
-        <input type="hidden" name="id" value="{{ $item->kode_produk }}">
-        
-        <div class="d-flex gap-2">
-            <div style="width: 100px;">
-                <input type="number" name="jumlah" class="form-control py-2" value="1" min="1"
-                    max="{{ $item->stok_produk }}" required>
-            </div>
-            <button type="submit" class="btn btn-danger btn-lg flex-grow-1 fw-bold">
-                <i class="bi bi-cart-plus me-2"></i> Tambah ke Keranjang
-            </button>
-        </div>
-    </form>
-@else
-    <button class="btn btn-secondary btn-lg w-100 fw-bold" disabled>Produk Tidak Tersedia</button>
-@endif
+                    @if ($item->stok_produk > 0)
+                        <form action="{{ route('pelanggan.pesanan.keranjang.tambah') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="id" value="{{ $item->kode_produk }}">
+
+                            <div class="d-flex gap-2">
+                                <div style="width: 100px;">
+                                    <input type="number" name="jumlah" class="form-control py-2" value="1"
+                                        min="1" max="{{ $item->stok_produk }}" required>
+                                </div>
+                                <button type="submit" class="btn btn-danger btn-lg flex-grow-1 fw-bold">
+                                    <i class="bi bi-cart-plus me-2"></i> Tambah ke Keranjang
+                                </button>
+                            </div>
+                        </form>
+                    @else
+                        <button class="btn btn-secondary btn-lg w-100 fw-bold" disabled>Produk Tidak Tersedia</button>
+                    @endif
 
                     <div class="mt-4 p-3 bg-light rounded-3 border border-warning border-opacity-25">
                         <small class="text-muted"><i class="bi bi-info-circle-fill text-warning me-1"></i> Pelanggan Mitra

@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\RegistrasiSuksesMail;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -66,13 +69,14 @@ class AuthController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'nama_toko' => 'required|string|max:255',
+            'nama_toko' => 'nullable|string|max:255',
             'email' => 'required|email|unique:user_pelanggan,email',
             'password' => 'required|min:8',
             'telepon' => 'required|string|max:20',
             'alamat' => 'required|string'
         ]);
 
+        // 1. Simpan ke Database
         DB::table('user_pelanggan')->insert([
             'nama' => $request->nama,
             'nama_toko' => $request->nama_toko,
@@ -81,10 +85,21 @@ class AuthController extends Controller
             'telepon' => $request->telepon,
             'alamat' => $request->alamat,
             'status' => '1',
-            'status_bengkel' => '0'
+            'status_bengkel' => '0',
+            'limit_hutang' => '0'
         ]);
 
-        return redirect()->route('login')->with('success', 'Registrasi berhasil');
+        // 2. KIRIM EMAIL NOTIFIKASI
+        // Perintah ini akan mengirim email ke alamat yang baru saja didaftarkan
+        try {
+            Mail::to($request->email)->send(new RegistrasiSuksesMail($request->nama));
+        } catch (\Exception $e) {
+            // Jika email gagal terkirim (misal karena internet mati/settingan salah), 
+            // registrasi tetap berhasil tapi munculin error di log, bukan di layar user.
+            Log::error('Gagal mengirim email: ' . $e->getMessage());
+        }
+
+        return redirect()->route('login')->with('success', 'Registrasi berhasil. Silakan cek email Anda!');
     }
 
     public function logout()

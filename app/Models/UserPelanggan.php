@@ -15,7 +15,8 @@ class UserPelanggan extends Model
         'telepon',
         'alamat',
         'status',
-        'status_bengkel'
+        'status_bengkel',
+        'limit_hutang'
     ];
     
     public $timestamps = false;

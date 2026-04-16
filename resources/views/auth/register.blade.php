@@ -56,7 +56,7 @@
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0"><i
                                 class="bi bi-shop text-muted"></i></span>
-                        <input type="text" name="nama_toko" class="form-control bg-light border-start-0 ps-0" required>
+                        <input type="text" name="nama_toko" class="form-control bg-light border-start-0 ps-0">
                     </div>
                 </div>
 

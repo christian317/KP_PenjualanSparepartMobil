@@ -16,7 +16,7 @@
                     <div class="text-muted small">Kelola data pelanggan, toko, dan hak akses sistem</div>
                 </div>
                 <div class="d-flex gap-2 flex-wrap">
-                    <a href="{{ route('admin.user.create') }}"
+                    <a href="{{ route('keuangan.user.create') }}"
                         class="btn btn-primary btn-sm px-3 py-2 fw-semibold rounded-3 shadow-sm">
                         <i class="bi bi-person-plus me-1"></i> Tambah User Baru
                     </a>
@@ -81,7 +81,7 @@
             </div>
         </div>
 
-        <form action="{{ route('admin.user.index') }}" method="GET"
+        <form action="{{ route('keuangan.user.index') }}" method="GET"
             class="bg-white p-3 rounded-3 shadow-sm mb-3 d-flex flex-wrap gap-2 align-items-center">
             <div class="input-group input-group-sm " style="max-width: 300px;">
                 <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
@@ -101,7 +101,7 @@
                 <option value="2" {{ request('status') == '2' ? 'selected' : '' }}>Nonaktif</option>
             </select>
 
-            <a href="{{ route('admin.user.index') }}" class="btn btn-link btn-sm text-decoration-none text-muted p-0 ms-1">
+            <a href="{{ route('keuangan.user.index') }}" class="btn btn-link btn-sm text-decoration-none text-muted p-0 ms-1">
                 <i class="bi bi-x"></i> Reset
             </a>
             <div class="ms-auto text-muted small">
@@ -118,6 +118,7 @@
                             <th class="ps-3 py-3 border-0">NAMA & TOKO</th>
                             <th class="py-3 border-0">KONTAK</th>
                             <th class="py-3 border-0">ALAMAT</th>
+                            <th class="py-3 border-0">STATUS BENGKEL</th>
                             <th class="py-3 border-0">STATUS BENGKEL</th>
                             <th class="py-3 border-0 text-center">STATUS</th>
                             <th class="py-3 border-0 text-center">AKSI</th>
@@ -163,11 +164,21 @@
                                     </div>
                                 </td>
 
+                                <td>
+                                    @if ($user->status_bengkel == '0')
+                                        <span
+                                            class="badge rounded-pill bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25">Reguler</span>
+                                    @elseif ($user->status_bengkel == '1')
+                                        <span
+                                            class="badge rounded-pill bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25">Mitra</span>
+                                    @endif
+                                </td>
+
                                 <td class="text-center">
                                     @if ($user->status == '1')
                                         <span
                                             class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success border-opacity-25">Aktif</span>
-                                    @else
+                                    @elseif ($user->status == '0')
                                         <span
                                             class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25">Nonaktif</span>
                                     @endif
@@ -175,7 +186,7 @@
 
                                 <td class="text-center">
                                     <div class="btn-group btn-group-sm gap-1">
-                                        <a href="{{ route('admin.user.edit', $user->id) }}"
+                                        <a href="{{ route('keuangan.user.edit', $user->id) }}"
                                             class="btn btn-light text-primary border-0 rounded-2 p-1 px-2"
                                             title="Edit User">
                                             <i class="bi bi-pencil"></i>

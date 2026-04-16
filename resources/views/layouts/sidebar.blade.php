@@ -1,49 +1,79 @@
-@if(Session::get('role_id') == 1) {{-- Angka 1 biasanya ID untuk Admin --}}
-
 <aside class="sidebar-desktop bg-dark text-white d-flex flex-column border-end border-secondary">
     <div class="px-3 py-3 border-bottom border-secondary">
         <div class="fw-bold fs-5 text-truncate">
             <i class="bi bi-car-front-fill text-danger me-1"></i>CV<span class="text-danger">Jaya Abadi</span>
         </div>
-        <span class="badge bg-danger mt-1" style="font-size:10px;letter-spacing:1px;">GUDANG</span>
+        @if (Session::get('role_id') == 1)
+            <span class="badge bg-danger mt-1" style="font-size:10px;letter-spacing:1px;">GUDANG</span>
+        @elseif (Session::get('role_id') == 2)
+            <span class="badge bg-danger mt-1" style="font-size:10px;letter-spacing:1px;">KEUANGAN</span>
+        @endif
     </div>
 
     <div class="flex-grow-1 py-2 overflow-auto">
         <div class="text-uppercase text-secondary px-3 py-2" style="font-size:10px;">Menu</div>
+        @if (Session::get('role_id') == 1)
+            <!-- Dashboard -->
+            <a href="{{ route('admin.index') }}"
+                class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+                {{ Request::routeIs('admin.index') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
 
+            <!-- Produk -->
+            <a href="{{ route('admin.produk.index') }}"
+                class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+                {{ Request::routeIs('admin.produk*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+                <i class="bi bi-box-seam"></i> Kelola Produk
+            </a>
+
+
+            <!-- Pesanan -->
+            <a href="{{ route('admin.pesanan.index') }}"
+                class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+                {{ Request::routeIs('admin.pesanan*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+                <i class="bi bi-list-ul"></i> Kelola Pesanan
+                <span class="ms-auto badge bg-danger" style="font-size:10px;">12</span>
+            </a>
+
+
+            <!-- Pembelian -->
+            <a href="{{ route('admin.pembelian.index') }}"
+                class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+                {{ Request::routeIs('admin.pembelian*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+                <i class="bi bi-cart-plus"></i> Kelola Pembelian
+            </a>
+
+        @elseif(Session::get('role_id') == 2)
         <!-- Dashboard -->
-        <a href="{{ route('admin.index') }}"
-            class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
-       {{ Request::routeIs('admin.index') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
-            <i class="bi bi-speedometer2"></i> Dashboard
-        </a>
-
+            <a href="{{ route('keuangan.index') }}"
+                class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+                {{ Request::routeIs('keuangan.index') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
         {{-- Kelola User --}}
-        <a href="{{ route('admin.user.index') }}"
-            class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
-       {{ Request::routeIs('admin.user.index') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
-            <i class="bi bi-people"></i> Kelola User
-        </a>
+            <a href="{{ route('keuangan.user.index') }}"
+                class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+                {{ Request::routeIs('keuangan.user.index') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+                <i class="bi bi-people"></i> Kelola User
+            </a>
 
+            <a href="{{ route('keuangan.kontrabon.index') }}"
+                class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+                {{ Request::routeIs('keuangan.kontrabon*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+                <i class="bi bi-list-ul"></i> Kelola Kontrabon
+                <span class="ms-auto badge bg-danger" style="font-size:10px;"></span>
+            </a>
 
-        <!-- Pesanan -->
-        <a href="#"
-            class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
-       {{ Request::routeIs('admin.pesanan*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
-            <i class="bi bi-list-ul"></i> Kelola Pesanan
-            <span class="ms-auto badge bg-danger" style="font-size:10px;">12</span>
-        </a>
-
-        <!-- Produk -->
-        <a href="{{ route('admin.produk.index') }}"
-            class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
-       {{ Request::routeIs('admin.produk*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
-            <i class="bi bi-box-seam"></i> Produk & Stok
-        </a>
-
-        <div class="text-uppercase text-secondary px-3 py-2 mt-2" style="font-size:10px;">Akun</div>
-
+            <a href="{{ route('keuangan.transaksi.index') }}"
+                class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+                {{ Request::routeIs('keuangan.transaksi*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+                <i class="bi bi-list-ul"></i> Transaksi
+                <span class="ms-auto badge bg-danger" style="font-size:10px;"></span>
+            </a>
+        @endif
         <!-- Logout -->
+        <div class="text-uppercase text-secondary px-3 py-2 mt-2" style="font-size:10px;">Akun</div>
         <a href="{{ route('logout') }}"
             class="d-flex align-items-center gap-2 px-3 py-2 text-white-50 text-decoration-none">
             <i class="bi bi-box-arrow-right"></i> Logout
@@ -82,4 +112,3 @@
         </div>
     </div>
 </div>
-@endif
