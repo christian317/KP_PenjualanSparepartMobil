@@ -323,4 +323,12 @@
             </div><!-- end main content -->
         </div><!-- end d-flex -->
     </div>
+<script>
+    @if (Session::has('toast_success'))
+        document.addEventListener("DOMContentLoaded", function() {
+            showToast("{{ Session::get('toast_success') }}");
+        });
+    @endif
+</script>
+
 @endsection

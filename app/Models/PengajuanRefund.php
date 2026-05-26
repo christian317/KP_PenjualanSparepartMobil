@@ -17,7 +17,7 @@ class PengajuanRefund extends Model
         'nomor_rekening',
         'atas_nama',
         'alasan_pembatalan',
-        'status_refund',
+        'status',
         'bukti_transfer'
     ];
 

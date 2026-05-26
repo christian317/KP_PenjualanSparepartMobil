@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Edit Brand')
+
 @section('content')
     <div class="col px-4 pt-4 pb-5 bg-light min-vh-100">
 
@@ -32,7 +34,7 @@
                             <i class="bi bi-info-circle me-2 text-danger"></i>Informasi Brand
                         </div>
                     </div>
-                    <form method="POST" action="/admin.produk.brand.update/{{ $brand->id }}">
+                    <form method="POST" action="{{ route('admin.produk.brand.update', $brand->id) }}">
                         @csrf
                         <div class="card-body p-4">
                             <div class="row g-3">

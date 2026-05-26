@@ -107,7 +107,7 @@
                         <i class="bi bi-info-circle-fill text-warning mt-1 flex-shrink-0"></i>
                         <small class="text-warning-emphasis">
                             Akun baru didaftarkan sebagai <strong>Pelanggan Reguler</strong>.
-                            Untuk upgrade ke <strong>Pelanggan Mitra</strong> (bisa Kontrabón), hubungi tim kami.
+                            Untuk upgrade ke <strong>Pelanggan Mitra</strong> (bisa Kontrabon), hubungi tim kami.
                         </small>
                     </div>
                 </div>

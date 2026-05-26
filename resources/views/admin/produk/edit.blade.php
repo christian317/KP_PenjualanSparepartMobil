@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Edit Produk')
+
 {{-- Tambahkan CSS Select2 Bootstrap 5 Theme --}}
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
@@ -13,7 +15,7 @@
         <div class="sticky-top py-3 mb-4"
             style="background-color: #f8f9fa; z-index: 1020; margin-top: -1.5rem; padding-top: 1.5rem !important;">
             <div class="d-flex align-items-center gap-3">
-                <a href="{{ route('admin.produk.index') }}"
+                <a href="{{ route('admin.produk.kategori.create') }}"
                     class="btn btn-light border rounded-3 px-3 py-2 text-secondary shadow-sm">
                     <i class="bi bi-arrow-left"></i>
                 </a>
@@ -24,8 +26,7 @@
             </div>
         </div>
 
-        <form action="{{ route('admin.produk.update', $produk->kode_produk) }}" method="POST"
-            enctype="multipart/form-data">
+        <form action="{{ route('admin.produk.update', $produk->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="row g-4">
                 <div class="col-md-8">
@@ -40,13 +41,13 @@
                             <div class="row g-3">
                                 <div class="col-md-8">
                                     <label class="form-label fw-semibold small text-secondary">Nama Produk</label>
-                                    <input name="nama_produk" type="text" value="{{ $produk->nama_produk }}"
+                                    <input name="nama" type="text" value="{{ $produk->nama }}"
                                         class="form-control rounded-3 py-2" required>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label fw-semibold small text-secondary">Kode</label>
-                                    <input name="kode_produk" type="text" value="{{ $produk->kode_produk }}"
-                                        class="form-control rounded-3 py-2" required>
+                                    <input name="id" type="text" value="{{ $produk->id }}"
+                                        class="form-control rounded-3 py-2" readonly>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-semibold small text-secondary">Kategori</label>
@@ -83,7 +84,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label fw-semibold small text-secondary">Stok Saat Ini</label>
-                                    <input name="stok_produk" value="{{ $produk->stok_produk }}" class="form-control py-2"
+                                    <input name="stok" value="{{ $produk->stok }}" class="form-control py-2"
                                         type="number" required>
                                 </div>
                                 <div class="col-md-3">
@@ -109,9 +110,8 @@
                                             <select name="jenis_mobil_id[]" class="form-select select2" multiple required>
                                                 @foreach ($jenis_mobil as $mobil)
                                                     <option value="{{ $mobil->id }}"
-                                                        {{ in_array($mobil->id, old('jenis_mobil_id', $selectedMobil ?? [])) ? 'selected' : '' }}>
-
-                                                        {{ $mobil->merk_mobil }} {{ $mobil->nama_mobil }}
+                                                        {{ in_array((string) $mobil->id, array_map('strval', old('jenis_mobil_id', $selectedMobil ?? []))) ? 'selected' : '' }}>
+                                                        {{ $mobil->merk }} {{ $mobil->nama_model }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -131,15 +131,23 @@
 
                                 <div class="col-12 mt-3">
                                     <label class="form-label fw-semibold small text-secondary">Deskripsi Produk</label>
-                                    <textarea name="deskripsi_produk" class="form-control rounded-3" rows="3">{{ $produk->deskripsi_produk }}</textarea>
+                                    <textarea name="deskripsi" class="form-control rounded-3" rows="3">{{ $produk->deskripsi }}</textarea>
                                 </div>
-                                <div class="col-12 pt-2">
-                                    <div class="form-check form-switch">
-                                        <input name="status_produk" class="form-check-input border-secondary"
-                                            type="checkbox" {{ $produk->status_produk ? 'checked' : '' }}
-                                            style="transform: scale(1.2);">
-                                        <label class="form-check-label ms-2 fw-medium">Produk Aktif (tampil di
-                                            katalog)</label>
+                                <div class="row pt-2 align-items-center">
+                                    <div class="col-auto">
+                                        <div class="form-check form-switch">
+                                            <input name="status" class="form-check-input border-secondary" type="checkbox"
+                                                {{ $produk->status ? 'checked' : '' }} style="transform: scale(1.2);">
+                                            <label class="form-check-label ms-2 fw-medium">Produk Aktif (tampil di
+                                                katalog)</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="form-check form-switch">
+                                            <input name="preorder" class="form-check-input border-secondary" type="checkbox"
+                                                {{ $produk->preorder ? 'checked' : '' }} style="transform: scale(1.2);">
+                                            <label class="form-check-label ms-2 fw-medium">Preorder</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

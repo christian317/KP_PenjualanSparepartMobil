@@ -7,10 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class Pembelian extends Model
 {
     protected $table = 'pembelian';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     protected $fillable = [
-        'nomor_pembelian',
+        'id',
         'nama_supplier',
-        'tanggal_pembelian',
+        'tanggal',
         'catatan',
     ];
 
@@ -18,6 +22,6 @@ class Pembelian extends Model
 
     public function details()
     {
-        return $this->hasMany(DetailPembelian::class, 'nomor_pembelian_id', 'nomor_pembelian');
+        return $this->hasMany(DetailPembelian::class,'pembelian_id','id');
     }
 }

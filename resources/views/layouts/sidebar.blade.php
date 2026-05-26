@@ -6,7 +6,7 @@
         @if (Session::get('role_id') == 1)
             <span class="badge bg-danger mt-1" style="font-size:10px;letter-spacing:1px;">GUDANG</span>
         @elseif (Session::get('role_id') == 2)
-            <span class="badge bg-danger mt-1" style="font-size:10px;letter-spacing:1px;">KEUANGAN</span>
+            <span class="badge bg-danger mt-1" style="font-size:10px;letter-spacing:1px;">OWNER</span>
         @endif
     </div>
 
@@ -27,7 +27,6 @@
                 <i class="bi bi-box-seam"></i> Kelola Produk
             </a>
 
-
             <!-- Pesanan -->
             <a href="{{ route('admin.pesanan.index') }}"
                 class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
@@ -36,7 +35,6 @@
                 <span class="ms-auto badge bg-danger" style="font-size:10px;">12</span>
             </a>
 
-
             <!-- Pembelian -->
             <a href="{{ route('admin.pembelian.index') }}"
                 class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
@@ -44,31 +42,51 @@
                 <i class="bi bi-cart-plus"></i> Kelola Pembelian
             </a>
 
-        @elseif(Session::get('role_id') == 2)
-        <!-- Dashboard -->
-            <a href="{{ route('keuangan.index') }}"
+            {{-- Riwayat Pesanan --}}
+            <a href="{{ route('admin.riwayat_pesanan.index') }}"
                 class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
-                {{ Request::routeIs('keuangan.index') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
-                <i class="bi bi-speedometer2"></i> Dashboard
-            </a>
-        {{-- Kelola User --}}
-            <a href="{{ route('keuangan.user.index') }}"
-                class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
-                {{ Request::routeIs('keuangan.user.index') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
-                <i class="bi bi-people"></i> Kelola User
-            </a>
-
-            <a href="{{ route('keuangan.kontrabon.index') }}"
-                class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
-                {{ Request::routeIs('keuangan.kontrabon*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
-                <i class="bi bi-list-ul"></i> Kelola Kontrabon
+                {{ Request::routeIs('admin.riwayat_pesanan*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+                <i class="bi bi-clock-history"></i> Riwayat Pesanan 
                 <span class="ms-auto badge bg-danger" style="font-size:10px;"></span>
             </a>
 
-            <a href="{{ route('keuangan.transaksi.index') }}"
+        @elseif(Session::get('role_id') == 2)
+        <!-- Dashboard -->
+            <a href="{{ route('owner.index') }}"
                 class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
-                {{ Request::routeIs('keuangan.transaksi*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
-                <i class="bi bi-list-ul"></i> Transaksi
+                {{ Request::routeIs('owner.index') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+        {{-- Kelola User --}}
+            <a href="{{ route('owner.user.index') }}"
+                class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+                {{ Request::routeIs('owner.user.index') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+                <i class="bi bi-people"></i> Kelola User
+            </a>
+
+            <a href="{{ route('owner.kontrabon.index') }}"
+                class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+                {{ Request::routeIs('owner.kontrabon*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+                <i class="bi bi-list-ul"></i> Kelola Kontrabon
+                <span class="ms-auto badge bg-danger" style="font-size:10px;"></span>
+            </a>
+            <a href="{{ route('owner.preorder.index') }}"
+                class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+                {{ Request::routeIs('owner.preorder*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+                <i class="bi bi-clock-history"></i> Kelola Preorder
+            </a>
+
+            <a href="{{ route('owner.transaksi.index') }}"
+                class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+                {{ Request::routeIs('owner.transaksi*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+                <i class="bi bi-credit-card"></i> Riwayat Transaksi 
+                <span class="ms-auto badge bg-danger" style="font-size:10px;"></span>
+            </a>
+
+            <a href="{{ route('owner.riwayat_pesanan.index') }}"
+                class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+                {{ Request::routeIs('owner.riwayat_pesanan*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+                <i class="bi bi-clock-history"></i> Riwayat Pesanan 
                 <span class="ms-auto badge bg-danger" style="font-size:10px;"></span>
             </a>
         @endif
@@ -88,7 +106,7 @@
             <div class="overflow-hidden">
                 <div class="text-white fw-semibold text-truncate" style="font-size:13px;">{{ Session::get('nama') }}
                 </div>
-                <div class="text-white-50 text-truncate" style="font-size:11px;">Admin Gudang</div>
+                <div class="text-white-50 text-truncate" style="font-size:11px;">{{ Session::get('role') == 'admin' ? (Session::get('role_id') == 1 ? 'Admin Gudang' : 'Admin Owner') : 'Pelanggan' }}</div>
             </div>
         </div>
     </div>

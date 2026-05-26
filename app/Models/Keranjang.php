@@ -10,7 +10,7 @@ class Keranjang extends Model
     public $incrementing = false;
     protected $primaryKey = null;
     protected $fillable = [
-        'user_id',
+        'user_pelanggan_id',
         'produk_id', 
         'jumlah'
     ];
@@ -19,6 +19,6 @@ class Keranjang extends Model
     
     public function produk()
     {
-        return $this->belongsTo(Produk::class, 'produk_id', 'kode_produk');
+        return $this->belongsTo(Produk::class, 'produk_id', 'id');
     }
 }

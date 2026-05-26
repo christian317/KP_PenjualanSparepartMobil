@@ -24,42 +24,38 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // =========================
-        // 1. CEK ADMIN
-        // =========================
+        // CEK ADMIN
         $admin = DB::table('user_admin')
             ->where('email', $request->email)
             ->first();
 
         if ($admin && Hash::check($request->password, $admin->password)) {
 
-            Session::put('user_id', $admin->id);
+            Session::put('user_pelanggan_id', $admin->id);
             Session::put('role', 'admin');
             Session::put('role_id', $admin->role_id);
 
             // redirect sesuai role admin
             if ($admin->role_id == 1) {
-                return redirect()->route('admin.index');
+                return redirect()->route('admin.index')->with('toast_success', 'Login berhasil!');
             } elseif ($admin->role_id == 2) {
-                return redirect()->route('keuangan.index');
+                return redirect()->route('owner.index')->with('toast_success', 'Login berhasil!');
             }
         }
 
-        // =========================
-        // 2. CEK PELANGGAN
-        // =========================
+        // CEK PELANGGAN
         $pelanggan = DB::table('user_pelanggan')
             ->where('email', $request->email)
             ->first();
 
         if ($pelanggan && Hash::check($request->password, $pelanggan->password)) {
 
-            Session::put('user_id', $pelanggan->id);
+            Session::put('user_pelanggan_id', $pelanggan->id);
             Session::put('role', 'pelanggan');
             Session::put('nama', $pelanggan->nama);
-            Session::put('status_bengkel', $pelanggan->status_bengkel);
+            Session::put('status_mitra', $pelanggan->status_mitra);
 
-            return redirect()->route('pelanggan.index');
+            return redirect()->route('pelanggan.index')->with('toast_success', 'Login berhasil!');
         }
 
         return back()->with('error', 'Email atau password salah!');
@@ -76,7 +72,6 @@ class AuthController extends Controller
             'alamat' => 'required|string'
         ]);
 
-        // 1. Simpan ke Database
         DB::table('user_pelanggan')->insert([
             'nama' => $request->nama,
             'nama_toko' => $request->nama_toko,
@@ -85,17 +80,13 @@ class AuthController extends Controller
             'telepon' => $request->telepon,
             'alamat' => $request->alamat,
             'status' => '1',
-            'status_bengkel' => '0',
-            'limit_hutang' => '0'
+            'status_mitra' => '0'
         ]);
 
-        // 2. KIRIM EMAIL NOTIFIKASI
-        // Perintah ini akan mengirim email ke alamat yang baru saja didaftarkan
+        // KIRIM EMAIL NOTIFIKASI
         try {
             Mail::to($request->email)->send(new RegistrasiSuksesMail($request->nama));
         } catch (\Exception $e) {
-            // Jika email gagal terkirim (misal karena internet mati/settingan salah), 
-            // registrasi tetap berhasil tapi munculin error di log, bukan di layar user.
             Log::error('Gagal mengirim email: ' . $e->getMessage());
         }
 
@@ -105,6 +96,6 @@ class AuthController extends Controller
     public function logout()
     {
         Session::flush();
-        return redirect()->route('login');
+        return view('welcome');
     }
 }

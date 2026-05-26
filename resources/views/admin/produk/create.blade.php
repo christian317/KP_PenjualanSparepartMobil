@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Tambah Produk')
+
 @section('content')
     <div class="col px-4 pt-4 pb-5 bg-light min-vh-100">
 
@@ -32,11 +34,11 @@
                             <div class="row g-3">
                                 <div class="col-md-8">
                                     <label class="form-label fw-semibold small text-secondary">Nama Produk</label>
-                                    <input name="nama_produk" type="text" class="form-control rounded-3 py-2" required>
+                                    <input name="nama" type="text" class="form-control rounded-3 py-2" required>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label fw-semibold small text-secondary">Kode</label>
-                                    <input name="kode_produk" type="text" class="form-control rounded-3 py-2" required>
+                                    <label class="form-label fw-semibold small text-secondary">Kode Produk</label>
+                                    <input name="id" type="text" class="form-control rounded-3 py-2" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-semibold small text-secondary">Kategori</label>
@@ -73,7 +75,7 @@
                                 <div class="col-md-4">
                                     <label class="form-label fw-semibold small text-secondary">Stok Awal</label>
                                     <div class="input-group">
-                                        <input name="stok_produk" class="form-control py-2" type="number" min="0"
+                                        <input name="stok" class="form-control py-2" type="number" min="0"
                                             required>
                                     </div>
                                 </div>
@@ -91,7 +93,6 @@
                                         <option>pcs</option>
                                     </select>
                                 </div>
-
                                 <div class="col-12 mt-3">
                                     <label class="form-label fw-semibold small text-secondary">Part Model <span
                                             class="text-danger">*</span></label>
@@ -101,7 +102,7 @@
                                             <select name="jenis_mobil_id[]" class="form-select select2" multiple required>
                                                 @foreach ($jenis_mobil as $mobil)
                                                     <option value="{{ $mobil->id }}">
-                                                        {{ $mobil->merk_mobil }} {{ $mobil->nama_mobil }}
+                                                        {{ $mobil->merk }} {{ $mobil->nama_model }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -121,14 +122,23 @@
 
                                 <div class="col-12">
                                     <label class="form-label fw-semibold small text-secondary">Deskripsi Produk</label>
-                                    <textarea name="deskripsi_produk" class="form-control rounded-3" rows="3"></textarea>
+                                    <textarea name="deskripsi" class="form-control rounded-3" rows="3"></textarea>
                                 </div>
-                                <div class="col-12 pt-2">
-                                    <div class="form-check form-switch">
-                                        <input name="status_produk" class="form-check-input border-secondary"
-                                            type="checkbox" checked style="transform: scale(1.2);">
-                                        <label class="form-check-label ms-2 fw-medium">Produk Aktif (tampil di
-                                            katalog)</label>
+                                
+                                <div class="row pt-2 align-items-center">
+                                    <div class="col-auto">
+                                        <div class="form-check form-switch">
+                                            <input name="status" class="form-check-input border-secondary"
+                                                type="checkbox" checked style="transform: scale(1.2);">
+                                            <label class="form-check-label ms-2 fw-medium">Produk Aktif (tampil di katalog)</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="form-check form-switch">
+                                            <input name="preorder" class="form-check-input border-secondary"
+                                                type="checkbox" style="transform: scale(1.2);">
+                                            <label class="form-check-label ms-2 fw-medium">Preorder</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

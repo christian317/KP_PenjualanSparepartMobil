@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Tambah Jenis Mobil')
+
 @section('content')
     <div class="col px-4 pt-4 pb-5 bg-light min-vh-100">
 
@@ -16,7 +18,7 @@
                 </div>
             </div>
         </div>
-        
+
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm">
                 <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
@@ -38,16 +40,20 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label fw-semibold small text-secondary">Merek (Contoh: Honda)</label>
-                                    <input name="merk_mobil" type="text" class="form-control rounded-3 py-2" required>
+                                    <input name="merk" type="text" class="form-control rounded-3 py-2" required>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label fw-semibold small text-secondary">Model (Contoh: Brio RS)</label>
-                                    <input name="nama_mobil" type="text" class="form-control rounded-3 py-2" required>
+                                    <label class="form-label fw-semibold small text-secondary">Model (Contoh: Brio
+                                        RS)</label>
+                                    <input name="nama_model" type="text" class="form-control rounded-3 py-2" required>
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label fw-semibold small text-secondary">Tahun Kendaraan (Opsional)</label>
-                                    <input name="tahun_kendaraan" type="text" class="form-control rounded-3 py-2" placeholder="Contoh: 2018-2023">
-                                    <small class="text-muted" style="font-size: 11px;">Bisa dikosongkan jika sparepart cocok untuk semua tahun.</small>
+                                    <label class="form-label fw-semibold small text-secondary">Tahun Kendaraan
+                                        (Opsional)</label>
+                                    <input name="tahun_kendaraan" type="text" class="form-control rounded-3 py-2"
+                                        placeholder="Contoh: 2018-2023">
+                                    <small class="text-muted" style="font-size: 11px;">Bisa dikosongkan jika sparepart cocok
+                                        untuk semua tahun.</small>
                                 </div>
                             </div>
                             <div class="d-grid gap-2" style="margin-top: 20px">
@@ -77,23 +83,29 @@
                             <tbody class="small">
                                 @forelse ($jenis_mobil as $item)
                                     <tr>
-                                        <td class="ps-3 fw-semibold text-dark">{{ $item->merk_mobil }}</td>
-                                        <td class="text-muted">{{ $item->nama_mobil }}</td>
+                                        <td class="ps-3 fw-semibold text-dark">{{ $item->merk }}</td>
+                                        <td class="text-muted">{{ $item->nama_model }}</td>
                                         <td class="text-muted">{{ $item->tahun_kendaraan ?? '-' }}</td>
                                         <td>
-                                            <div class="d-flex justify-content-center gap-1">
-                                                <a href="/admin/produk/jenis-mobil/edit/{{ $item->id }}" class="btn btn-sm btn-info bg-opacity-10 border-0 text-info px-2">
-                                                    <i class="bi bi-pencil"></i>
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <a href="{{ route('admin.produk.jenis_mobil.edit', $item->id) }}"
+                                                    class="btn btn-sm btn-outline-info rounded-3 px-3 shadow-sm d-flex align-items-center gap-1">
+                                                    <i class="bi bi-pencil-square"></i>
                                                 </a>
-                                                <a href="/admin/produk/jenis-mobil/delete/{{ $item->id }}" class="btn btn-sm btn-danger bg-opacity-10 border-0 text-danger px-2" onclick="return confirm('Hapus data mobil ini?');">
+                                                <a href="{{ route('admin.produk.jenis_mobil.delete', $item->id) }}"
+                                                    class="btn btn-sm btn-outline-danger rounded-3 px-3 shadow-sm d-flex align-items-center gap-1"
+                                                    onclick="return confirm('Hapus data mobil ini?');">
                                                     <i class="bi bi-trash3"></i>
+        
                                                 </a>
+
                                             </div>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center py-4 text-muted">Belum ada data jenis mobil.</td>
+                                        <td colspan="4" class="text-center py-4 text-muted">Belum ada data jenis mobil.
+                                        </td>
                                     </tr>
                                 @endforelse
                             </tbody>

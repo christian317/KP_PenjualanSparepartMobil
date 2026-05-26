@@ -1,6 +1,6 @@
 @extends('layouts.pelanggan')
 
-@section('title', $item->nama_produk)
+@section('title', $item->nama)
 
 @section('content')
     <div class="py-3 mb-4"
@@ -12,7 +12,7 @@
             </a>
             <div>
                 <h4 class="fw-bold mb-0 text-dark">Detail Produk</h4>
-                <p class="text-muted mb-0 small">{{ $item->nama_produk }}</p>
+                <p class="text-muted mb-0 small">{{ $item->nama }}</p>
             </div>
         </div>
     </div>
@@ -23,7 +23,7 @@
                     <div class="bg-white d-flex align-items-center justify-content-center p-3" style="min-height: 400px;">
                         @if ($item->gambar)
                             <img src="{{ asset('storage/produk/' . $item->gambar) }}" class="img-fluid rounded"
-                                alt="{{ $item->nama_produk }}" id="mainImage">
+                                alt="{{ $item->nama }}" id="mainImage">
                         @else
                             <i class="bi bi-gear-wide-connected opacity-25" style="font-size: 150px;"></i>
                         @endif
@@ -35,9 +35,9 @@
                 <div class="ps-md-4">
                     <span class="badge bg-danger mb-2"
                         style="font-size: 11px; letter-spacing: 1px;">{{ strtoupper($item->kategori->nama) }}</span>
-                    <h2 class="fw-bold text-dark mb-1">{{ $item->nama_produk }}</h2>
+                    <h2 class="fw-bold text-dark mb-1">{{ $item->nama }}</h2>
                     <p class="text-muted mb-3">Merek: <span class="fw-bold text-dark">{{ $item->brand->nama }}</span> |
-                        Kode: <span class="fw-bold text-dark">{{ $item->kode_produk }}</span></p>
+                        Kode: <span class="fw-bold text-dark">{{ $item->id }}</span></p>
 
                     <h3 class="text-danger fw-bold mb-4">Rp {{ number_format($item->harga, 0, ',', '.') }} <small
                             class="text-muted fw-normal" style="font-size: 14px;">/ {{ $item->unit }}</small></h3>
@@ -47,16 +47,29 @@
                     <div class="row g-3 mb-4">
                         <div class="col-6 col-md-4">
                             <div class="small text-muted">Ketersediaan</div>
-                            @if ($item->stok_produk > 0)
+                            @if ($item->stok > 0)
                                 <div class="fw-bold text-success"><i class="bi bi-check-circle-fill me-1"></i> Stok Ready
-                                    ({{ $item->stok_produk }})</div>
+                                    ({{ $item->stok }})</div>
                             @else
                                 <div class="fw-bold text-danger"><i class="bi bi-x-circle-fill me-1"></i> Stok Habis</div>
+                            @endif
+
+                            @if ($item->preorder == 1)
+                                <div class="fw-bold text-warning mt-1"><i class="bi bi-clock-history me-1"></i>Pre-order</div>
                             @endif
                         </div>
                         <div class="col-6 col-md-4">
                             <div class="small text-muted">Model Kendaraan</div>
-                            <div class="fw-bold text-dark">{{ $item->jenisMobil->nama ?? 'N/A' }}</div>
+
+                            @if ($item->jenisMobil->isNotEmpty())
+                                <div class="fw-bold text-dark">
+                                    @foreach ($item->jenisMobil as $mobil)
+                                        <div>{{ $mobil->merk }} {{ $mobil->nama_model }}</div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="text-muted">Tidak ada data</div>
+                            @endif
                         </div>
                     </div>
 
@@ -67,15 +80,15 @@
                         </div>
                     </div>
 
-                    @if ($item->stok_produk > 0)
-                        <form action="{{ route('pelanggan.pesanan.keranjang.tambah') }}" method="POST">
+                    @if ($item->stok > 0)
+                        <form action="{{ route('pelanggan.checkout.keranjang.tambah') }}" method="POST">
                             @csrf
-                            <input type="hidden" name="id" value="{{ $item->kode_produk }}">
+                            <input type="hidden" name="id" value="{{ $item->id }}">
 
                             <div class="d-flex gap-2">
                                 <div style="width: 100px;">
                                     <input type="number" name="jumlah" class="form-control py-2" value="1"
-                                        min="1" max="{{ $item->stok_produk }}" required>
+                                        min="1" max="{{ $item->stok }}" required>
                                 </div>
                                 <button type="submit" class="btn btn-danger btn-lg flex-grow-1 fw-bold">
                                     <i class="bi bi-cart-plus me-2"></i> Tambah ke Keranjang
@@ -88,7 +101,7 @@
 
                     <div class="mt-4 p-3 bg-light rounded-3 border border-warning border-opacity-25">
                         <small class="text-muted"><i class="bi bi-info-circle-fill text-warning me-1"></i> Pelanggan Mitra
-                            CV Jaya Abadi dapat menggunakan metode pembayaran <strong>Kontrabón 3 Bulan</strong> untuk
+                            CV Jaya Abadi dapat menggunakan metode pembayaran <strong>Kontrabon</strong> untuk
                             produk ini.</small>
                     </div>
                 </div>

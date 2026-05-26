@@ -8,9 +8,8 @@ class DetailPembelian extends Model
 {
     protected $table = 'detail_pembelian';
     protected $fillable = [
-        'nomor_pembelian_id',
+        'pembelian_id',
         'produk_id',
-        'harga_beli',
         'jumlah',
     ];
 
@@ -18,6 +17,6 @@ class DetailPembelian extends Model
 
     public function produk()
     {
-        return $this->belongsTo(Produk::class, 'produk_id', 'kode_produk');
+        return $this->belongsTo(Produk::class, 'produk_id', 'id');
     }
 }

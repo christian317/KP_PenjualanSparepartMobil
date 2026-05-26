@@ -8,7 +8,7 @@ class DetailPesanan extends Model
 {
     protected $table = 'detail_pesanan';
     protected $fillable = [
-        'nomor_pesanan_fk',
+        'nomor_pesanan',
         'produk_id',
         'jumlah',
         'harga',
@@ -18,11 +18,11 @@ class DetailPesanan extends Model
 
     function produk()
     {
-        return $this->belongsTo(Produk::class, 'produk_id');
+        return $this->belongsTo(Produk::class, 'produk_id', 'id');
     }
 
     function pesanan()
     {
-        return $this->belongsTo(Pesanan::class, 'nomor_pesanan_fk');
+        return $this->belongsTo(Pesanan::class, 'nomor_pesanan', 'nomor');
     }
 }

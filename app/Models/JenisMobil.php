@@ -8,9 +8,9 @@ class JenisMobil extends Model
 {
     protected $table = 'jenis_mobil';
     protected $fillable = [
-        'merk_mobil',
-        'nama_mobil',
-        'tahun_mobil'
+        'merk',
+        'nama_model',
+        'tahun'
     ];
     public $timestamps = false;
     

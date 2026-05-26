@@ -8,39 +8,37 @@ class Produk extends Model
 {
     protected $table = 'produk';
     
-    // 1. Tentukan Primary Key baru
-    protected $primaryKey = 'kode_produk';
+    protected $primaryKey = 'id';
 
-    // 2. Beritahu Laravel bahwa PK bukan Integer (karena kode biasanya string)
     protected $keyType = 'string';
 
-    // 3. Beritahu Laravel bahwa PK tidak auto-increment
     public $incrementing = false;
 
     protected $fillable = [
-        'kode_produk',
-        'nama_produk',
+        'id',
+        'nama',
         'kategori_id',
         'brand_id',
         'harga',
-        'stok_produk',
-        "min_stok",
+        'stok',
+        'min_stok',
         'unit',
-        'deskripsi_produk',
         'gambar',
-        'status_produk',
+        'status',
+        'preorder',
+        'deskripsi',
     ];
 
     public $timestamps = false;
 
     public function kategori()
     {
-        return $this->belongsTo(Kategori::class);
+        return $this->belongsTo(Kategori::class, 'kategori_id', 'id');
     }
 
     public function brand()
     {
-        return $this->belongsTo(Brand::class);
+        return $this->belongsTo(Brand::class, 'brand_id', 'id');
     }
 
     public function jenisMobil()

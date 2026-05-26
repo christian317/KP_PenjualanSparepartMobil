@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Tambah Brand')
 
 @section('content')
     <div class="col px-4 pt-4 pb-5 bg-light min-vh-100">
@@ -32,7 +33,7 @@
                             <i class="bi bi-info-circle me-2 text-danger"></i>Informasi Brand
                         </div>
                     </div>
-                    <form method="POST" action="/admin.produk.brand.store">
+                    <form method="POST" action="{{ route('admin.produk.brand.store') }}">
                         @csrf
                         <div class="card-body p-4">
                             <div class="row g-3">
@@ -74,9 +75,9 @@
                                     <td class="text-muted">{{ $item->deskripsi }}</td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-1">
-                                            <a href="/admin/produk/brand/edit/{{ $item->id }}" class="btn btn-sm btn-info bg-opacity-10 border-0 text-info px-2"><i
-                                                    class="bi bi-pencil"></i></a>
-                                            <a href="/admin/produk/brand/delete/{{ $item->id }}" class="btn btn-sm btn-danger bg-opacity-10 border-0 text-danger px-2"><i
+                                            <a href="{{ route('admin.produk.brand.edit', $item->id) }}"  class="btn btn-sm btn-outline-info rounded-3 px-3 shadow-sm d-flex align-items-center gap-1"><i
+                                                    class="bi bi-pencil-square"></i></a>
+                                            <a href="{{ route('admin.produk.brand.delete', $item->id) }}"  class="btn btn-sm btn-outline-danger rounded-3 px-3 shadow-sm d-flex align-items-center gap-1"><i
                                                     class="bi bi-trash3"></i></a>
                                         </div>
                                     </td>

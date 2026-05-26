@@ -51,29 +51,33 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
+            
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link {{ Request::is('/') ? 'active' : '' }}"
-                            href="/">Katalog</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('pelanggan.pesanan.index') }}">Pesanan Saya</a></li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('pelanggan.pesanan.daftar_tagihan') }}">
-                            <i class="bi bi-wallet2"></i> Tagihan Saya
-                        </a>
-                    </li>
+                            href="{{ route('pelanggan.index') }}">Katalog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('pelanggan.riwayat.index') }}">Riwayat Pesanan</a></li>
+
+                    @if (Session::get('status_mitra') == 1)
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('pelanggan.pembayaran_kontrabon.index') }}">
+                                Tagihan Saya
+                            </a>
+                        </li>
+                    @endif
                 </ul>
 
                 <div class="d-flex align-items-center gap-3">
-                    <a href="{{ route('pelanggan.pesanan.keranjang') }}" class="text-white position-relative">
+                    <a href="{{ route('pelanggan.checkout.keranjang') }}" class="text-white position-relative">
                         <i class="bi bi-cart3 fs-5"></i>
 
                         @php
-                            $userIdForBadge = session('user_id');
+                            $userIdForBadge = session('user_pelanggan_id');
                             $displayCount = 0;
 
                             if ($userIdForBadge) {
                                 $displayCount = DB::table('keranjang')
-                                    ->where('user_id', $userIdForBadge)
+                                    ->where('user_pelanggan_id', $userIdForBadge)
                                     ->count();
                             }
                         @endphp
@@ -83,7 +87,7 @@
                         </span>
                     </a>
 
-                    @if (Session::has('user_id'))
+                    @if (Session::has('user_pelanggan_id'))
                         <div class="dropdown">
                         <a class="text-white text-decoration-none dropdown-toggle d-flex align-items-center gap-2"
                             href="#" data-bs-toggle="dropdown">
@@ -102,8 +106,8 @@
                                 <span class="px-2 py-1 rounded-pill fw-bold text-white border border-white border-opacity-25" 
                                     style="font-size: 10px; background: rgba(255, 255, 255, 0.1); letter-spacing: 0.5px; vertical-align: middle;">
                                     <i class="bi bi-patch-check-fill me-1" 
-                                    style="color: {{ Session::get('status_bengkel') == 1 ? '#0dcaf0' : '#adb5bd' }};"></i>
-                                    {{ Session::get('status_bengkel') == 1 ? 'MITRA' : 'REGULER' }}
+                                    style="color: {{ Session::get('status_mitra') == 1 ? '#0dcaf0' : '#adb5bd' }};"></i>
+                                    {{ Session::get('status_mitra') == 1 ? 'MITRA' : 'REGULER' }}
                                     
                                 </span>
                             @endif

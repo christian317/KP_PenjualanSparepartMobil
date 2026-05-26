@@ -12,7 +12,7 @@ class PergerakanStok extends Model
         'produk_id',
         'tipe_pergerakan',
         'jumlah',
-        'ripe_referensi',
+        'tipe_referensi',
         'catatan'
     ];
 
@@ -20,6 +20,6 @@ class PergerakanStok extends Model
 
     function produk()
     {
-        return $this->belongsTo(Produk::class, 'produk_id');
+        return $this->belongsTo(Produk::class, 'produk_id', 'id');
     }
 }

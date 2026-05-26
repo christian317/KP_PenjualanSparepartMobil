@@ -9,7 +9,7 @@ class Piutang extends Model
     protected $table = 'piutang';
 
     protected $fillable = [
-        'nomor_pesanan',
+        'kontrabon_id',
         'tanggal_jatuh_tempo',
         'total_tagihan',
         'sisa_tagihan',
@@ -19,8 +19,8 @@ class Piutang extends Model
 
     public $timestamps = false;
 
-    function pesanan()
+    function kontrabon()
     {
-        return $this->belongsTo(Pesanan::class, 'nomor_pesanan', 'nomor_pesanan');
+        return $this->belongsTo(Kontrabon::class, 'kontrabon_id', 'id');
     }
 }
