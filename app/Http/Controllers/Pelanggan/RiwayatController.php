@@ -30,14 +30,13 @@ class RiwayatController extends Controller
             ->paginate(10);
 
         foreach ($pesanan as $p) {
-            // MAPPING ITEM DARI RELASI (tanpa menggunakan Join)
             foreach ($p->items as $item) {
                 $item->nama = $item->produk ? $item->produk->nama : '-';
                 $item->gambar = $item->produk ? $item->produk->gambar : null;
                 $item->unit = $item->produk ? $item->produk->unit : null;
             }
 
-            // 1. Tentukan dataStatus untuk filter Tab
+            // Tentukan dataStatus untuk filter Tab
             $p->dataStatus = 'diproses';
             if ($p->status == 1) $p->dataStatus = 'dikirim';
             if ($p->status == 2) $p->dataStatus = 'selesai';
@@ -46,7 +45,7 @@ class RiwayatController extends Controller
             if ($p->status == 5) $p->dataStatus = 'kontrabon';
             if ($p->status == 6) $p->dataStatus = 'preorder';
 
-            // 2 & 3. Ambil data kontrabon langsung dari relasi Pivot tanpa DB::table
+            // Ambil data kontrabon langsung dari relasi Pivot tanpa DB::table
             $p->kontrabon_data = null;
             if ($p->metode_pembayaran == 1 && $p->kontrabon->isNotEmpty()) {
                 $p->kontrabon_data = $p->kontrabon->first();
@@ -111,9 +110,7 @@ class RiwayatController extends Controller
                 ->whereIn('status', [0, 5])
                 ->firstOrFail();
 
-            // =======================================================
-            // JIKA METODE PEMBAYARAN CASH
-            // =======================================================
+            // pembayaran transfer
             if ($pesanan->metode_pembayaran == 0) {
                 $request->validate([
                     'alasan_pembatalan' => 'required',
@@ -137,9 +134,8 @@ class RiwayatController extends Controller
                     'bukti_transfer' => '-'
                 ]);
             } 
-            // =======================================================
-            // JIKA METODE PEMBAYARAN KONTRABON
-            // =======================================================
+
+            // pembayaran kontrabon
             else {
                 $request->validate(['alasan_pembatalan' => 'required']);
 
@@ -158,7 +154,7 @@ class RiwayatController extends Controller
                     'bukti_transfer' => '-'
                 ]);
 
-                // KEMBALIKAN STOK DAN KURANGI HUTANG
+                // kembalikan stok dan hutang
                 $totalHargaPesananBatal = 0;
 
                 foreach ($pesanan->items as $item) {

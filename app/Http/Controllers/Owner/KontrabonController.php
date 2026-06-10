@@ -57,7 +57,6 @@ class KontrabonController extends Controller
             $userIds = UserPelanggan::where('nama', 'like', '%' . $search . '%')->pluck('id');
 
             $query->where(function ($q) use ($search, $userIds) {
-                // PERBAIKAN: nomor_kontrabon sudah jadi id
                 $q->where('id', 'like', '%' . $search . '%') 
                   ->orWhereIn('user_pelanggan_id', $userIds);
             });
@@ -75,9 +74,7 @@ class KontrabonController extends Controller
 
         foreach ($kontrabonList as $kb) {
             $user = UserPelanggan::find($kb->user_pelanggan_id);
-            $piutang = $kb->piutang; // Langsung ambil dari relasi
-
-            // Alias agar kompatibel dengan view Blade lama
+            $piutang = $kb->piutang;
             $kb->nomor_kontrabon = $kb->id; 
             $kb->nama = $user ? $user->nama : '-';
             $kb->nama_toko = $user ? $user->nama_toko : '-';
@@ -99,15 +96,12 @@ class KontrabonController extends Controller
         return view('owner.kontrabon.index', compact('kontrabonList', 'pesananPending', 'statPerluApproval', 'statKontrabonAktif', 'statOverdue'));
     }
 
-    // ==============================================================================
-    // FUNGSI HALAMAN DETAIL KONTRABON
-    // ==============================================================================
     public function detail($id) // Parameter diubah menjadi id
     {
         $kontrabon = Kontrabon::with('piutang')->findOrFail($id);
         $user = UserPelanggan::find($kontrabon->user_pelanggan_id);
         
-        $kontrabon->nomor_kontrabon = $kontrabon->id; // Alias view lama
+        $kontrabon->nomor_kontrabon = $kontrabon->id;
         $kontrabon->nama = $user ? $user->nama : '-';
         $kontrabon->nama_toko = $user ? $user->nama_toko : '-';
         $kontrabon->telepon = $user ? $user->telepon : '-';
@@ -149,7 +143,6 @@ class KontrabonController extends Controller
 
     public function terbitkan($id)
     {
-        // 1. CEK ANTREAN APPROVAL VIA PIVOT
         $kontrabon = Kontrabon::findOrFail($id);
         $adaPesananPending = $kontrabon->pesanan()->where('pesanan.status', 5)->exists();
 
@@ -157,7 +150,6 @@ class KontrabonController extends Controller
             return redirect()->back()->withErrors('Gagal menerbitkan piutang! Selesaikan approval semua pesanan pada kontrabon ini terlebih dahulu.');
         }
 
-        // 2. PROSES PENERBITAN
         DB::transaction(function () use ($kontrabon) {
             $kontrabon->update([
                 'status' => 1,
@@ -183,67 +175,57 @@ class KontrabonController extends Controller
 
     public function approve($nomor)
     {
-        // ambil data pesanan dengan produk
-        $pesanan = Pesanan::with('items.produk')->where('nomor', $nomor)->firstOrFail();
+        // Ambil pesanan beserta relasinya
+        $pesanan = Pesanan::with(['items.produk', 'kontrabon'])->where('nomor', $nomor)->firstOrFail();
+        
+        // total tagihan baru
+        $totalBayar = $pesanan->items->sum(fn($item) => $item->harga * $item->jumlah);
+        $kontrabon = $pesanan->kontrabon->first();
+        if ($kontrabon) {
+            $kontrabon->increment('total_tagihan', $totalBayar);
+        }
 
-        // cek data preorder
+        // cek status setelah approval
         $isPreOrder = 0;
+
         foreach ($pesanan->items as $item) {
-            if ($item->produk->preorder == 1 || $item->produk->stok < 0) { 
+            if ($item->produk->preorder == 1 || $item->produk->stok < 0) {
                 $isPreOrder = 1;
                 break;
             }
         }
 
         if ($isPreOrder == 1) {
-            // ada barang po
-            $pesanan->status = 6; 
-            $pesanan->save();
-
-            return redirect()->back()->with('toast_success', 'Kontrabon disetujui! Pesanan dialihkan ke antrean Pre-Order karena stok kurang.');
+            $pesanan->update([
+                'status' => 6
+            ]);
         } else {
-            // tidak ada po
-            $pesanan->status = 0;
-            $pesanan->save();
-
-            return redirect()->back()->with('toast_success', 'Kontrabon disetujui! Pesanan diteruskan ke Admin Gudang.');
+            $pesanan->update([
+                'status' => 0
+            ]);
         }
+
+        return redirect()->back()->with('toast_success', 'Kontrabon disetujui! Pesanan dilanjutkan ke proses selanjutnya.');
     }
 
     public function tolak($nomor_pesanan)
     {
-        DB::transaction(function () use ($nomor_pesanan) {
-            $pesanan = Pesanan::with(['items', 'kontrabon'])->where('nomor', $nomor_pesanan)->firstOrFail();
-            $pesanan->update(['status' => 3]); 
+        $pesanan = Pesanan::with(['items'])->where('nomor', $nomor_pesanan)->firstOrFail();
+        
+        $pesanan->update(['status' => 3]); 
 
-            $totalBatal = 0;
-
-            foreach ($pesanan->items as $item) {
-                $totalBatal += ($item->harga * $item->jumlah);
-                Produk::where('id', $item->produk_id)->increment('stok', $item->jumlah);
-                
-                PergerakanStok::create([
-                    'produk_id' => $item->produk_id,
-                    'tipe_pergerakan' => 0, 
-                    'jumlah' => $item->jumlah,
-                    'tipe_referensi' => 2, 
-                    'catatan' => 'Ditolak Keuangan: ' . $nomor_pesanan
-                ]);
-            }
-
-            // Kurangi Total di Kontrabon via Relasi Pivot
-            $kontrabon = $pesanan->kontrabon->first();
+        foreach ($pesanan->items as $item) {
+            Produk::where('id', $item->produk_id)->increment('stok', $item->jumlah);
             
-            if ($kontrabon) {
-                $kontrabon->decrement('total_tagihan', $totalBatal);
-                
-                $piutang = Piutang::where('kontrabon_id', $kontrabon->id)->first();
-                if ($piutang) {
-                    $piutang->decrement('total_tagihan', $totalBatal);
-                    $piutang->decrement('sisa_tagihan', $totalBatal);
-                }
-            }
-        });
+            PergerakanStok::create([
+                'produk_id'       => $item->produk_id,
+                'tipe_pergerakan' => 0,
+                'jumlah'          => $item->jumlah,
+                'tipe_referensi'  => 2, 
+                'catatan'         => 'Ditolak Keuangan: ' . $nomor_pesanan
+            ]);
+        }
+
         return redirect()->back()->with('toast_success', 'Pesanan ditolak. Stok dikembalikan otomatis ke gudang.');
     }
 }

@@ -27,24 +27,15 @@ class KeranjangController extends Controller
         $userId = Session::get('user_pelanggan_id');
         $jumlahInput = $request->input('jumlah', 1);
 
-        if (!$userId){
-             return redirect()->route('login')->with('error', 'Silakan login untuk belanja');
-        }
-
         $produk = Produk::findOrFail($kodeProduk);
-        
-        if ($produk->preorder == 0 && $produk->stok < $jumlahInput) {
-            return redirect()->back()->with('error', 'Stok tidak mencukupi');
-        }
 
         $exists = Keranjang::where('user_pelanggan_id', $userId)->where('produk_id', $kodeProduk)->first();
 
         if ($exists) {
             $totalDiminta = $exists->jumlah + $jumlahInput;
             if ($produk->preorder == 0 && $produk->stok < $totalDiminta) {
-                return redirect()->back()->with('error', 'Stok maksimal produk ini sudah mencapai batas di keranjang Anda');
+                return redirect()->back()->with('toast_success', 'Stok maksimal produk ini sudah mencapai batas di keranjang Anda');
             }
-            
             $exists->increment('jumlah', $jumlahInput);
         } else {
             Keranjang::create(['user_pelanggan_id' => $userId, 'produk_id' => $kodeProduk, 'jumlah' => $jumlahInput]);
@@ -60,22 +51,27 @@ class KeranjangController extends Controller
             ->where('produk_id', $request->id)
             ->first();
 
-        if (!$keranjang) {
-            return redirect()->route('pelanggan.checkout.keranjang');
-        }
-
         if ($request->type == 'plus') {
             if ($keranjang->produk->preorder == 0 && $keranjang->produk->stok <= $keranjang->jumlah) {
                 return redirect()->route('pelanggan.checkout.keranjang')->with('error', 'Maaf, stok maksimal telah tercapai.');
             }
-            $keranjang->increment('jumlah');
+            Keranjang::where('user_pelanggan_id', Session::get('user_pelanggan_id'))
+                ->where('produk_id', $request->id)
+                ->increment('jumlah');
             
         } elseif ($request->type == 'minus') {
             if ($keranjang->jumlah > 1) {
-                $keranjang->decrement('jumlah');
+                Keranjang::where('user_pelanggan_id', $request->session()->get('user_pelanggan_id'))
+                        ->where('produk_id', $request->id)
+                        ->decrement('jumlah');
+            } else {
+                Keranjang::where('user_pelanggan_id', Session::get('user_pelanggan_id'))
+                    ->where('produk_id', $request->id)
+                    ->delete();
+                
+                return redirect()->route('pelanggan.checkout.keranjang')->with('toast_success', 'Produk berhasil dihapus dari keranjang.');
             }
         }
-        
         return redirect()->route('pelanggan.checkout.keranjang');
     }
 

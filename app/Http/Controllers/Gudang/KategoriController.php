@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Gudang;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Kategori;
+use App\Models\Produk;
 
 class KategoriController extends Controller
 {
@@ -53,6 +54,12 @@ class KategoriController extends Controller
     public function delete($id)
     {
         $kategori = Kategori::findOrFail($id);
+        $kategoriTerpakai = Produk::where('kategori_id', $id)->exists();
+
+        if ($kategoriTerpakai) {
+            return redirect()->back()->with('error', 'Gagal menghapus! Kategori ini sedang digunakan oleh satu atau lebih produk.');
+        }
+
         $kategori->delete();
 
         return redirect()->route('admin.produk.kategori.create')->with('success', 'Kategori berhasil dihapus.');

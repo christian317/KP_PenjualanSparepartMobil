@@ -44,7 +44,7 @@
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <div class="text-secondary small fw-semibold mb-1">TOTAL CICILAN (MIDTRANS)</div>
+                                <div class="text-secondary small fw-semibold mb-1">TOTAL CICILAN (KONTRABON)</div>
                                 <div class="h3 fw-bold text-primary mb-0">Rp {{ number_format($statTotalCicilan, 0, ',', '.') }}</div>
                                 <div class="text-muted mt-1" style="font-size:11px;">Pembayaran cicilan kontrabon</div>
                             </div>

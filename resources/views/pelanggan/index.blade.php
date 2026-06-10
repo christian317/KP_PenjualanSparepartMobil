@@ -356,6 +356,14 @@
             });
         @endif
 
+        @if (Session::has('toast_error'))
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                showErrorToast("{{ Session::get('toast_error') }}");
+            });
+        </script>
+    @endif
+
         $(document).ready(function() {
             // Inisialisasi Select2
             $('.select2-mobil').select2({

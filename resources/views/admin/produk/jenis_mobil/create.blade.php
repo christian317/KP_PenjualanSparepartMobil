@@ -26,6 +26,17 @@
             </div>
         @endif
 
+        @if (session('error'))
+            <div class="alert alert-danger border-0 shadow-sm rounded-3 d-flex align-items-center p-2 mb-4"
+                role="alert">
+                <i class="bi bi-exclamation-octagon-fill fs-5 me-3"></i>
+                <div class="fw-bold">{{ session('error') }}</div>
+
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+            </div>
+        @endif
+
         <div class="row g-4">
             <div class="col-md-8">
                 <div class="card border-0 shadow-sm rounded-3">
@@ -50,7 +61,7 @@
                                 <div class="col-12">
                                     <label class="form-label fw-semibold small text-secondary">Tahun Kendaraan
                                         (Opsional)</label>
-                                    <input name="tahun_kendaraan" type="text" class="form-control rounded-3 py-2"
+                                    <input name="tahun" type="text" class="form-control rounded-3 py-2"
                                         placeholder="Contoh: 2018-2023">
                                     <small class="text-muted" style="font-size: 11px;">Bisa dikosongkan jika sparepart cocok
                                         untuk semua tahun.</small>
@@ -85,7 +96,7 @@
                                     <tr>
                                         <td class="ps-3 fw-semibold text-dark">{{ $item->merk }}</td>
                                         <td class="text-muted">{{ $item->nama_model }}</td>
-                                        <td class="text-muted">{{ $item->tahun_kendaraan ?? '-' }}</td>
+                                        <td class="text-muted">{{ $item->tahun ?? '-' }}</td>
                                         <td>
                                             <div class="d-flex justify-content-center gap-2">
                                                 <a href="{{ route('admin.produk.jenis_mobil.edit', $item->id) }}"

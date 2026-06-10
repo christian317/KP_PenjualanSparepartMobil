@@ -15,24 +15,54 @@ use App\Models\PengajuanRefund;
 
 class OwnerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('owner.index');
+        $statApproval = Pesanan::where('status', 5)->count();
+        $statPO = Pesanan::where('status', 6)->count();
+        $statRefund = Pesanan::where('status', 4)->count();
+        $statStokKritis = Produk::whereColumn('stok', '<=', 'min_stok')->count();
+
+        // Data Tabel Perlu Approval h
+        $pesananApproval = Pesanan::with('UserPelanggan')
+            ->where('status', 5)
+            ->orderBy('tanggal', 'desc')
+            ->paginate(5, ['*'], 'approval_page')->withQueryString();
+
+        // Data Tabel Antrean Pre-Order 
+        $pesananPO = Pesanan::with('UserPelanggan')
+            ->where('status', 6)
+            ->orderBy('tanggal', 'desc')
+            ->paginate(5, ['*'], 'po_page')->withQueryString();
+
+        // Data Tabel Antrean Refund
+        $pesananRefund = Pesanan::with('UserPelanggan')
+            ->where('status', 4)
+            ->orderBy('tanggal', 'desc')
+            ->paginate(5, ['*'], 'refund_page')->withQueryString();
+
+        // Data Tabel Peringatan Stok 
+        $produkKritis = Produk::whereColumn('stok', '<=', 'min_stok')
+            ->orderBy('stok', 'asc')
+            ->take(5)
+            ->get();
+
+        return view('owner.index', compact(
+            'statApproval', 'statPO', 'statRefund', 'statStokKritis', 
+            'pesananApproval', 'pesananPO', 'pesananRefund', 'produkKritis'
+        ));
     }
 
     public function refund_index()
     {
-        // Refactoring: Menggunakan Eager Loading tanpa Join manual DB
         $refunds = PengajuanRefund::with('pesanan.UserPelanggan')
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // Mapping manual agar kompatibel dengan view blade kamu
         foreach ($refunds as $refund) {
             $pesanan = $refund->pesanan;
             $user = $pesanan ? $pesanan->UserPelanggan : null;
 
-            $refund->status_pesanan = $pesanan ? $pesanan->status : null; // Ubah nama variabel agar tidak ambigu
+            $refund->status_pesanan = $pesanan ? $pesanan->status : null;
             $refund->tanggal = $pesanan ? $pesanan->tanggal : null;
             $refund->nama = $user ? $user->nama : '-';
             $refund->nama_toko = $user ? $user->nama_toko : '-';
@@ -63,12 +93,10 @@ class OwnerController extends Controller
                 'updated_at'     => now()
             ]);
 
-            // PERBAIKAN: Penyesuaian nama kolom Primary Key Pesanan
             Pesanan::where('nomor', $nomor_pesanan)->update(['status' => 3]);
 
             $items = DetailPesanan::where('nomor_pesanan', $nomor_pesanan)->get();
             foreach ($items as $item) {
-                // PERBAIKAN BUG: menggunakan $item->produk_id BUKAN $item->id
                 Produk::where('id', $item->produk_id)->increment('stok', $item->jumlah);
 
                 PergerakanStok::create([

@@ -32,7 +32,13 @@
                 class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
                 {{ Request::routeIs('admin.pesanan*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
                 <i class="bi bi-list-ul"></i> Kelola Pesanan
-                <span class="ms-auto badge bg-danger" style="font-size:10px;">12</span>
+                @php
+                    // Otomatis menghitung pesanan yang perlu diproses (0) atau dikirim (1)
+                    $pesananCount = \App\Models\Pesanan::whereIn('status', [0, 1])->count();
+                @endphp
+                @if($pesananCount > 0)
+                    <span class="ms-auto badge bg-danger" style="font-size:10px;">{{ $pesananCount }}</span>
+                @endif
             </a>
 
             <!-- Pembelian -->
@@ -47,17 +53,16 @@
                 class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
                 {{ Request::routeIs('admin.riwayat_pesanan*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
                 <i class="bi bi-clock-history"></i> Riwayat Pesanan 
-                <span class="ms-auto badge bg-danger" style="font-size:10px;"></span>
             </a>
 
         @elseif(Session::get('role_id') == 2)
-        <!-- Dashboard -->
+            <!-- Dashboard -->
             <a href="{{ route('owner.index') }}"
                 class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
                 {{ Request::routeIs('owner.index') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
-        {{-- Kelola User --}}
+            {{-- Kelola User --}}
             <a href="{{ route('owner.user.index') }}"
                 class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
                 {{ Request::routeIs('owner.user.index') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
@@ -67,13 +72,43 @@
             <a href="{{ route('owner.kontrabon.index') }}"
                 class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
                 {{ Request::routeIs('owner.kontrabon*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
-                <i class="bi bi-list-ul"></i> Kelola Kontrabon
-                <span class="ms-auto badge bg-danger" style="font-size:10px;"></span>
+                <i class="bi bi-wallet2"></i> Kelola Kontrabon
+                @php
+                    $kontrabonCount = \App\Models\Pesanan::where('status', 5)->count();
+                @endphp
+                @if($kontrabonCount > 0)
+                    <span class="ms-auto badge bg-danger" style="font-size:10px;">{{ $kontrabonCount }}</span>
+                @endif
             </a>
+
             <a href="{{ route('owner.preorder.index') }}"
                 class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
                 {{ Request::routeIs('owner.preorder*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
                 <i class="bi bi-clock-history"></i> Kelola Preorder
+                @php
+                    $preorderCount = \App\Models\Pesanan::where('status', 4)->count();
+                @endphp
+                @if($preorderCount > 0)
+                    <span class="ms-auto badge bg-danger" style="font-size:10px;">{{ $preorderCount }}</span>
+                @endif
+            </a>
+            
+            <a href="{{ route('owner.refund_dana.index') }}"
+                class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+                {{ Request::routeIs('owner.refund_dana*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+                <i class="bi bi-file-earmark-bar-graph"></i> Refund Dana
+            </a>
+
+            <a href="{{ route('owner.monitoring_produk.index') }}"
+                class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+                {{ Request::routeIs('owner.monitoring_produk*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+                <i class="bi bi-box-seam"></i> Monitoring Produk
+            </a>
+
+            <a href="{{ route('owner.monitoring_pembelian.index') }}"
+                class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
+                {{ Request::routeIs('owner.monitoring_pembelian*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
+                <i class="bi bi-file-earmark-text"></i> Monitoring Pembelian
             </a>
 
             <a href="{{ route('owner.transaksi.index') }}"

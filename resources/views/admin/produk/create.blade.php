@@ -68,7 +68,7 @@
                                     <label class="form-label fw-semibold small text-secondary">Harga Jual (Rp)</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light border-end-0">Rp</span>
-                                        <input name="harga" type="number" class="form-control rounded-end-3 py-2"
+                                        <input name="harga" type="number" min="0" class="form-control rounded-end-3 py-2"
                                             required>
                                     </div>
                                 </div>
@@ -99,7 +99,7 @@
                                     <div class="card border rounded-3 shadow-sm">
                                         <div class="card-body p-3"
                                             style="max-height: 200px; overflow-y: auto; background-color: #fcfcfc;">
-                                            <select name="jenis_mobil_id[]" class="form-select select2" multiple required>
+                                            <select name="jenis_mobil_id[]" class="form-select select2" multiple>
                                                 @foreach ($jenis_mobil as $mobil)
                                                     <option value="{{ $mobil->id }}">
                                                         {{ $mobil->merk }} {{ $mobil->nama_model }}
@@ -194,8 +194,7 @@
                 @endif
 
                 <div class="d-grid gap-2">
-                    <button class="btn btn-danger py-2 fw-bold rounded-3 shadow-sm border-0"
-                        style="background-color: #dc3545;">
+                    <button class="btn btn-primary py-2 fw-bold rounded-3 shadow-sm border-0">
                         <i class="bi bi-check-circle me-2"></i>Simpan Produk
                     </button>
                     <button onclick="showPage('gudang')"

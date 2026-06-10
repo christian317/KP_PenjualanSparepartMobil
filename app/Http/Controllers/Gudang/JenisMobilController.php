@@ -19,13 +19,13 @@ class JenisMobilController extends Controller
         $request->validate([
             'merk' => 'required|string|max:100',
             'nama_model' => 'required|string|max:100',
-            'tahun_mobil' => 'nullable|string|max:20'
+            'tahun' => 'nullable|string|max:20'
         ]);
 
         JenisMobil::create([
             'merk' => $request->merk,
             'nama_model' => $request->nama_model,
-            'tahun_mobil' => $request->tahun_mobil
+            'tahun' => $request->tahun
         ]);
 
         return redirect()->route('admin.produk.jenis_mobil.create')->with('success', 'Jenis mobil berhasil ditambahkan.');
@@ -42,14 +42,14 @@ class JenisMobilController extends Controller
         $request->validate([
             'merk' => 'required|string|max:100',
             'nama_model' => 'required|string|max:100',
-            'tahun_mobil' => 'nullable|string|max:20'
+            'tahun' => 'nullable|string|max:20'
         ]);
 
         $mobil = JenisMobil::findOrFail($id);
         $mobil->update([
             'merk' => $request->merk,
             'nama_model' => $request->nama_model,
-            'tahun_mobil' => $request->tahun_mobil
+            'tahun' => $request->tahun
         ]);
 
         return redirect()->route('admin.produk.jenis_mobil.create')->with('success', 'Data jenis mobil berhasil diperbarui!');
@@ -58,6 +58,11 @@ class JenisMobilController extends Controller
     public function delete($id)
     {
         $mobil = JenisMobil::findOrFail($id);
+
+        if ($mobil->produks()->exists()) {
+            return redirect()->back()->with('error', 'Gagal menghapus! Jenis mobil ini sedang digunakan oleh satu atau lebih produk.');
+        }
+
         $mobil->delete();
 
         return redirect()->route('admin.produk.jenis_mobil.create')->with('success', 'Data jenis mobil berhasil dihapus!');

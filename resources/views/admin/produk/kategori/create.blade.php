@@ -26,6 +26,17 @@
             </div>
         @endif
 
+        @if (session('error'))
+            <div class="alert alert-danger border-0 shadow-sm rounded-3 d-flex align-items-center p-2 mb-4"
+                role="alert">
+                <i class="bi bi-exclamation-octagon-fill fs-5 me-3"></i>
+                <div class="fw-bold">{{ session('error') }}</div>
+
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+            </div>
+        @endif
+
         <div class="row g-4">
             <div class="col-md-8">
                 <div class="card border-0 shadow-sm rounded-3">

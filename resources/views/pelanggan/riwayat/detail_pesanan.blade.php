@@ -243,20 +243,20 @@
                 </div>
 
                 {{-- Info Refund jika Batal/Menunggu Refund --}}
-                @if ($refund)
-                    <div class="px-4 py-3 border-top bg-warning bg-opacity-10">
+                @if ($refund && $refund->status == 1 && $refund->bukti_transfer)
+                    <div class="px-4 py-3 border-top bg-success bg-opacity-10">
                         <div class="d-flex align-items-start gap-2">
-                            <i class="bi bi-info-circle text-warning mt-1 flex-shrink-0"></i>
+                            <i class="bi bi-check-circle-fill text-success mt-1 flex-shrink-0"></i>
                             <div>
-                                <div class="fw-semibold small text-dark mb-1">Informasi Pembatalan</div>
-                                <div class="text-muted" style="font-size:12px;">
-                                    <strong>Alasan:</strong> {{ $refund->alasan_pembatalan }}<br>
-                                    @if ($pesanan->metode_pembayaran == '0')
-                                        <strong>Rekening Tujuan:</strong> {{ $refund->nama_bank }} -
-                                        {{ $refund->nomor_rekening }}
-                                        (a/n {{ $refund->atas_nama }})
-                                    @endif
-                                </div>
+                                <div class="fw-semibold small text-success mb-1">Refund Telah Diproses</div>
+                                
+                                {{-- Tombol Unduh Bukti Transfer --}}
+                                <a href="{{ asset('storage/refund/' . $refund->bukti_transfer) }}" 
+                                download="{{ $refund->bukti_transfer }}"
+                                class="btn btn-sm btn-outline-success fw-semibold px-3 py-1 shadow-sm" 
+                                style="font-size: 11px;">
+                                <i class="bi bi-download me-2"></i> Unduh Bukti Transfer
+                                </a>
                             </div>
                         </div>
                     </div>

@@ -149,7 +149,7 @@
             {{-- BUTTON --}}
             <div class="col-md-8">
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-danger py-2 fw-bold rounded-3 shadow-sm border-0">
+                    <button type="submit" class="btn btn-primary py-2 fw-bold rounded-3 shadow-sm border-0">
                         <i class="bi bi-person-check me-2"></i>Simpan User Baru
                     </button>
                     <a href="{{ route('owner.user.index') }}"

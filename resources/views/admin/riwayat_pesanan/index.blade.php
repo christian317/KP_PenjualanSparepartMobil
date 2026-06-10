@@ -184,66 +184,60 @@
                     </thead>
                     <tbody>
                         @forelse ($pesanan as $p)
-                            <tr>
-                                <td class="ps-3">
-                                    <div class="fw-bold small text-dark">{{ $p->nomor }}</div>
-                                    <div class="text-muted" style="font-size: 11px;">
-                                        {{ \Carbon\Carbon::parse($p->tanggal)->format('d M Y, H:i') }} WIB
-                                    </div>
-                                </td>
+                            @if ($p->status == 2 || $p->status == 3)
+                                <tr>
+                                    <td class="ps-3">
+                                        <div class="fw-bold small text-dark">{{ $p->nomor }}</div>
+                                        <div class="text-muted" style="font-size: 11px;">
+                                            {{ \Carbon\Carbon::parse($p->tanggal)->format('d M Y, H:i') }} WIB
+                                        </div>
+                                    </td>
 
-                                <td>
-                                    <div class="fw-semibold small">{{ $p->UserPelanggan->nama ?? 'User Terhapus' }}</div>
-                                    <div class="text-muted" style="font-size: 11px;">
-                                        <i class="bi bi-shop me-1"></i>{{ $p->UserPelanggan->nama_toko ?? '-' }}
-                                    </div>
-                                </td>
+                                    <td>
+                                        <div class="fw-semibold small">{{ $p->UserPelanggan->nama ?? 'User Terhapus' }}</div>
+                                        <div class="text-muted" style="font-size: 11px;">
+                                            <i class="bi bi-shop me-1"></i>{{ $p->UserPelanggan->nama_toko ?? '-' }}
+                                        </div>
+                                    </td>
 
-                                <td class="text-center">
-                                    @if ($p->status == 2)
-                                        <span
-                                            class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success border-opacity-50 px-2 py-1">Pesanan
-                                            Selesai</span>
-                                    @elseif ($p->status == 3)
-                                        <span
-                                            class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger border-opacity-50 px-2 py-1">Dibatalkan</span>
-                                    @elseif ($p->status == 4)
-                                        <span
-                                            class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger border-opacity-50 px-2 py-1">Proses
-                                            Refund Dana</span>
-                                    @elseif ($p->status == 6)
-                                        <span
-                                            class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success border-opacity-50 px-2 py-1"><i
-                                                class="bi bi-check-all me-1"></i>Selesai Refund</span>
-                                    @endif
-                                </td>
-
-                                <td class="text-center">
-                                    @if ($p->metode_pembayaran == 0)
-                                        <span
-                                            class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-2 py-1"><i
-                                                class="bi bi-cash me-1"></i>Cash</span>
-                                        @if ($p->status_pembayaran == 1)
-                                            <div class="text-success mt-1 fw-bold" style="font-size: 10px;">
-                                                <i class="bi bi-check-circle-fill me-1"></i>LUNAS
-                                            </div>
+                                    <td class="text-center">
+                                        @if ($p->status == 2)
+                                            <span
+                                                class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success border-opacity-50 px-2 py-1">Pesanan
+                                                Selesai</span>
+                                        @elseif ($p->status == 3)
+                                            <span
+                                                class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger border-opacity-50 px-2 py-1">Dibatalkan</span>
                                         @endif
-                                    @else
-                                        <span
-                                            class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1"><i
-                                                class="bi bi-journal-text me-1"></i>Kontrabon</span>
-                                    @endif
-                                </td>
+                                    </td>
 
-                                <td class="text-center">
-                                    <button type="button"
-                                        class="btn btn-light btn-sm border text-primary px-3 py-1 rounded-2 shadow-sm"
-                                        data-bs-toggle="modal" data-bs-target="#modalDetail{{ $p->nomor }}"
-                                        title="Lihat Detail Rincian">
-                                        <i class="bi bi-eye"></i> Detail
-                                    </button>
-                                </td>
-                            </tr>
+                                    <td class="text-center">
+                                        @if ($p->metode_pembayaran == 0)
+                                            <span
+                                                class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-2 py-1"><i
+                                                    class="bi bi-cash me-1"></i>Cash</span>
+                                            @if ($p->status_pembayaran == 1)
+                                                <div class="text-success mt-1 fw-bold" style="font-size: 10px;">
+                                                    <i class="bi bi-check-circle-fill me-1"></i>LUNAS
+                                                </div>
+                                            @endif
+                                        @else
+                                            <span
+                                                class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1"><i
+                                                    class="bi bi-journal-text me-1"></i>Kontrabon</span>
+                                        @endif
+                                    </td>
+
+                                    <td class="text-center">
+                                        <button type="button"
+                                            class="btn btn-light btn-sm border text-primary px-3 py-1 rounded-2 shadow-sm"
+                                            data-bs-toggle="modal" data-bs-target="#modalDetail{{ $p->nomor }}"
+                                            title="Lihat Detail Rincian">
+                                            <i class="bi bi-eye"></i> Detail
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endif
                         @empty
                             <tr>
                                 <td colspan="5" class="text-center py-5 text-muted">

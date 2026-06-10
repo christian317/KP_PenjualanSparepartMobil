@@ -11,11 +11,12 @@ class RegistrasiSuksesMail extends Mailable
     use Queueable, SerializesModels;
 
     public $nama_pelanggan;
-
-    // Menangkap nama pelanggan dari Controller
-    public function __construct($nama_pelanggan)
+    public $token;
+    
+    public function __construct($nama, $token)
     {
-        $this->nama_pelanggan = $nama_pelanggan;
+        $this->nama_pelanggan = $nama;
+        $this->token = $token;
     }
 
     public function build()

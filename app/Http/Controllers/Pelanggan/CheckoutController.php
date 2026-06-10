@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
 use Midtrans\Config;
 use Midtrans\Snap;
 use App\Models\DetailKontrabon;
-use App\Models\Produk;
 use App\Models\Keranjang;
 use App\Models\Pesanan;
 use App\Models\DetailPesanan;
@@ -51,19 +50,11 @@ class CheckoutController extends Controller
         $produkTerpilih = $request->produk_terpilih;
         $catatan = $request->catatan;
 
-        if (!$produkTerpilih || !is_array($produkTerpilih)) {
-            return redirect()->route('pelanggan.pesanan.keranjang')->with('error', 'Data produk hilang.');
-        }
 
         $keranjang = Keranjang::with('produk')
             ->where('user_pelanggan_id', $userId)
             ->whereIn('produk_id', $produkTerpilih)
             ->get();
-
-        if ($keranjang->isEmpty()) {
-            return redirect()->back()->with('error', 'Keranjang kosong');
-        }
-
 
         // Cek produk preorder
         $isPreOrder = 0;
@@ -103,8 +94,6 @@ class CheckoutController extends Controller
 
             if ($kontrabonAktif) {
                 $kontrabonId = $kontrabonAktif->id;
-                $kontrabonAktif->total_tagihan = $kontrabonAktif->total_tagihan + $totalBayar;
-                $kontrabonAktif->save();
             } else {
                 $kontrabonId = 'KB-' . date('Ymd') . '-' . strtoupper(Str::random(6));
                 Kontrabon::create([
@@ -112,7 +101,7 @@ class CheckoutController extends Controller
                     'user_pelanggan_id' => $userId,
                     'tanggal_mulai'     => now(),
                     'tanggal_selesai'   => now()->addDays(7),
-                    'total_tagihan'     => $totalBayar,
+                    'total_tagihan'     => 0,
                     'status'            => 0,
                 ]);
             }
@@ -151,7 +140,7 @@ class CheckoutController extends Controller
         // Proses kontrabon akhir
         if ($metodeInt == 1) {
             foreach ($keranjang as $item) {
-                // Pengurangan stok (Jika PO, stok akan menjadi minus sebagai penanda jumlah barang yang harus di-restok Owner)
+                // Pengurangan stok
                 if ($item->produk->preorder == 0) {
                     $item->produk->decrement('stok', $item->jumlah);
                 }

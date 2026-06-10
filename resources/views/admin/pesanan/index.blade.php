@@ -239,7 +239,7 @@
 
 
         {{-- Tabel dikirim --}}
-        <h5 class="fw-bold mb-3 mt-3"><i class="bi bi-list-ul me-2 text-secondary"></i>Pesanan Sedang Dikirim</h5>
+        <h5 class="fw-bold mb-3 mt-4"><i class="bi bi-truck me-2 text-info"></i>Pesanan Sedang Dikirim</h5>
 
         <div class="card border-0 shadow-sm rounded-3">
             <div class="table-responsive">
@@ -296,6 +296,17 @@
                                                 title="Lihat Surat Jalan">
                                                 <i class="bi bi-eye"></i> Detail
                                             </button>
+                                            
+                                            {{-- TOMBOL SELESAI BARU --}}
+                                            <form action="{{ route('admin.pesanan.selesai', $p->nomor) }}" method="POST" class="m-0 form-selesai">
+                                                @csrf
+                                                <button type="button"
+                                                    class="btn btn-sm btn-success fw-semibold px-2 py-1 rounded-2 d-flex align-items-center gap-1 shadow-sm btn-selesai"
+                                                    title="Konfirmasi Pesanan Selesai">
+                                                    <i class="bi bi-check2-all"></i> Selesai
+                                                </button>
+                                            </form>
+
                                         </div>
                                     </td>
                                 </tr>
@@ -304,8 +315,8 @@
                             <tr>
                                 <td colspan="5" class="text-center py-5 text-muted">
                                     <i class="bi bi-check-circle fs-2 text-success opacity-50 d-block mb-2"></i>
-                                    <h6 class="fw-bold text-dark mb-1">Gudang Bersih!</h6>
-                                    <p class="small mb-0">Belum ada antrean pesanan yang perlu disiapkan saat ini.</p>
+                                    <h6 class="fw-bold text-dark mb-1">Tidak Ada Pengiriman Aktif!</h6>
+                                    <p class="small mb-0">Belum ada pesanan yang sedang dalam perjalanan.</p>
                                 </td>
                             </tr>
                         @endforelse
@@ -505,6 +516,32 @@
                     confirmButtonText: 'Ya, Kirim Sekarang!',
                     cancelButtonText: 'Batal',
                     confirmButtonColor: '#0d6efd',
+                    cancelButtonColor: '#6c757d',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+
+        // Konfirmasi Pesanan Selesai
+        document.querySelectorAll('.btn-selesai').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const form = this.closest('form');
+                Swal.fire({
+                    title: 'Konfirmasi Pesanan Selesai?',
+                    html: `
+                    <div style="font-size:14px;">
+                        Pastikan Anda telah mengecek status tracking di aplikasi ekspedisi dan memastikan barang telah diterima oleh pelanggan dengan baik.
+                    </div>
+                    `,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Selesaikan!',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#198754',
                     cancelButtonColor: '#6c757d',
                     reverseButtons: true
                 }).then((result) => {

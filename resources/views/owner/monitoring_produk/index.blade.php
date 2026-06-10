@@ -1,63 +1,30 @@
 @extends('layouts.app')
 
-@section('title', 'Kelola Produk')
+@section('title', 'Monitoring Produk')
 
 @section('content')
     <div class=" p-4" style="background-color: #f8f9fa; min-height: 100vh;">
 
+        {{-- HEADER --}}
         <div class="sticky-top py-3 mb-4"
             style="background-color: #f8f9fa; z-index: 1020; margin-top: -1.5rem; padding-top: 1.5rem !important;">
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
                 <div>
                     <div class="h4 fw-bold mb-1 d-flex align-items-center">
-                        <i class="bi bi-box-seam me-2" style="color: #dc3545;"></i>Produk & Stok
+                        <i class="bi bi-eye-fill me-2 text-primary"></i>Monitoring Produk & Stok
                     </div>
-                    <div class="text-muted small">Kelola katalog produk dan stok sparepart</div>
+                    <div class="text-muted small">Pantau katalog produk dan ketersediaan stok sparepart di gudang</div>
                 </div>
                 <div class="d-flex gap-2 flex-wrap">
-                    {{-- TOMBOL UTAMA (Primary Action) --}}
-                    <a href="{{ route('admin.produk.create') }}"
-                        class="btn btn-primary btn-sm px-3 py-2 fw-semibold rounded-3 shadow-sm">
-                        <i class="bi bi-plus-lg me-1"></i> Tambah Produk
-                    </a>
-
-                    {{-- TOMBOL SEKUNDER (Secondary Actions) --}}
-                    <a href="{{ route('admin.produk.brand.create') }}"
-                        class="btn btn-light border btn-sm px-3 py-2 fw-medium rounded-3 d-flex align-items-center gap-2 hover-shadow">
-                        <i class="bi bi-tags text-muted me-1"></i> Tambah Brand
-                    </a>
-
-                    <a href="{{ route('admin.produk.kategori.create') }}"
-                        class="btn btn-light border btn-sm px-3 py-2 fw-medium rounded-3 d-flex align-items-center gap-2 hover-shadow">
-                        <i class="bi bi-folder2-open text-muted me-1"></i> Tambah Kategori
-                    </a>
-
-                    <a href="{{ route('admin.produk.jenis_mobil.create') }}"
-                        class="btn btn-light border btn-sm px-3 py-2 fw-medium rounded-3 d-flex align-items-center gap-2 hover-shadow">
-                        <i class="bi bi-car-front text-muted me-1"></i> Tambah Jenis Mobil
-                    </a>
+                    {{-- TOMBOL TAMBAH DIHAPUS - DIGANTI BADGE MONITORING --}}
+                    <span class="badge bg-primary bg-opacity-10 text-primary px-4 py-2 border border-primary border-opacity-25 fw-bold d-flex align-items-center" style="font-size: 13px;">
+                        <i class="bi bi-shield-lock-fill me-2 fs-6"></i> Mode Pengawasan (Read-Only)
+                    </span>
                 </div>
             </div>
         </div>
 
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm">
-                <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div class="alert alert-danger border-0 shadow-sm rounded-3 d-flex align-items-center p-2 mb-4"
-                role="alert">
-                <i class="bi bi-exclamation-octagon-fill fs-5 me-3"></i>
-                <div class="fw-bold">{{ session('error') }}</div>
-
-                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"
-                    aria-label="Close"></button>
-            </div>
-        @endif
-
+        {{-- STATISTIK CARDS (SAMA PERSIS DENGAN ADMIN GUDANG) --}}
         <div class="row g-3 mb-4">
             <div class="col-6 col-md-3">
                 <div class="card h-100 border-0 shadow-sm border-start border-4 rounded-3"
@@ -134,7 +101,8 @@
             </div>
         </div>
 
-        <form action="{{ route('admin.produk.index') }}" method="GET"
+        {{-- FORM FILTER & SEARCH (SAMA PERSIS) --}}
+        <form action="{{ url()->current() }}" method="GET"
             class="bg-white p-3 rounded-3 shadow-sm mb-3 d-flex flex-wrap gap-2 align-items-center">
             <div class="input-group input-group-sm " style="max-width: 300px;">
                 <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
@@ -142,7 +110,7 @@
                     placeholder="Cari produk, SKU, merek…">
             </div>
 
-            <select name="kategori" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+            <select name="kategori" class="form-select form-select-sm w-auto">
                 <option value="">Semua Kategori</option>
                 @foreach ($kategori as $k)
                     <option value="{{ $k->id }}" {{ request('kategori') == $k->id ? 'selected' : '' }}>
@@ -151,13 +119,13 @@
                 @endforeach
             </select>
 
-            <select name="status" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+            <select name="status" class="form-select form-select-sm w-auto">
                 <option value="">Semua Status</option>
                 <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Aktif</option>
                 <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Nonaktif</option>
             </select>
 
-            <select name="stok" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+            <select name="stok" class="form-select form-select-sm w-auto">
                 <option value="">Semua Stok</option>
                 <option value="ok" {{ request('stok') == 'ok' ? 'selected' : '' }}>Stok OK</option>
                 <option value="menipis" {{ request('stok') == 'menipis' ? 'selected' : '' }}>Stok Menipis</option>
@@ -167,7 +135,7 @@
                 <button type="submit" class="btn btn-primary btn-sm fw-semibold ms-1">
                     <i class="bi bi-funnel-fill"></i> Filter
                 </button>
-                <a href="{{ route('admin.produk.index') }}" class="btn btn-light border btn-sm px-2 text-secondary"
+                <a href="{{ url()->current() }}" class="btn btn-light border btn-sm px-2 text-secondary"
                     title="Reset Filter">
                     <i class="bi bi-arrow-clockwise"></i> Reset
                 </a>
@@ -178,6 +146,7 @@
             </div>
         </form>
 
+        {{-- TABEL DATA --}}
         <div class="card border-0 shadow-sm rounded-3">
             <div class="table-responsive">
                 <table class="table align-middle mb-0">
@@ -188,8 +157,8 @@
                             <th class="py-3 border-0">IDENTITAS</th>
                             <th class="py-3 border-0 ">HARGA</th>
                             <th class="py-3 border-0">STOK</th>
-                            <th class="py-3 border-0">STATUS</th>
-                            <th class="py-3 border-0">AKSI</th>
+                            <th class="py-3 border-0 text-center pe-3">STATUS KATALOG</th>
+                            {{-- KOLOM AKSI DIHAPUS --}}
                         </tr>
                     </thead>
                     <tbody>
@@ -205,8 +174,8 @@
                                     </div>
 
                                     <div class="d-flex align-items-center gap-2 mt-1">
-                                        <code class="text-secondary fw-bold" style="font-size: 13px;">
-                                            {{ $item->id }}
+                                        <code class="text-secondary" style="font-size: 13px;">
+                                            SKU: {{ $item->id }}
                                         </code>
 
                                         @if ($item->preorder == 1)
@@ -219,14 +188,14 @@
                                 </td>
                                 <td>
                                     <div class="fw-bold mb-0" style="font-size: 14px;">{{ $item->brand->nama }}</div>
-                                    <span class="text-secondary fw-bold"
-                                        style="font-size: 13px;">{{ $item->kategori->nama }}</span>
+                                    <span class="text-secondary"
+                                        style="font-size: 13px;">Kategori: {{ $item->kategori->nama }}</span>
                                 </td>
                                 <td class="fw-bold text-danger" style="font-size: 13.5px;">Rp
                                     {{ number_format($item->harga, 0, ',', '.') }}</td>
                                 <td>
                                     <div class="d-flex flex-column align-items-start">
-                                        {{-- LOGIKA WARNA BADGE OTOMATIS --}}
+                                        {{-- LOGIKA WARNA BADGE STOK (SAMA PERSIS) --}}
                                         @if ($item->stok <= 0)
                                             <span
                                                 class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1 fw-bold mb-1">
@@ -235,8 +204,7 @@
                                         @elseif ($item->stok <= $item->min_stok)
                                             <span
                                                 class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-50 px-2 py-1 fw-bold mb-1">
-                                                <i class="bi bi-exclamation-triangle me-1"></i>{{ $item->stok }}
-                                                pcs
+                                                <i class="bi bi-exclamation-triangle me-1"></i>{{ $item->stok }} pcs
                                             </span>
                                         @else
                                             <span
@@ -251,43 +219,22 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="text-center">
-                                    <form action="{{ route('admin.produk.update_status', $item->id) }}" method="POST"
-                                        class="m-0 form-update-status">
-                                        @csrf
-                                        @method('PATCH')
-                                        <div class="form-check form-switch d-flex mb-1">
-                                            <input name="status" class="form-check-input cursor-pointer toggle-status"
-                                                type="checkbox" value="1" {{ $item->status ? 'checked' : '' }}
-                                                style="transform: scale(1.3); cursor: pointer;"
-                                                onchange="this.closest('form').submit();">
-                                        </div>
-                                    </form>
-                                </td>
-                                <td>
-                                    <div class="btn-group btn-group-sm gap-1">
-                                        <a href="{{ route('admin.produk.edit', $item->id) }}"
-                                            class="btn btn-light text-primary border-0 rounded-2 p-1 px-2">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-
-                                        <form action="{{ route('admin.produk.delete', $item->id) }}"
-                                            method="POST"
-                                            class="d-inline m-0 p-0">
-                                            @csrf
-                                            @method('DELETE')
-
-                                            <button type="submit"
-                                                class="btn btn-light text-danger border-0 rounded-2 p-1 px-2">
-                                                <i class="bi bi-trash3"></i>
-                                            </button>
-                                        </form>
-                                    </div>
+                                <td class="text-center pe-3">
+                                    {{-- FORM SWITCH DIHAPUS - DIGANTI BADGE STATIS --}}
+                                    @if ($item->status)
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-1 fw-semibold">
+                                            Aktif
+                                        </span>
+                                    @else
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-3 py-1 fw-semibold">
+                                            Nonaktif
+                                        </span>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center py-5 text-muted">
+                                <td colspan="6" class="text-center py-5 text-muted"> {{-- colspan jadi 6 karena aksi dihapus --}}
                                     <i class="bi bi-inbox fs-2 opacity-50 d-block mb-2"></i>
                                     Belum ada data produk.
                                 </td>
@@ -297,26 +244,19 @@
                 </table>
             </div>
 
+            {{-- PAGINATION --}}
             <div
                 class="card-footer bg-white py-3 border-top border-light d-flex justify-content-between align-items-center">
                 <span class="text-muted" style="font-size: 12px;">Halaman {{ $produk->currentPage() }} dari
                     {{ $produk->lastPage() }} · {{ $produk->total() }} produk total</span>
                 <div class="m-0">
                     @if ($produk->hasPages())
-                        {{-- Jika halaman lebih dari 1, gunakan pagination bawaan Laravel --}}
                         {{ $produk->links('pagination::bootstrap-5') }}
                     @else
-                        {{-- Jika hanya 1 halaman, tampilkan pagination statis (dummy) --}}
                         <ul class="pagination mb-0">
-                            <li class="page-item disabled">
-                                <span class="page-link">&lsaquo;</span>
-                            </li>
-                            <li class="page-item active">
-                                <span class="page-link">1</span>
-                            </li>
-                            <li class="page-item disabled">
-                                <span class="page-link">&rsaquo;</span>
-                            </li>
+                            <li class="page-item disabled"><span class="page-link">&lsaquo;</span></li>
+                            <li class="page-item active"><span class="page-link">1</span></li>
+                            <li class="page-item disabled"><span class="page-link">&rsaquo;</span></li>
                         </ul>
                     @endif
                 </div>

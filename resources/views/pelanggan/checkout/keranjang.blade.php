@@ -15,7 +15,15 @@
         </div>
 
         <div class="row g-4">
+            @if (session('error'))
+                <div class="alert alert-danger border-0 shadow-sm rounded-3 d-flex align-items-center p-2 mb-4"
+                    role="alert">
+                    <i class="bi bi-exclamation-octagon-fill fs-5 me-3"></i>
+                    <div class="fw-bold">{{ session('error') }}</div>
 
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             <div class="col-md-8">
                 <div class="card border-0 shadow-sm rounded-3">
                     <div class="card-header bg-white d-flex justify-content-between align-items-center py-3 rounded-top-3">
@@ -47,14 +55,18 @@
                                         </td>
                                         <td>
                                             <div class="d-flex gap-3 align-items-center">
-                                                <img src="{{ asset('storage/produk/'.$item->produk->gambar) }}" class="rounded-3" style="width:52px;height:52px;object-fit:cover;">
+                                                <img src="{{ asset('storage/produk/' . $item->produk->gambar) }}"
+                                                    class="rounded-3" style="width:52px;height:52px;object-fit:cover;">
                                                 <div>
                                                     {{-- PERBAIKAN: Menggunakan $item->produk->nama (bukan nama_produk) --}}
                                                     <div class="fw-semibold small">{{ $item->produk->nama }}</div>
-                                                    <div class="text-muted" style="font-size:11px;">{{ $item->produk->brand->nama }} · SKU: {{ $item->id }}</div>
-                                                    <div class="text-danger fw-bold d-md-none" style="font-size:13px;">Rp {{ number_format($item->produk->harga, 0, ',', '.') }}</div>
+                                                    <div class="text-muted" style="font-size:11px;">
+                                                        {{ $item->produk->brand->nama }} · SKU: {{ $item->id }}</div>
+                                                    <div class="text-danger fw-bold d-md-none" style="font-size:13px;">Rp
+                                                        {{ number_format($item->produk->harga, 0, ',', '.') }}</div>
                                                     @if ($item->produk->preorder == 1)
-                                                        <span class="badge bg-warning text-muted" style="font-size: 11px;" >Pre-Order</span>
+                                                        <span class="badge bg-warning text-muted"
+                                                            style="font-size: 11px;">Pre-Order</span>
                                                     @endif
                                                 </div>
                                             </div>
@@ -62,23 +74,27 @@
                                         <td class="text-center">
                                             <div class="d-flex align-items-center justify-content-center gap-1">
                                                 {{-- TOMBOL MINUS --}}
-                                                <form action="{{ route('pelanggan.checkout.keranjang.update') }}" method="POST" class="d-inline">
+                                                <form action="{{ route('pelanggan.checkout.keranjang.update') }}"
+                                                    method="POST" class="d-inline">
                                                     @csrf
                                                     {{-- PERBAIKAN: value menggunakan kode_produk --}}
                                                     <input type="hidden" name="id" value="{{ $item->produk_id }}">
                                                     <input type="hidden" name="type" value="minus">
-                                                    <button type="submit" class="btn btn-outline-secondary btn-sm px-2 py-0">−</button>
+                                                    <button type="submit"
+                                                        class="btn btn-outline-secondary btn-sm px-2 py-0">−</button>
                                                 </form>
 
                                                 <span class="fw-bold small px-2">{{ $item->jumlah }}</span>
 
                                                 {{-- TOMBOL PLUS --}}
-                                                <form action="{{ route('pelanggan.checkout.keranjang.update') }}" method="POST" class="d-inline">
+                                                <form action="{{ route('pelanggan.checkout.keranjang.update') }}"
+                                                    method="POST" class="d-inline">
                                                     @csrf
                                                     {{-- PERBAIKAN: value menggunakan kode_produk --}}
                                                     <input type="hidden" name="id" value="{{ $item->produk_id }}">
                                                     <input type="hidden" name="type" value="plus">
-                                                    <button type="submit" class="btn btn-outline-secondary btn-sm px-2 py-0">+</button>
+                                                    <button type="submit"
+                                                        class="btn btn-outline-secondary btn-sm px-2 py-0">+</button>
                                                 </form>
                                             </div>
                                         </td>
@@ -87,11 +103,13 @@
                                         </td>
                                         <td class="text-center">
                                             {{-- TOMBOL HAPUS --}}
-                                            <form action="{{ route('pelanggan.checkout.keranjang.hapus') }}" method="POST" class="d-inline">
+                                            <form action="{{ route('pelanggan.checkout.keranjang.hapus') }}" method="POST"
+                                                class="d-inline">
                                                 @csrf
                                                 {{-- PERBAIKAN: value menggunakan kode_produk --}}
                                                 <input type="hidden" name="id" value="{{ $item->produk_id }}">
-                                                <button type="submit" class="btn btn-link text-secondary p-0" onclick="return confirm('Hapus produk ini?')">
+                                                <button type="submit" class="btn btn-link text-secondary p-0"
+                                                    onclick="return confirm('Hapus produk ini?')">
                                                     <i class="bi bi-trash3"></i>
                                                 </button>
                                             </form>
@@ -99,7 +117,8 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center py-5 text-muted small">Keranjang belanja kosong</td>
+                                        <td colspan="5" class="text-center py-5 text-muted small">Keranjang belanja
+                                            kosong</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -122,8 +141,8 @@
                             <h5 class="fw-bold text-danger mb-0" id="totalBayar">Rp 0</h5>
                         </div>
 
-                        <button type="button" class="btn btn-danger w-100 fw-bold py-2 shadow-sm rounded-3" id="btnCheckout"
-                            {{ count($cart) == 0 ? 'disabled' : '' }}>
+                        <button type="button" class="btn btn-danger w-100 fw-bold py-2 shadow-sm rounded-3"
+                            id="btnCheckout" {{ count($cart) == 0 ? 'disabled' : '' }}>
                             Check Out<i class="bi bi-arrow-right ms-1"></i>
                         </button>
                     </div>
@@ -143,6 +162,14 @@
 
     <form id="formCheckout" action="{{ route('pelanggan.checkout.checkout') }}" method="GET" class="d-none">
     </form>
+    
+    <script>
+        @if (Session::has('toast_success'))
+            document.addEventListener("DOMContentLoaded", function() {
+                showToast("{{ Session::get('toast_success') }}");
+            });
+        @endif
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -201,8 +228,8 @@
 
             btnCheckout.addEventListener('click', function() {
                 const form = document.getElementById('formCheckout');
-                form.innerHTML = ''; 
-                
+                form.innerHTML = '';
+
                 let adaYangDicentang = false;
 
                 checkboxes.forEach(cb => {
@@ -211,13 +238,13 @@
                         const input = document.createElement('input');
                         input.type = 'hidden';
                         input.name = 'produk_terpilih[]';
-                        input.value = cb.getAttribute('data-id'); 
+                        input.value = cb.getAttribute('data-id');
                         form.appendChild(input);
                     }
                 });
 
                 if (adaYangDicentang) {
-                    form.submit(); 
+                    form.submit();
                 } else {
                     alert('Silakan pilih minimal satu produk untuk di-checkout.');
                 }

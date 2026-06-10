@@ -304,7 +304,7 @@
                 
                 {{-- TOMBOL TERUSKAN (TERKUNCI / TERBUKA) --}}
                 @if($p->is_ready)
-                    <form action="{{ route('owner.pesanan_po.teruskan', $p->nomor) }}" method="POST" class="m-0">
+                    <form action="{{ route('owner.preorder.teruskan', $p->nomor) }}" method="POST" class="m-0">
                         @csrf
                         <button type="submit" class="btn btn-success fw-bold px-4" onclick="return confirm('Teruskan pesanan ini ke Admin Gudang sekarang?');">
                             <i class="bi bi-send-check me-2"></i> Proses ke Gudang

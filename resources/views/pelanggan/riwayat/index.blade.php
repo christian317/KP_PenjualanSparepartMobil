@@ -168,7 +168,7 @@
                                 <div class="fw-semibold small text-dark">Pengajuan refund sedang diproses oleh admin</div>
                                 <div class="text-muted" style="font-size:12px;">Refund akan ditransfer ke
                                     <strong>{{ $p->refund->nama_bank }} {{ $p->refund->nomor_rekening }}</strong> a/n
-                                    <strong>{{ $p->refund->atas_nama }}</strong> dalam 1–2 hari jam kerja.
+                                    <strong>{{ $p->refund->atas_nama }}</strong> dalam 1–2 hari kerja.
                                 </div>
                             </div>
                         </div>
@@ -213,10 +213,14 @@
                             </form>
                         @endif
 
-                        {{-- Tombol Batalkan Pesanan (Bisa untuk status 0 [Cash] atau 5 [Kontrabon]) --}}
-                        @if (in_array($p->status, [0, 5]) && $p->preorder == 0)
+                        {{-- Tombol Batalkan Pesanan --}}
+                        @if ($p->status == 0 && $p->preorder == 0)
                             <button class="btn btn-outline-danger btn-sm rounded-3 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalCancel-{{ $p->nomor }}">
                                 <i class="bi bi-arrow-counterclockwise me-1"></i>Batalkan & Refund Dana
+                            </button>
+                        @elseif($p->status == 5 && $p->preorder == 1)
+                            <button class="btn btn-outline-danger btn-sm rounded-3 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalCancel-{{ $p->nomor }}">
+                                <i class="bi bi-x-circle me-1"></i>Batalkan Pesanan
                             </button>
                         @endif
                     </div>

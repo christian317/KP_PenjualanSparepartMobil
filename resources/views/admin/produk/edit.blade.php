@@ -15,7 +15,7 @@
         <div class="sticky-top py-3 mb-4"
             style="background-color: #f8f9fa; z-index: 1020; margin-top: -1.5rem; padding-top: 1.5rem !important;">
             <div class="d-flex align-items-center gap-3">
-                <a href="{{ route('admin.produk.kategori.create') }}"
+                <a href="{{ route('admin.produk.index') }}"
                     class="btn btn-light border rounded-3 px-3 py-2 text-secondary shadow-sm">
                     <i class="bi bi-arrow-left"></i>
                 </a>
@@ -79,7 +79,7 @@
                                     <div class="input-group">
                                         <span class="input-group-text bg-light border-end-0">Rp</span>
                                         <input name="harga" type="number" value="{{ $produk->harga }}"
-                                            class="form-control rounded-end-3 py-2" required>
+                                            class="form-control rounded-end-3 py-2" min="0" required>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -200,8 +200,7 @@
                     @endif
 
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-danger py-2 fw-bold rounded-3 shadow-sm border-0"
-                            style="background-color: #dc3545;">
+                        <button type="submit" class="btn btn-primary py-2 fw-bold rounded-3 shadow-sm border-0">
                             <i class="bi bi-check-circle me-2"></i>Simpan Perubahan
                         </button>
                         <a href="{{ route('admin.produk.index') }}"

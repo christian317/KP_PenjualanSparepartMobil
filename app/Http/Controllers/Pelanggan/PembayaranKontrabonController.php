@@ -127,18 +127,18 @@ class PembayaranKontrabonController extends Controller
         $piutang = Piutang::where('kontrabon_id', $kontrabonId)->firstOrFail();
         $kontrabon = Kontrabon::findOrFail($kontrabonId);
         
-        // Mencegah bayar melebihi sisa hutang
-        $nominalBayar = $request->nominal_bayar > $piutang->sisa_tagihan ? $piutang->sisa_tagihan : $request->nominal_bayar;
-        
+        // mencegah pembayaran melebihi sisa tagihan
+        if ($request->nominal_bayar > $piutang->sisa_tagihan) {
+            $nominalBayar = $piutang->sisa_tagihan;
+        } else {
+            $nominalBayar = $request->nominal_bayar;
+        }
+
         $midtransOrderId = $kontrabonId . '-PAY-' . strtoupper(Str::random(6));
 
         // Ambil salah satu pesanan untuk diikat transaksinya VIA RELASI PIVOT
         $pesanan = $kontrabon->pesanan()->first();
-        
-        if (!$pesanan) {
-            return redirect()->back()->withErrors('Gagal memproses pembayaran: Tidak ada data pesanan pada kontrabon ini.');
-        }
-
+    
         // Catat sebagai antrean pembayaran
         Pembayaran::create([
             'nomor_pesanan' => $pesanan->nomor,

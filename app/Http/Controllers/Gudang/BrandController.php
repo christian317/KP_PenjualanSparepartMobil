@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Gudang;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Brand;
+use App\Models\Produk;
 
 class BrandController extends Controller
 {
@@ -53,6 +54,12 @@ class BrandController extends Controller
     public function delete($id)
     {
         $brand = Brand::findOrFail($id);
+
+        $brandTerpakai = Produk::where('brand_id', $id)->exists();
+        if ($brandTerpakai) {
+            return redirect()->back()->with('error', 'Gagal menghapus! Brand ini sedang digunakan oleh satu atau lebih produk.');
+        }
+
         $brand->delete();
 
         return redirect()->route('admin.produk.brand.create')->with('success', 'Brand berhasil dihapus.');

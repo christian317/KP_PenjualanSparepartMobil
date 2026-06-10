@@ -21,7 +21,7 @@
 
         <form action="{{ route('owner.user.update', $user->id) }}" method="POST">
             @csrf
-            
+
             {{-- TIPE USER --}}
             <div class="mb-4">
                 <div class="card border-0 shadow-sm rounded-3">
@@ -59,7 +59,8 @@
                                     </div>
 
                                     <div class="col-md-12">
-                                        <label class="form-label fw-semibold small text-secondary">Nama Toko / Bengkel</label>
+                                        <label class="form-label fw-semibold small text-secondary">Nama Toko /
+                                            Bengkel</label>
                                         <input name="nama_toko" type="text" class="form-control rounded-3 py-2"
                                             value="{{ old('nama_toko', $user->nama_toko ?? '') }}" required>
                                     </div>
@@ -73,8 +74,12 @@
                                         <label class="form-label fw-semibold small text-secondary">Role / Akses</label>
                                         <select name="role_id" class="form-select rounded-3 py-2" required>
                                             <option value="">-- Pilih Role --</option>
-                                            <option value="1" {{ old('role_id', $user->role_id ?? '') == 1 ? 'selected' : '' }}>Admin Gudang</option>
-                                            <option value="2" {{ old('role_id', $user->role_id ?? '') == 2 ? 'selected' : '' }}>Admin Keuangan</option>
+                                            <option value="1"
+                                                {{ old('role_id', $user->role_id ?? '') == 1 ? 'selected' : '' }}>Admin
+                                                Gudang</option>
+                                            <option value="2"
+                                                {{ old('role_id', $user->role_id ?? '') == 2 ? 'selected' : '' }}>Admin
+                                                Keuangan</option>
                                         </select>
                                     </div>
                                 @endif
@@ -89,9 +94,11 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label fw-semibold small text-secondary">Password Baru (Opsional)</label>
+                                    <label class="form-label fw-semibold small text-secondary">Password Baru
+                                        (Opsional)</label>
                                     <input name="password" type="password" class="form-control rounded-3 py-2">
-                                    <div class="form-text" style="font-size: 10px;">Kosongkan jika tidak ingin mengubah password</div>
+                                    <div class="form-text" style="font-size: 10px;">Kosongkan jika tidak ingin mengubah
+                                        password</div>
                                 </div>
 
                                 {{-- ========================================== --}}
@@ -99,7 +106,8 @@
                                 {{-- ========================================== --}}
                                 @if ($tipe_user == 'pelanggan')
                                     <div class="col-md-6">
-                                        <label class="form-label fw-semibold small text-secondary">No. Telepon / WhatsApp</label>
+                                        <label class="form-label fw-semibold small text-secondary">No. Telepon /
+                                            WhatsApp</label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-light border-end-0 text-muted">+62</span>
                                             <input name="telepon" type="number" class="form-control rounded-end-3 py-2"
@@ -110,8 +118,12 @@
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold small text-secondary">Status Bengkel</label>
                                         <select name="status_mitra" class="form-select rounded-3 py-2" required>
-                                            <option value="0" {{ old('status_mitra', $user->status_mitra ?? '') == '0' ? 'selected' : '' }}>Reguler</option>
-                                            <option value="1" {{ old('status_mitra', $user->status_mitra ?? '') == '1' ? 'selected' : '' }}>Mitra</option>
+                                            <option value="0"
+                                                {{ old('status_mitra', $user->status_mitra ?? '') == '0' ? 'selected' : '' }}>
+                                                Reguler</option>
+                                            <option value="1"
+                                                {{ old('status_mitra', $user->status_mitra ?? '') == '1' ? 'selected' : '' }}>
+                                                Mitra</option>
                                         </select>
                                     </div>
 
@@ -124,7 +136,8 @@
                                         <input type="hidden" name="status" value="0">
                                         <div class="form-check form-switch">
                                             <input name="status" class="form-check-input border-secondary" type="checkbox"
-                                                value="1" {{ old('status', $user->status ?? '') == '1' ? 'checked' : '' }}
+                                                value="1"
+                                                {{ old('status', $user->status ?? '') == '1' ? 'checked' : '' }}
                                                 style="transform: scale(1.2);">
                                             <label class="form-check-label ms-2 fw-medium">User Aktif (Dapat Login)</label>
                                         </div>
@@ -134,24 +147,32 @@
                             </div>
                         </div>
                     </div>
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                 </div>
 
-                {{-- SIDEBAR INFO --}}
                 <div class="col-md-4">
                     <div class="card border-0 shadow-sm rounded-3 bg-danger text-white">
                         <div class="card-body p-4">
                             <h5 class="fw-bold"><i class="bi bi-lightbulb me-2"></i>Informasi</h5>
                             <p class="small mb-0 opacity-75">
-                                Mengubah email atau password akan berdampak pada akses login pengguna. Pastikan data yang dimasukkan sudah benar.
+                                Mengubah email atau password akan berdampak pada akses login pengguna. Pastikan data yang
+                                dimasukkan sudah benar.
                             </p>
                         </div>
                     </div>
                 </div>
 
-                {{-- BUTTONS --}}
                 <div class="col-md-8">
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-danger py-2 fw-bold rounded-3 shadow-sm border-0">
+                        <button type="submit" class="btn btn-primary py-2 fw-bold rounded-3 shadow-sm border-0">
                             <i class="bi bi-check-lg me-2"></i>Simpan Perubahan
                         </button>
                         <a href="{{ route('owner.user.index') }}"

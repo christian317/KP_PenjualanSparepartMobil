@@ -49,17 +49,18 @@
                 </div>
 
                 @if($errors->any())
-                <div class="alert alert-danger shadow-sm rounded-3">
-                    <ul class="mb-0 small">
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
+                    <div class="alert alert-danger shadow-sm rounded-3">
+                        <ul class="mb-0 small">
+                            {{-- PERBAIKAN: Gunakan array_unique untuk menyaring pesan error yang sama --}}
+                            @foreach(array_unique($errors->all()) as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 @endif
 
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-danger py-2 fw-bold shadow-sm rounded-3">
+                    <button type="submit" class="btn btn-primary py-2 fw-bold shadow-sm rounded-3">
                         <i class="bi bi-check-circle me-2"></i>Simpan Pembelian
                     </button>
                 </div>

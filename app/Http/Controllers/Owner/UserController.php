@@ -15,7 +15,14 @@ class UserController extends Controller
     {
         // Sepenuhnya menggunakan Eloquent
         $pelanggan = UserPelanggan::select(
-            'id', 'nama', 'nama_toko', 'email', 'telepon', 'alamat', 'status', 'status_mitra'
+            'id',
+            'nama',
+            'nama_toko',
+            'email',
+            'telepon',
+            'alamat',
+            'status',
+            'status_mitra'
         )->get()->map(function ($item) {
             $item->tipe_user = 'pelanggan';
             $item->uid = 'p-' . $item->id;
@@ -23,7 +30,9 @@ class UserController extends Controller
         });
 
         $admin = UserAdmin::select(
-            'id', 'email', 'role_id'
+            'id',
+            'email',
+            'role_id'
         )->get()->map(function ($item) {
             $item->nama = $item->email; // Alias virtual
             $item->nama_toko = '-';
@@ -101,7 +110,9 @@ class UserController extends Controller
                 'alamat'       => 'required',
                 'status'       => 'required|in:1,2',
                 'status_mitra' => 'required|in:0,1',
-                'email'        => 'unique:user_pelanggan,email',
+                'email'        => 'required|email|email:rfc,dns|unique:user_pelanggan,email',
+            ], [
+                'email.email' => 'Format email tidak valid'
             ]);
 
             UserPelanggan::create([
@@ -155,39 +166,36 @@ class UserController extends Controller
                 'password' => 'nullable|min:8'
             ]);
 
-            $admin = UserAdmin::findOrFail($id);
-            $admin->email = $request->email;
-            $admin->role_id = $request->role_id;
-            if ($request->filled('password')) {
-                $admin->password = Hash::make($request->password);
-            }
-            $admin->save();
-            
+            $user = UserAdmin::findOrFail($id);
+            $user->email = $request->email;
+            $user->role_id = $request->role_id;
         } else {
             $request->validate([
                 'nama'         => 'required|string|max:255',
                 'nama_toko'    => 'required|string|max:255',
-                'email'        => 'required|email|unique:user_pelanggan,email,' . $id,
+                'email'        => 'required|email|email:rfc,dns|unique:user_pelanggan,email,' . $id,
                 'telepon'      => 'required',
                 'alamat'       => 'required',
                 'status_mitra' => 'required',
                 'password'     => 'nullable|min:8',
+            ], [
+                'email.email' => 'Format email tidak valid'
             ]);
 
-            $pelanggan = UserPelanggan::findOrFail($id);
-            $pelanggan->nama = $request->nama;
-            $pelanggan->nama_toko = $request->nama_toko;
-            $pelanggan->email = $request->email;
-            $pelanggan->telepon = $request->telepon;
-            $pelanggan->alamat = $request->alamat;
-            $pelanggan->status_mitra = $request->status_mitra;
-            $pelanggan->status = $request->status;
-
-            if ($request->filled('password')) {
-                $pelanggan->password = Hash::make($request->password);
-            }
-            $pelanggan->save();
+            $user = UserPelanggan::findOrFail($id);
+            $user->nama = $request->nama;
+            $user->nama_toko = $request->nama_toko;
+            $user->email = $request->email;
+            $user->telepon = $request->telepon;
+            $user->alamat = $request->alamat;
+            $user->status_mitra = $request->status_mitra;
+            $user->status = $request->status;
         }
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+        $user->save();
 
         return redirect()->route('owner.user.index')->with('success', 'Data user berhasil diperbarui');
     }

@@ -14,4 +14,8 @@ class JenisMobil extends Model
     ];
     public $timestamps = false;
     
+    public function produks()
+    {
+        return $this->belongsToMany(Produk::class, 'produk_jenis_mobil', 'jenis_mobil_id', 'produk_id');
+    }
 }

@@ -108,9 +108,9 @@
                                 </label>
 
                                 <input type="text"
-                                    name="tahun_mobil"
+                                    name="tahun"
                                     class="form-control rounded-3 py-2"
-                                    value="{{ old('tahun_mobil', $jenis_mobil->tahun_mobil) }}"
+                                    value="{{ old('tahun', $jenis_mobil->tahun) }}"
                                     placeholder="Contoh: 2020">
                             </div>
 

@@ -32,9 +32,15 @@
                 </a>
             </li>
         </ul>
-        {{-- Notifikasi --}}
-        @if(session('error'))
-            <div class="alert alert-danger shadow-sm border-0">{{ session('error') }}</div>
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
         @endif
 
         <!-- Form -->
@@ -76,7 +82,7 @@
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0"><i
                                 class="bi bi-telephone text-muted"></i></span>
-                        <input type="text" name="telepon" class="form-control bg-light border-start-0 ps-0" required>
+                        <input type="number" name="telepon" class="form-control bg-light border-start-0 ps-0" required>
                     </div>
                 </div>
 

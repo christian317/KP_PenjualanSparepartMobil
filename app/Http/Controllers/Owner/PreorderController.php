@@ -8,9 +8,7 @@ use App\Models\Pesanan;
 
 class PreorderController extends Controller
 {
-    // ==============================================================================
-    // FUNGSI KELOLA PRE-ORDER (PO)
-    // ==============================================================================
+
     public function index(Request $request)
     {
         $query = Pesanan::with(['UserPelanggan', 'items.produk'])
@@ -30,7 +28,7 @@ class PreorderController extends Controller
 
         $pesananPO = $query->paginate(10)->withQueryString();
 
-        // 3. Kalkulasi Status Kesiapan Stok & Total Harga
+        // statistik Status
         $statTotalPO = Pesanan::where('status', 6)->count();
         $statSiapProses = 0;
         $statMenunggu = 0;
@@ -70,7 +68,7 @@ class PreorderController extends Controller
     public function update($nomor)
     {
         Pesanan::where('nomor', $nomor)->update([
-            'status' => 0, // Ubah ke Status 0 (Diproses Gudang)
+            'status' => 0,
             'updated_at' => now()
         ]);
         

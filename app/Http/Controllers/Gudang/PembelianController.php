@@ -8,7 +8,6 @@ use App\Models\Produk;
 use App\Models\Pembelian;
 use App\Models\DetailPembelian;
 use App\Models\PergerakanStok;
-use Illuminate\Support\Facades\DB;
 
 class PembelianController extends Controller
 {
@@ -55,67 +54,42 @@ class PembelianController extends Controller
             'nama_supplier'      => 'required|string|max:100',
             'tanggal'            => 'required',
             'items'              => 'required|array|min:1',
-            'items.*.id'         => 'required|exists:produk,id',
+            'items.*.id'         => 'required|exists:produk,id|distinct',
             'items.*.jumlah'     => 'required|integer|min:1',
         ], [
-            'items.*.id.exists' => 'Salah satu produk tidak ditemukan.',
+            'items.*.id.exists'   => 'Salah satu produk tidak ditemukan.',
+            'items.*.id.distinct' => 'Produk yan    g sama tidak boleh dipilih lebih dari satu kali.',
         ]);
 
-        DB::beginTransaction();
+        $pembelian = Pembelian::create([
+            'id'             => $request->id,
+            'nama_supplier'  => $request->nama_supplier,
+            'tanggal'        => $request->tanggal,
+            'catatan'        => $request->catatan,
+        ]);
 
-        try {
+        foreach ($request->items as $item) {
 
-            // Validasi produk duplikat
-            $produkIds = collect($request->items)->pluck('id');
-
-            if ($produkIds->duplicates()->isNotEmpty()) {
-                return back()
-                    ->withInput()
-                    ->withErrors([
-                        'error' => 'Produk yang sama tidak boleh dipilih lebih dari satu kali.'
-                    ]);
-            }
-
-            // Create Pembelian
-            $pembelian = Pembelian::create([
-                'id'             => $request->id,
-                'nama_supplier'  => $request->nama_supplier,
-                'tanggal'        => $request->tanggal,
-                'catatan'        => $request->catatan,
+            DetailPembelian::create([
+                'pembelian_id' => $pembelian->id,
+                'produk_id'    => $item['id'],
+                'jumlah'       => $item['jumlah'],
             ]);
 
-            // Create Detail Pembelian
-            foreach ($request->items as $item) {
-                DetailPembelian::create([
-                    'pembelian_id' => $pembelian->id,
-                    'produk_id'    => $item['id'],
-                    'jumlah'       => $item['jumlah'],
-                ]);
+            $produk = Produk::find($item['id']);
+            $produk->increment('stok', $item['jumlah']);
 
-                // Update Stok
-                $produk = Produk::find($item['id']);
-                $produk->increment('stok', $item['jumlah']);
-
-                // Log Pergerakan Stok
-                PergerakanStok::create([
-                    'produk_id'       => $item['id'],
-                    'tipe_pergerakan' => 0,
-                    'jumlah'          => $item['jumlah'],
-                    'tipe_referensi'  => 0,
-                    'catatan'         => 'Pembelian No: ' . $pembelian->id,
-                ]);
-            }
-
-            DB::commit();
-
-            return redirect()->route('admin.pembelian.index')->with('success', 'Pembelian berhasil disimpan!');
-        } catch (\Exception $e) {
-            DB::rollback();
-
-            return back()->withInput()->withErrors([
-                    'error' => 'Gagal: ' . $e->getMessage()
-                ]);
+            PergerakanStok::create([
+                'produk_id'       => $item['id'],
+                'tipe_pergerakan' => 0,
+                'jumlah'          => $item['jumlah'],
+                'tipe_referensi'  => 0,
+                'catatan'         => 'Pembelian No: ' . $pembelian->id,
+            ]);
         }
+
+        return redirect()->route('admin.pembelian.index')
+            ->with('success', 'Pembelian berhasil disimpan!');
     }
 
     public function searchByKode($kode)

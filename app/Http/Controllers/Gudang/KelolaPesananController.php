@@ -85,7 +85,7 @@ class KelolaPesananController extends Controller
             return $item->harga * $item->jumlah;
         });
 
-        // 3. Alias nama produk untuk menjaga file PDF Blade tidak error
+        // Menambahkan nama produk ke setiap item
         foreach ($items as $item) {
             $item->nama_produk = $item->produk ? $item->produk->nama : '-';
         }
@@ -95,6 +95,18 @@ class KelolaPesananController extends Controller
         $pdf->setPaper('a5', 'landscape');
         
         return $pdf->download('Faktur_' . $pesanan->nomor . '.pdf');
+    }
+
+    public function selesai($nomor)
+    {
+        $pesanan = Pesanan::where('nomor', $nomor)->firstOrFail();
+
+        $pesanan->update([
+            'status' => 2,
+            'updated_at' => now()
+        ]);
+        
+        return redirect()->back()->with('toast_success', 'Pesanan ' . $nomor . ' berhasil dikonfirmasi selesai.');
     }
 
 
@@ -139,10 +151,9 @@ class KelolaPesananController extends Controller
             if ($request->filled('tahun')) $query->whereYear('tanggal', $request->tahun);
         }
 
-        // Tabel Pagination
         $pesanan = $query->paginate(10)->withQueryString();
 
-        // 7. Kalkulasi Harga & Total Item untuk Modal
+        // Harga & Total Item untuk Modal
         foreach ($pesanan as $p) {
             $p->total_item = $p->items->sum('jumlah');
             $p->total_harga = $p->items->sum(function($item) {

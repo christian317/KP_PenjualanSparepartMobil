@@ -16,6 +16,7 @@ class UserPelanggan extends Model
         'alamat',
         'status',
         'status_mitra',
+        'verify_token'
     ];
     
     public $timestamps = false;

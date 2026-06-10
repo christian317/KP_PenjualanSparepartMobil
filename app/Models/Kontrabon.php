@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Kontrabon extends Model
@@ -30,5 +29,10 @@ class Kontrabon extends Model
     public function piutang()
     {
         return $this->hasOne(Piutang::class, 'kontrabon_id', 'id');
+    }
+
+    public function userPelanggan()
+    {
+        return $this->belongsTo(UserPelanggan::class, 'user_pelanggan_id', 'id');
     }
 }

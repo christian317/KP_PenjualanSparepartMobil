@@ -9,6 +9,9 @@ use App\Models\Produk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\JenisMobil;
+use App\Models\DetailPesanan;
+use App\Models\Keranjang;
+use App\Models\PergerakanStok;
 
 class ProdukController extends Controller
 {
@@ -22,7 +25,7 @@ class ProdukController extends Controller
             ->where('stok', '>', 0)
             ->count();
         $kategori = Kategori::all();
-        
+
         // Filter
         if ($request->search) {
             $query->where(function ($q) use ($request) {
@@ -77,19 +80,17 @@ class ProdukController extends Controller
             'kategori_id' => 'required',
             'brand_id'    => 'required',
             'jenis_mobil_id' => 'required|array|min:1',
-            'gambar'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'gambar'      => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'deskripsi' => 'nullable'
         ], [
             'jenis_mobil_id.required' => 'Pilih minimal satu jenis mobil yang cocok untuk produk ini.'
         ]);
 
-        // Upload gambar
-        $namaFile = null;
-        if ($request->hasFile('gambar')) {
-            $file = $request->file('gambar');
-            $namaFile = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('produk', $namaFile, 'public');
-        }
+
+        $file = $request->file('gambar');
+        $namaFile = time() . '_' . $file->getClientOriginalName();
+        $file->storeAs('produk', $namaFile, 'public');
+
 
         $produk = Produk::create([
             'id'      => $request->id,
@@ -185,5 +186,24 @@ class ProdukController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Status produk ' . $produk->nama . ' berhasil diperbarui.');
+    }
+
+    public function destroy($id)
+    {
+        $produk = Produk::findOrFail($id);
+
+        $sudahDibeli = DetailPesanan::where('produk_id', $id)->exists();
+
+        if ($sudahDibeli) {
+            return redirect()->back()->with('error', 'Gagal menghapus! Produk ini tidak bisa dihapus karena sudah tercatat dalam riwayat pesanan (faktur) pelanggan.');
+        }
+
+        Keranjang::where('produk_id', $id)->delete();
+        PergerakanStok::where('produk_id', $id)->delete();
+
+        $produk->jenisMobil()->detach();
+        $produk->delete();
+
+        return redirect()->route('admin.produk.index')->with('success', 'Data produk berhasil dihapus sepenuhnya dari sistem!');
     }
 }
