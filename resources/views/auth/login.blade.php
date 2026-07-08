@@ -67,7 +67,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-lock text-muted"></i>
                             </span>
-                            <input type="password" name="password"
+                            <input type="password" name="password" id="password"
                                 class="form-control bg-light border-start-0 border-end-0 ps-0" required>
                             <button class="btn btn-light border border-start-0" type="button"
                                 onclick="togglePassword()">
@@ -110,6 +110,23 @@
             </p>
         </form>
     </div>
+    <script>
+        function togglePassword() {
+            var passwordInput = document.getElementById("password");
+            var eyeIcon = document.getElementById("eyeIcon");
+
+            // Jika tipe saat ini adalah password (tersembunyi)
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.classList.remove("bi-eye");
+                eyeIcon.classList.add("bi-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.classList.remove("bi-eye-slash");
+                eyeIcon.classList.add("bi-eye");
+            }
+        }
+    </script>
 </body>
 
 </html>

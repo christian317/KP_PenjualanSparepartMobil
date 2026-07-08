@@ -278,7 +278,7 @@
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between mb-2 small">
                         <span class="text-muted">Metode Pembayaran</span>
-                        <span class="fw-semibold text-uppercase">{{ $pesanan->metode_pembayaran == 0 ? 'Cash (Tunai)' : 'Kontrabon' }}</span>
+                        <span class="fw-semibold text-uppercase">{{ $pesanan->metode_pembayaran == 0 ? 'Transfer (Tunai)' : 'Kontrabon' }}</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2 small">
                         <span class="text-muted">Status Pembayaran</span>
@@ -312,7 +312,7 @@
                 @endif
 
                 @if ($pesanan->status_pembayaran == 0 && $pesanan->metode_pembayaran == 1 && $pesanan->status != 5 && $kontrabon && $kontrabon->status == 1)
-                    <a href="{{ route('pelanggan.pembayaran_kontrabon.detail', $kontrabon->id) }}" class="btn btn-danger rounded-3 fw-bold px-5">
+                    <a href="{{ route('pelanggan.pembayaran_kontrabon.detail', $kontrabon->id) }}" class="btn btn-outline-danger btn-sm rounded-3 fw-semibold">
                         Bayar Sekarang
                     </a>
                 @endif

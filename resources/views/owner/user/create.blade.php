@@ -59,7 +59,7 @@
                                 <select name="role_id" class="form-select rounded-3 py-2">
                                     <option value="">-- Pilih Role --</option>
                                     <option value="1">Admin Gudang</option>
-                                    <option value="2">Admin Keuangan</option>
+                                    <option value="2">Owner</option>
                                 </select>
                             </div>
 

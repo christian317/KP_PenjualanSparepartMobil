@@ -46,32 +46,41 @@ class KeranjangController extends Controller
 
     public function update(Request $request)
     {
+        $userId = Session::get('user_pelanggan_id');
+        $produkId = $request->id;
+        $jumlahBaru = $request->qty;
+
+        // Ambil data keranjang untuk pengecekan stok
         $keranjang = Keranjang::with('produk')
-            ->where('user_pelanggan_id', Session::get('user_pelanggan_id'))
-            ->where('produk_id', $request->id)
+            ->where('user_pelanggan_id', $userId)
+            ->where('produk_id', $produkId)
             ->first();
 
-        if ($request->type == 'plus') {
-            if ($keranjang->produk->preorder == 0 && $keranjang->produk->stok <= $keranjang->jumlah) {
-                return redirect()->route('pelanggan.checkout.keranjang')->with('error', 'Maaf, stok maksimal telah tercapai.');
-            }
-            Keranjang::where('user_pelanggan_id', Session::get('user_pelanggan_id'))
-                ->where('produk_id', $request->id)
-                ->increment('jumlah');
-            
-        } elseif ($request->type == 'minus') {
-            if ($keranjang->jumlah > 1) {
-                Keranjang::where('user_pelanggan_id', $request->session()->get('user_pelanggan_id'))
-                        ->where('produk_id', $request->id)
-                        ->decrement('jumlah');
-            } else {
-                Keranjang::where('user_pelanggan_id', Session::get('user_pelanggan_id'))
-                    ->where('produk_id', $request->id)
-                    ->delete();
-                
+        if ($keranjang) {
+            if ($jumlahBaru < 1) {
+                Keranjang::where('user_pelanggan_id', $userId)
+                         ->where('produk_id', $produkId)
+                         ->delete();
+                         
                 return redirect()->route('pelanggan.checkout.keranjang')->with('toast_success', 'Produk berhasil dihapus dari keranjang.');
             }
+
+            if ($keranjang->produk->preorder == 0) {
+                if ($jumlahBaru > $keranjang->produk->stok) {
+                    Keranjang::where('user_pelanggan_id', $userId)
+                             ->where('produk_id', $produkId)
+                             ->update(['jumlah' => $keranjang->produk->stok]);
+                             
+                    return redirect()->route('pelanggan.checkout.keranjang')
+                                     ->with('error', 'Stok terbatas! Jumlah diubah otomatis ke sisa stok maksimal (' . $keranjang->produk->stok . ' pcs).');
+                }
+            }
+
+            Keranjang::where('user_pelanggan_id', $userId)
+                     ->where('produk_id', $produkId)
+                     ->update(['jumlah' => $jumlahBaru]);
         }
+
         return redirect()->route('pelanggan.checkout.keranjang');
     }
 

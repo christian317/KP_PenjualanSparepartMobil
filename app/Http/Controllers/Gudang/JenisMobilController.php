@@ -41,7 +41,7 @@ class JenisMobilController extends Controller
     {
         $request->validate([
             'merk' => 'required|string|max:100',
-            'nama_model' => 'required|string|max:100',
+            'nama_model' => 'required|string|max:100|unique:jenis_mobil,nama_model,' . $request->id,
             'tahun' => 'nullable|string|max:20'
         ]);
 

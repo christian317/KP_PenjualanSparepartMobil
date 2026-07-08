@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Owner;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pesanan;
+use App\Models\PergerakanStok;
 
 class PreorderController extends Controller
 {
@@ -19,10 +20,10 @@ class PreorderController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('nomor', 'LIKE', "%{$search}%")
-                  ->orWhereHas('UserPelanggan', function ($qUser) use ($search) {
-                      $qUser->where('nama', 'LIKE', "%{$search}%")
+                    ->orWhereHas('UserPelanggan', function ($qUser) use ($search) {
+                        $qUser->where('nama', 'LIKE', "%{$search}%")
                             ->orWhere('nama_toko', 'LIKE', "%{$search}%");
-                  });
+                    });
             });
         }
 
@@ -39,7 +40,8 @@ class PreorderController extends Controller
             $ready = true;
             foreach ($po->items as $it) {
                 if ($it->produk && $it->produk->stok < $it->jumlah) {
-                    $ready = false; break;
+                    $ready = false;
+                    break;
                 }
             }
             if ($ready) $statSiapProses++;
@@ -56,8 +58,8 @@ class PreorderController extends Controller
                 }
             }
             $p->is_ready = $stokMencukupi;
-            
-            $p->total_harga = $p->items->sum(function($item) {
+
+            $p->total_harga = $p->items->sum(function ($item) {
                 return $item->harga * $item->jumlah;
             });
         }
@@ -67,11 +69,33 @@ class PreorderController extends Controller
 
     public function update($nomor)
     {
-        Pesanan::where('nomor', $nomor)->update([
+        $pesanan = Pesanan::with('items.produk')->where('nomor', $nomor)->firstOrFail();
+
+        foreach ($pesanan->items as $item) {
+            $produk = $item->produk;
+
+            if ($produk) {
+                if ($produk->stok >= $item->jumlah) {
+                    $produk->decrement('stok', $item->jumlah);
+                } else {
+                    $produk->update(['stok' => 0]);
+                }
+
+                PergerakanStok::create([
+                    'produk_id'       => $produk->id,
+                    'tipe_pergerakan' => 1,
+                    'jumlah'          => $item->jumlah,
+                    'tipe_referensi'  => 1,
+                    'catatan'         => 'Stok dipotong saat PO diteruskan ke Gudang: ' . $nomor
+                ]);
+            }
+        }
+
+        $pesanan->update([
             'status' => 0,
             'updated_at' => now()
         ]);
-        
+
         return redirect()->back()->with('toast_success', 'Stok mencukupi! Pesanan PO telah diteruskan ke Gudang.');
     }
 }

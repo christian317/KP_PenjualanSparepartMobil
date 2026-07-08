@@ -53,14 +53,24 @@
 
             
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link {{ Request::is('/') ? 'active' : '' }}"
-                            href="{{ route('pelanggan.index') }}">Katalog</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('pelanggan.riwayat.index') }}">Riwayat Pesanan</a></li>
+<ul class="navbar-nav me-auto gap-3">
+                    <li class="nav-item">
+                        <a class="nav-link menu-text {{ Request::routeIs('pelanggan.index') ? 'active-text text-white' : 'text-secondary' }}"
+                            href="{{ route('pelanggan.index') }}">
+                            Katalog
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-text {{ Request::routeIs('pelanggan.riwayat.*') ? 'active-text text-white' : 'text-secondary' }}" 
+                            href="{{ route('pelanggan.riwayat.index') }}">
+                            Riwayat Pesanan
+                        </a>
+                    </li>
 
                     @if (Session::get('status_mitra') == 1)
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('pelanggan.pembayaran_kontrabon.index') }}">
+                            <a class="nav-link menu-text {{ Request::routeIs('pelanggan.pembayaran_kontrabon.*') ? 'active-text text-white' : 'text-secondary' }}" 
+                                href="{{ route('pelanggan.pembayaran_kontrabon.index') }}">
                                 Tagihan Saya
                             </a>
                         </li>
@@ -113,11 +123,6 @@
                             @endif
                         </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profil</a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
                                 <li><a class="dropdown-item text-danger" href="{{ route('logout') }}"><i
                                             class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
                             </ul>

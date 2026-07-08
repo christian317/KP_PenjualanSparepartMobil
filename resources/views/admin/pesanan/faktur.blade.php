@@ -73,7 +73,7 @@
                     <tr>
                         <td>Yth</td>
                         <td>:</td>
-                        <td>{{ $pesanan->nama }}, (Ditempat)</td>
+                        <td>{{ $pesanan->UserPelanggan->nama }}</td>
                     </tr>
                 </table>
             </td>
@@ -81,7 +81,6 @@
                 <strong style="font-size:14pt;">CV. Jaya Abadi</strong><br>
                 Jl. Raya Otomotif No. 123<br>
                 TELP. 081122334455<br>
-                HP. 081122334455
             </td>
         </tr>
     </table>
@@ -131,7 +130,7 @@
     <table class="signature">
         <tr>
             <td width="50%" class="text-center">
-                {{ $pesanan->nama }},<br><br><br><br>
+                {{ $pesanan->UserPelanggan->nama }},<br><br><br><br>
                 __________________
             </td>
             <td width="50%" class="text-center">

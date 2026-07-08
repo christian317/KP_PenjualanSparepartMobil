@@ -110,7 +110,7 @@
             <li class="nav-item">
                 <a class="nav-link fw-semibold px-4 {{ $tab == '0' ? 'active bg-success' : 'text-muted' }}"
                     href="{{ route('owner.transaksi.index', ['tab' => '0', 'bulan' => request('bulan'), 'tahun' => request('tahun')]) }}">
-                    <i class="bi bi-receipt me-1"></i> Pembayaran Cash
+                    <i class="bi bi-receipt me-1"></i> Pembayaran Transfer
                 </a>
             </li>
             <li class="nav-item">
@@ -125,7 +125,7 @@
         {{-- KONTEN TAB 0: CASH --}}
         {{-- ======================================================== --}}
         @if ($tab == '0')
-            <h5 class="fw-bold mb-3 mt-2"><i class="bi bi-cash-stack me-2 text-secondary"></i>Daftar Transaksi Cash</h5>
+            <h5 class="fw-bold mb-3 mt-2"><i class="bi bi-cash-stack me-2 text-secondary"></i>Daftar Transaksi Transfer</h5>
             <div class="card border-0 shadow-sm rounded-3 mb-4">
                 <div class="table-responsive">
                     <table class="table align-middle mb-0 table-hover">
@@ -140,7 +140,7 @@
                         </thead>
                         <tbody>
                             @forelse ($data as $item)
-                            @if($item->pesanan_status != 5)
+                            @if($item->pesanan_status != 3 && $item->pesanan_status != 5)
                                 <tr>
                                     <td class="ps-4">
                                         <div class="fw-bold small text-dark">{{ $item->nomor_pesanan }}</div>
@@ -157,8 +157,6 @@
                                             <span class="badge rounded-pill bg-info bg-opacity-10 text-info border border-info border-opacity-50 px-2 py-1">Dikirim</span>
                                         @elseif ($item->pesanan_status == 2)
                                             <span class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success border-opacity-50 px-2 py-1">Selesai</span>
-                                        @elseif ($item->pesanan_status == 3)
-                                            <span class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger border-opacity-50 px-2 py-1">Dibatalkan</span>
                                         @elseif($item->pesanan_status == 4)
                                             <span class="badge rounded-pill bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-50 px-2 py-1">Pengembalian Dana</span>
                                         @elseif($item->pesanan_status == 6)

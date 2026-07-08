@@ -46,7 +46,7 @@
                     </div>
                     <div class="card-body p-4">
                         <div class="fw-bold text-dark fs-5">{{ $kontrabon->nama }}</div>
-                        <div class="badge bg-danger text-white border border-danger px-2 py-1 shadow-sm" style="font-size: 13px;">
+                        <div class="badge text-black border border-danger px-2 py-1 shadow-sm" style="font-size: 13px;">
                             <i class="bi bi-wallet2 me-1"></i>Total Hutang: Rp {{ number_format($totalHutangKeseluruhan, 0, ',', '.') }}
                         </div>
                         <div class="text-secondary small mb-3">{{ $kontrabon->nama_toko }} | {{ $kontrabon->telepon }}</div>
@@ -72,8 +72,7 @@
                                 <form action="{{ route('owner.kontrabon.detail.terbitkan', $kontrabon->nomor_kontrabon) }}"
                                     method="POST">
                                     @csrf
-                                    <button type="submit" class="btn btn-warning btn-sm fw-bold w-100 shadow-sm"
-                                        onclick="return confirm('Anda yakin ingin menutup buku kontrabon ini dan menerbitkan tagihan piutangnya sekarang? Pesanan baru pelanggan ini akan masuk ke nomor draf yang baru.');">
+                                    <button type="submit" class="btn btn-warning btn-sm fw-bold w-100 shadow-sm">
                                         <i class="bi bi-send-check me-1"></i> Terbitkan Kontrabon Sekarang
                                     </button>
                                 </form>

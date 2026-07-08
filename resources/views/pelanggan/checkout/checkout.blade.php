@@ -15,6 +15,11 @@
 
         <form action="{{ route('pelanggan.checkout.proses_checkout') }}" method="POST">
             @csrf
+            
+            {{-- Input Hidden untuk menampung data alamat agar terkirim ke Controller --}}
+            <input type="hidden" name="alamat_pengiriman" id="input_alamat_pengiriman" value="{{ $user->alamat }}">
+            <input type="hidden" name="telepon_pengiriman" id="input_telepon_pengiriman" value="{{ $user->telepon }}">
+
             @if (isset($produkTerpilih))
                 @foreach ($produkTerpilih as $id)
                     <input type="hidden" name="produk_terpilih[]" value="{{ $id }}">
@@ -31,13 +36,15 @@
                         </div>
                         <div class="card-body p-4">
                             <div class="fw-bold mb-1">{{ $user->nama }}
-                                <span class="fw-normal text-muted">({{ $user->nama_toko }})</span>
+                                <span class="fw-normal text-muted">({{ $user->nama_toko ?? 'Personal' }})</span>
                             </div>
-                            <div class="text-muted small mb-2">{{ $user->telepon }}</div>
-                            <div class="text-dark small">{{ $user->alamat }}</div>
+                            <div class="text-muted small mb-2" id="display_telepon_pengiriman">{{ $user->telepon }}</div>
+                            <div class="text-dark small" id="display_alamat_pengiriman">{{ $user->alamat }}</div>
                             <hr class="opacity-25">
-                            <a href="#" class="btn btn-outline-secondary btn-sm rounded-2 px-3"
-                                style="font-size: 11px;">Ubah Alamat</a>
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-2 px-3" 
+                                data-bs-toggle="modal" data-bs-target="#modalUbahAlamat" style="font-size: 11px;">
+                                <i class="bi bi-pencil-square me-1"></i> Ubah Alamat
+                            </button>
                         </div>
                     </div>
 
@@ -96,14 +103,13 @@
                                     <div class="payment-card p-3 rounded-3 border d-flex align-items-center gap-3">
                                         <div class="radio-custom flex-shrink-0"></div>
                                         <div>
-                                            <div class="fw-bold small">Bayar Sekarang (Cash)</div>
+                                            <div class="fw-bold small">Bayar Sekarang (Transfer)</div>
                                             <div class="text-muted" style="font-size:11px;">Transfer via Midtrans</div>
                                         </div>
                                     </div>
                                 </label>
 
                                 {{-- Opsi Kontrabon --}}
-                                {{-- PERBAIKAN: Menggunakan status_mitra sesuai Session dari AuthController --}}
                                 <label class="w-100 position-relative m-0 {{ Session::get('status_mitra') != 1 ? 'opacity-50' : 'cursor-pointer' }}"
                                     style="{{ Session::get('status_mitra') != 1 ? 'cursor: not-allowed;' : '' }}">
 
@@ -140,10 +146,6 @@
                                 <span class="text-muted">Total Harga ({{ count($keranjang) }} item)</span>
                                 <span class="fw-semibold">Rp {{ number_format($totalSubtotal, 0, ',', '.') }}</span>
                             </div>
-                            <div class="d-flex justify-content-between mb-2 small">
-                                <span class="text-muted">Biaya Pengiriman</span>
-                                <span class="text-success fw-semibold">Gratis</span>
-                            </div>
                             <hr class="opacity-25">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <span class="fw-bold text-dark">Total Bayar</span>
@@ -178,6 +180,32 @@
         </form>
     </div>
 
+    <div class="modal fade" id="modalUbahAlamat" tabindex="-1" aria-labelledby="modalUbahAlamatLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-light border-bottom-0">
+                    <h6 class="modal-title fw-bold" id="modalUbahAlamatLabel">Ubah Alamat Pengiriman</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Nomor Telepon Penerima</label>
+                        <input type="text" class="form-control form-control-sm" id="modal_input_telepon" value="{{ $user->telepon }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Alamat Lengkap</label>
+                        <textarea class="form-control form-control-sm" id="modal_input_alamat" rows="4">{{ $user->alamat }}</textarea>
+                        <div class="form-text" style="font-size: 11px;">Pastikan alamat ditulis lengkap (Jalan, RT/RW, Kelurahan, Kecamatan, Kota).</div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 bg-light">
+                    <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger btn-sm px-4" onclick="simpanAlamatBaru()">Simpan Alamat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         .cursor-pointer { cursor: pointer; transition: all 0.2s ease; }
         .payment-card { background-color: white; border: 1px solid #dee2e6; transition: all 0.2s ease; }
@@ -187,4 +215,29 @@
         input[type="radio"]:checked + .payment-card .radio-custom::after { content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background-color: #dc3545; border-radius: 50%; }
         .payment-card:hover { border-color: #dc3545; }
     </style>
+
+    <script>
+        function simpanAlamatBaru() {
+            let teleponBaru = document.getElementById('modal_input_telepon').value;
+            let alamatBaru = document.getElementById('modal_input_alamat').value;
+
+            if(alamatBaru.trim() === '' || teleponBaru.trim() === '') {
+                alert('Alamat dan Nomor Telepon tidak boleh kosong!');
+                return;
+            }
+
+            // Update UI
+            document.getElementById('display_telepon_pengiriman').innerText = teleponBaru;
+            document.getElementById('display_alamat_pengiriman').innerText = alamatBaru;
+
+            // Update Hidden Inputs
+            document.getElementById('input_telepon_pengiriman').value = teleponBaru;
+            document.getElementById('input_alamat_pengiriman').value = alamatBaru;
+
+            // Tutup Modal
+            let modalElement = document.getElementById('modalUbahAlamat');
+            let modalInstance = bootstrap.Modal.getInstance(modalElement);
+            modalInstance.hide();
+        }
+    </script>
 @endsection

@@ -14,47 +14,76 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <style>
-        body { background-color: #f8f9fa; overflow-x: hidden; }
+        body {
+    background-color: #f8f9fa;
+    overflow-x: hidden;
+}
 
-        /* Sidebar Desktop tetap di kiri */
-        .sidebar-desktop {
-            width: 240px;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1030;
-            overflow-y: auto;
-        }
+/* Desktop Sidebar */
+.sidebar-desktop {
+    width: 240px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1030;
+    overflow-y: auto;
+}
 
-        /* Konten Utama terdorong ke kanan sejauh lebar sidebar */
-        #main-content {
-            margin-left: 240px; 
-            min-height: 100vh;
-            transition: margin 0.3s ease;
-        }
+/* Content Desktop */
+#main-content {
+    margin-left: 240px;
+    min-height: 100vh;
+    transition: all .3s ease;
+}
 
-        /* Responsif: Di layar kecil (HP/Tablet), sidebar desktop hilang, margin jadi 0 */
-        @media (max-width: 991.98px) {
-            #main-content {
-                margin-left: 0;
-            }
-            .sidebar-desktop {
-                display: none !important;
-            }
-        }
+/* Mobile */
+@media (max-width: 991.98px) {
 
-        /* Styling Scrollbar Sidebar agar tipis */
-        .sidebar-desktop::-webkit-scrollbar { width: 4px; }
-        .sidebar-desktop::-webkit-scrollbar-thumb { background: #444; }
+    #main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .sidebar-desktop {
+        display: none !important;
+    }
+}
+
+/* Scrollbar */
+.sidebar-desktop::-webkit-scrollbar {
+    width: 5px;
+}
+
+.sidebar-desktop::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 10px;
+}
     </style>
 </head>
 <body>
 
     @include('layouts.sidebar')
 
+    <!-- Header Mobile -->
+    <nav class="navbar navbar-dark bg-dark d-lg-none sticky-top">
+        <div class="container-fluid">
+            <button class="btn btn-outline-light"
+                    type="button"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#sidebarMobile">
+                <i class="bi bi-list fs-4"></i>
+            </button>
+
+            <span class="navbar-brand mb-0 h1 fw-bold">
+                <i class="bi bi-car-front-fill text-danger me-1"></i>
+                CV<span class="text-danger">Jaya Abadi</span>
+            </span>
+        </div>
+    </nav>
+
     <main id="main-content">
-        <div class="p-4">
+        <div class="p-3 p-lg-4">
             @yield('content')
         </div>
     </main>
@@ -62,6 +91,5 @@
     @stack('scripts')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

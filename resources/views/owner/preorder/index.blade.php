@@ -257,9 +257,9 @@
                                     // Deteksi jika stok item ini kurang
                                     $isMinus = $item->produk && $item->produk->stok < $item->jumlah;
                                 @endphp
-                                <tr class="{{ $isMinus ? 'table-danger' : '' }}">
+                                <tr class="{{ $isMinus ? : '' }}">
                                     <td class="ps-3 py-2">
-                                        <div class="fw-semibold {{ $isMinus ? 'text-danger' : 'text-dark' }}">{{ $item->produk->nama ?? 'Produk Tidak Ditemukan' }}</div>
+                                        <div class="fw-semibold {{ $isMinus ? : 'text-dark' }}">{{ $item->produk->nama ?? 'Produk Tidak Ditemukan' }}</div>
                                         <div class="text-muted font-monospace" style="font-size: 10px;">SKU: {{ $item->produk_id }} 
                                             @if($item->produk && $item->produk->preorder == 1) <span class="badge bg-warning text-dark ms-1">Barang PO</span> @endif
                                         </div>

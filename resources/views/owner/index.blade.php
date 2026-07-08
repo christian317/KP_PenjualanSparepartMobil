@@ -11,7 +11,7 @@
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
                 <div>
                     <div class="h4 fw-bold mb-1 d-flex align-items-center">
-                        <i class="bi bi-grid-1x2-fill me-2 text-primary"></i>Dashboard Executive
+                        <i class="bi bi-grid-1x2-fill me-2 text-primary"></i>Dashboard
                     </div>
                     <div class="text-muted small">Selamat datang kembali! Berikut adalah ringkasan operasional CV Jaya Abadi hari ini.</div>
                 </div>

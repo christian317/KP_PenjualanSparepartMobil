@@ -56,7 +56,22 @@
                         </span>
 
                         {{-- Badge Status Pesanan --}}
-                        @if ($p->status == 0)
+                        @if ($p->status == 3)
+                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1 rounded-pill">
+                                <i class="bi bi-x-circle me-1"></i>Dibatalkan
+                            </span>
+                        @elseif ($p->status == 4)
+                            <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2 py-1 rounded-pill text-dark">
+                                <i class="bi bi-clock me-1"></i>Menunggu Refund Dana
+                            </span>
+                        
+                        {{-- TAMBAHAN: Pengecekan Menunggu Pembayaran (Pending) --}}
+                        @elseif ($p->status_pembayaran == 0 && $p->metode_pembayaran == '0')
+                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1 rounded-pill">
+                                <i class="bi bi-wallet2 me-1"></i>Menunggu Pembayaran
+                            </span>
+
+                        @elseif ($p->status == 0)
                             <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-2 py-1 rounded-pill">
                                 <i class="bi bi-hourglass-split me-1"></i>Sedang Diproses
                             </span>
@@ -67,14 +82,6 @@
                         @elseif ($p->status == 2)
                             <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 rounded-pill">
                                 <i class="bi bi-check-circle me-1"></i>Selesai
-                            </span>
-                        @elseif ($p->status == 3)
-                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1 rounded-pill">
-                                <i class="bi bi-x-circle me-1"></i>Dibatalkan
-                            </span>
-                        @elseif ($p->status == 4)
-                            <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2 py-1 rounded-pill text-dark">
-                                <i class="bi bi-clock me-1"></i>Menunggu Refund Dana
                             </span>
                         @elseif($p->status == 5)
                             <span class="badge bg-warning bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-2 py-1 rounded-pill">
@@ -153,8 +160,7 @@
                 @if ($p->status == 6)
                     <div class="px-4 py-2 border-top bg-warning bg-opacity-10 d-flex align-items-center gap-2">
                         <i class="bi bi-info-circle text-warning"></i>
-                        <span class="small text-warning fw-semibold">Pre-order · Estimasi Tersedia:
-                            <strong>1 - 3 hari</strong> "Pesanan tidak bisa dibatalkan"
+                        <span class="small text-warning fw-semibold">Pre-order · "Pesanan tidak bisa dibatalkan"
                         </span>
                     </div>
                 @endif
@@ -214,11 +220,11 @@
                         @endif
 
                         {{-- Tombol Batalkan Pesanan --}}
-                        @if ($p->status == 0 && $p->preorder == 0)
+                        @if ($p->status == 0 && $p->preorder == 0 && $p->metode_pembayaran == 0 && $p->status_pembayaran == 1)
                             <button class="btn btn-outline-danger btn-sm rounded-3 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalCancel-{{ $p->nomor }}">
                                 <i class="bi bi-arrow-counterclockwise me-1"></i>Batalkan & Refund Dana
                             </button>
-                        @elseif($p->status == 5 && $p->preorder == 1)
+                        @elseif($p->status == 5 || ($p->status == 0 && $p->preorder == 0 && $p->metode_pembayaran == 1))
                             <button class="btn btn-outline-danger btn-sm rounded-3 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalCancel-{{ $p->nomor }}">
                                 <i class="bi bi-x-circle me-1"></i>Batalkan Pesanan
                             </button>
@@ -309,14 +315,6 @@
                 </a>
             </div>
         @endforelse
-
-        <div id="empty-state-filter" class="d-none text-center py-5 my-4">
-            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:96px;height:96px;">
-                <i class="bi bi-box-seam text-secondary" style="font-size:44px;opacity:.4;"></i>
-            </div>
-            <h6 class="fw-bold text-dark">Tidak ada pesanan</h6>
-            <p class="text-muted small mb-4">Belum ada pesanan dengan status ini.</p>
-        </div>
 
         <div class="d-flex justify-content-center mt-4">
             {{ $pesanan->links('pagination::bootstrap-5') }}

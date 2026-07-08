@@ -26,7 +26,7 @@ use App\Http\Controllers\Pelanggan\RiwayatController;
 use App\Http\Controllers\Pelanggan\CheckoutController;
 use App\Http\Controllers\Pelanggan\PembayaranKontrabonController;
 
-Route::get('/welcomepage', function () {
+Route::get('/', function () {
     return view('welcome');
 });
 
@@ -80,6 +80,7 @@ Route::middleware(['role:admin_gudang'])->group(function () {
     Route::post('/admin/pesanan/{nomor}/kirim', [KelolaPesananController::class,'update'])->name('admin.pesanan.kirim');
     Route::get('/admin/pesanan/faktur/{nomor}/cetak', [KelolaPesananController::class, 'cetak_faktur'])->name('admin.pesanan.faktur');
     Route::post('/admin/pesanan/{nomor}/selesai', [KelolaPesananController::class, 'selesai'])->name('admin.pesanan.selesai');
+    Route::get('/admin/pesanan/{nomor}/resi', [KelolaPesananController::class, 'cetakResi'])->name('admin.pesanan.resi');
     // riwayat pesanan
     Route::get('/admin/riwayat_pesanan/index', [KelolaPesananController::class, 'riwayat_pesanan'])->name('admin.riwayat_pesanan.index');
 });

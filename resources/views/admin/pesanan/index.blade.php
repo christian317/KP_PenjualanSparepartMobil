@@ -355,7 +355,7 @@
                         <div>
                             <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2"
                                 id="modalDetailLabel{{ $p->nomor }}">
-                                <i class="bi bi-box-seam text-warning"></i> Surat Jalan / Pengemasan
+                                <i class="bi bi-box-seam text-warning"></i> Detail Pengemasan
                             </h5>
                             <div class="text-muted small mt-1">{{ $p->nomor }}</div>
                         </div>
@@ -393,7 +393,7 @@
                                         <span class="text-muted"><i class="bi bi-wallet2 me-2"></i>Metode
                                             Pembayaran</span>
                                         <span
-                                            class="fw-semibold">{{ $p->metode_pembayaran == 0 ? 'Cash / Transfer' : 'Kontrabon' }}</span>
+                                            class="fw-semibold">{{ $p->metode_pembayaran == 0 ? 'Transfer' : 'Kontrabon' }}</span>
                                     </div>
                                     <div class="d-flex justify-content-between">
                                         <span class="text-muted"><i class="bi bi-check-circle me-2"></i>Status
@@ -408,7 +408,7 @@
                             </div>
                         </div>
                         <h6 class="fw-bold text-dark mb-3" style="font-size: 13px;"><i
-                                class="bi bi-inboxes me-2"></i>RINCIAN BARANG SIAP PACKING</h6>
+                                class="bi bi-inboxes me-2"></i>RINCIAN BARANG</h6>
                         <div class="table-responsive border rounded-3 overflow-hidden mb-3">
                             <table class="table table-borderless table-striped align-middle mb-0 text-sm">
                                 <thead class="bg-light border-bottom">
@@ -463,8 +463,13 @@
                             data-bs-dismiss="modal">Tutup</button>
                         <div class="d-flex gap-2">
                             @if ($p->status == 0)
-                                <a href="{{ route('admin.pesanan.faktur', $p->nomor) }}"
-                                    class="btn btn-outline-secondary fw-semibold rounded-3 px-3 d-flex align-items-center">
+                                <a href="{{ route('admin.pesanan.resi', $p->nomor) }}" target="_blank"
+                                    class="btn btn-outline-dark fw-semibold rounded-3 px-3 d-flex align-items-center">
+                                    <i class="bi bi-file-earmark-post me-2"></i> Cetak Resi
+                                </a>
+                                
+                                <a href="{{ route('admin.pesanan.faktur', $p->nomor) }}" target="_blank"
+                                    class="btn btn-outline-dark fw-semibold rounded-3 px-3 d-flex align-items-center">
                                     <i class="bi bi-printer me-2"></i> Cetak Faktur PDF
                                 </a>
                                 <form action="{{ route('admin.pesanan.kirim', $p->nomor) }}" method="POST"

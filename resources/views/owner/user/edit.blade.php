@@ -62,7 +62,7 @@
                                         <label class="form-label fw-semibold small text-secondary">Nama Toko /
                                             Bengkel</label>
                                         <input name="nama_toko" type="text" class="form-control rounded-3 py-2"
-                                            value="{{ old('nama_toko', $user->nama_toko ?? '') }}" required>
+                                            value="{{ old('nama_toko', $user->nama_toko ?? '') }}">
                                     </div>
                                 @endif
 
@@ -78,8 +78,7 @@
                                                 {{ old('role_id', $user->role_id ?? '') == 1 ? 'selected' : '' }}>Admin
                                                 Gudang</option>
                                             <option value="2"
-                                                {{ old('role_id', $user->role_id ?? '') == 2 ? 'selected' : '' }}>Admin
-                                                Keuangan</option>
+                                                {{ old('role_id', $user->role_id ?? '') == 2 ? 'selected' : '' }}>Owner</option>
                                         </select>
                                     </div>
                                 @endif

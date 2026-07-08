@@ -86,7 +86,7 @@
                 {{ Request::routeIs('owner.preorder*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
                 <i class="bi bi-clock-history"></i> Kelola Preorder
                 @php
-                    $preorderCount = \App\Models\Pesanan::where('status', 4)->count();
+                    $preorderCount = \App\Models\Pesanan::where('status', 6)->count();
                 @endphp
                 @if($preorderCount > 0)
                     <span class="ms-auto badge bg-danger" style="font-size:10px;">{{ $preorderCount }}</span>
@@ -97,6 +97,12 @@
                 class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none
                 {{ Request::routeIs('owner.refund_dana*') ? 'text-white bg-danger bg-opacity-25 border-start border-danger border-3' : 'text-white-50' }}">
                 <i class="bi bi-file-earmark-bar-graph"></i> Refund Dana
+                @php
+                    $refundCount = \App\Models\Pesanan::where('status', 4)->count();
+                @endphp
+                @if($refundCount > 0)
+                    <span class="ms-auto badge bg-danger" style="font-size:10px;">{{ $refundCount }}</span>
+                @endif
             </a>
 
             <a href="{{ route('owner.monitoring_produk.index') }}"

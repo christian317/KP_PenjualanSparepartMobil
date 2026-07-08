@@ -197,10 +197,10 @@
                     <button class="btn btn-primary py-2 fw-bold rounded-3 shadow-sm border-0">
                         <i class="bi bi-check-circle me-2"></i>Simpan Produk
                     </button>
-                    <button onclick="showPage('gudang')"
+                    <a href="{{ route('admin.produk.index') }}"
                         class="btn btn-light py-2 fw-semibold rounded-3 text-secondary border">
                         Batal
-                    </button>
+                    </a>
                 </div>
             </div>
     </div>

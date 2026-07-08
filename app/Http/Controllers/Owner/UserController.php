@@ -96,7 +96,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama'      => 'required|string|max:255',
+            'nama'      => 'required|string|max:150',
             'email'     => 'required|email',
             'password'  => 'required|min:8',
         ]);
@@ -105,7 +105,7 @@ class UserController extends Controller
 
         if ($tipe == 'pelanggan') {
             $request->validate([
-                'nama_toko'    => 'required|string|max:255',
+                'nama_toko'    => 'nullable|string|max:100',
                 'telepon'      => 'required',
                 'alamat'       => 'required',
                 'status'       => 'required|in:1,2',
@@ -171,8 +171,8 @@ class UserController extends Controller
             $user->role_id = $request->role_id;
         } else {
             $request->validate([
-                'nama'         => 'required|string|max:255',
-                'nama_toko'    => 'required|string|max:255',
+                'nama'         => 'required|string|max:150',
+                'nama_toko'    => 'nullable|string|max:100',
                 'email'        => 'required|email|email:rfc,dns|unique:user_pelanggan,email,' . $id,
                 'telepon'      => 'required',
                 'alamat'       => 'required',

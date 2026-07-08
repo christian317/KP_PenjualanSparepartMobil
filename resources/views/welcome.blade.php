@@ -249,7 +249,7 @@
                 @foreach ([
         ['icon' => 'bi-search', 'color' => 'danger', 'title' => 'Katalog Super Lengkap', 'desc' => 'Akses ribuan sparepart original dari berbagai merek. Dilengkapi fitur pencarian pintar untuk menemukan barang dengan cepat.'],
         ['icon' => 'bi-cart-check', 'color' => 'primary', 'title' => 'Pemesanan Instan', 'desc' => 'Tidak perlu lagi antre via WhatsApp. Masukkan barang ke keranjang dan checkout kapan saja, 24 jam sehari.'],
-        ['icon' => 'bi-credit-card', 'color' => 'success', 'title' => 'Opsi Bayar Fleksibel', 'desc' => 'Bayar pesanan secara langsung (Cash) dengan aman via Midtrans, atau gunakan metode hutang (Kontrabon) jika Anda adalah Mitra.'],
+        ['icon' => 'bi-credit-card', 'color' => 'success', 'title' => 'Opsi Bayar Fleksibel', 'desc' => 'Bayar pesanan secara langsung (Transfer) dengan aman via Midtrans, atau gunakan metode hutang (Kontrabon) jika Anda adalah Mitra.'],
         ['icon' => 'bi-box-seam', 'color' => 'warning', 'title' => 'Stok Selalu Akurat', 'desc' => 'Sistem kami terintegrasi langsung dengan gudang. Ketersediaan barang selalu ter-update otomatis sehingga Anda tidak perlu ragu saat memesan.'],
         ['icon' => 'bi-receipt', 'color' => 'info', 'title' => 'Riwayat & Tagihan Terpusat', 'desc' => 'Semua faktur, riwayat pembelian, dan sisa tagihan tercatat rapi di dalam sistem. Pembukuan bengkel Anda jadi lebih mudah.'],
         ['icon' => 'bi-award', 'color' => 'secondary', 'title' => 'Jaminan Kualitas', 'desc' => 'Setiap pesanan dipacking dengan teliti oleh tim gudang dilengkapi dengan surat jalan resmi untuk memastikan kesesuaian produk.'],
@@ -376,9 +376,9 @@
 
             {{-- ALUR 1: PEMBAYARAN CASH --}}
             <h5 class="fw-bold text-dark mt-5"><i class="bi bi-cash-coin text-success me-2"></i>Alur Pembelian
-                Langsung (Cash)</h5>
+                Langsung (Transfer)</h5>
             <div class="row g-0 align-items-start mt-4 mb-5 pb-4 border-bottom">
-                @foreach ([['no' => '01', 'icon' => 'bi-cart-plus', 'color' => 'danger', 'title' => 'Pilih Produk', 'desc' => 'Cari dan masukkan sparepart ke keranjang belanja Anda.'], ['no' => '02', 'icon' => 'bi-credit-card', 'color' => 'primary', 'title' => 'Pilih Cash', 'desc' => 'Lakukan Checkout dan pilih opsi pembayaran "Cash".'], ['no' => '03', 'icon' => 'bi-shield-check', 'color' => 'success', 'title' => 'Bayar Aman', 'desc' => 'Selesaikan pembayaran secara instan melalui Midtrans.'], ['no' => '04', 'icon' => 'bi-box-seam', 'color' => 'warning', 'title' => 'Diproses', 'desc' => 'Barang pesanan Anda akan segera disiapkan oleh tim.'], ['no' => '05', 'icon' => 'bi-truck', 'color' => 'info', 'title' => 'Dikirim', 'desc' => 'Tunggu pesanan Anda diantar dengan aman ke lokasi bengkel.'], ['no' => '06', 'icon' => 'bi-check-circle', 'color' => 'success', 'title' => 'Selesai', 'desc' => 'Terima barang dan pastikan semua sesuai pesanan.']] as $i => $step)
+                @foreach ([['no' => '01', 'icon' => 'bi-cart-plus', 'color' => 'danger', 'title' => 'Pilih Produk', 'desc' => 'Cari dan masukkan sparepart ke keranjang belanja Anda.'], ['no' => '02', 'icon' => 'bi-credit-card', 'color' => 'primary', 'title' => 'Pilih Transfer', 'desc' => 'Lakukan Checkout dan pilih opsi pembayaran "Transfer".'], ['no' => '03', 'icon' => 'bi-shield-check', 'color' => 'success', 'title' => 'Bayar Aman', 'desc' => 'Selesaikan pembayaran secara instan melalui Midtrans.'], ['no' => '04', 'icon' => 'bi-box-seam', 'color' => 'warning', 'title' => 'Diproses', 'desc' => 'Barang pesanan Anda akan segera disiapkan oleh tim.'], ['no' => '05', 'icon' => 'bi-truck', 'color' => 'info', 'title' => 'Dikirim', 'desc' => 'Tunggu pesanan Anda diantar dengan aman ke lokasi bengkel.'], ['no' => '06', 'icon' => 'bi-check-circle', 'color' => 'success', 'title' => 'Selesai', 'desc' => 'Terima barang dan pastikan semua sesuai pesanan.']] as $i => $step)
                     <div class="col-6 col-md-4 col-lg-2 mt-3 mt-lg-0">
                         <div class="text-center px-2 pb-4 position-relative">
                             @if ($i < 5)
@@ -405,7 +405,7 @@
             <h5 class="fw-bold text-dark mt-4"><i class="bi bi-journal-text text-danger me-2"></i>Alur Pembelian Tempo
                 (Kontrabon Khusus Mitra)</h5>
             <div class="row g-0 align-items-start mt-4">
-                @foreach ([['no' => '01', 'icon' => 'bi-cart-plus', 'color' => 'danger', 'title' => 'Pilih Produk', 'desc' => 'Cari dan masukkan sparepart ke keranjang belanja Anda.'], ['no' => '02', 'icon' => 'bi-journal-check', 'color' => 'primary', 'title' => 'Pilih Kontrabon', 'desc' => 'Checkout pesanan tanpa perlu mengeluarkan uang di awal.'], ['no' => '03', 'icon' => 'bi-truck', 'color' => 'warning', 'title' => 'Terima Barang', 'desc' => 'Pesanan diproses dan langsung dikirim ke bengkel Anda.'], ['no' => '04', 'icon' => 'bi-receipt', 'color' => 'danger', 'title' => 'Tagihan Terbit', 'desc' => 'Sistem akan menggabungkan pesanan menjadi tagihan mingguan.'], ['no' => '05', 'icon' => 'bi-wallet2', 'color' => 'success', 'title' => 'Cicil Fleksibel', 'desc' => 'Ketik nominal bayar sesuai kemampuan via dashboard tagihan.'], ['no' => '06', 'icon' => 'bi-calendar-check', 'color' => 'primary', 'title' => 'Lunas', 'desc' => 'Pastikan tagihan dilunasi sebelum masa tempo 3 bulan habis.']] as $i => $step)
+                @foreach ([['no' => '01', 'icon' => 'bi-cart-plus', 'color' => 'danger', 'title' => 'Pilih Produk', 'desc' => 'Cari dan masukkan sparepart ke keranjang belanja Anda.'], ['no' => '02', 'icon' => 'bi-journal-check', 'color' => 'primary', 'title' => 'Pilih Kontrabon dan Aprroval', 'desc' => 'Checkout pesanan tanpa perlu mengeluarkan uang di awal.'], ['no' => '03', 'icon' => 'bi-truck', 'color' => 'warning', 'title' => 'Terima Barang', 'desc' => 'Pesanan diproses dan langsung dikirim ke bengkel Anda.'], ['no' => '04', 'icon' => 'bi-receipt', 'color' => 'danger', 'title' => 'Tagihan Terbit', 'desc' => 'Sistem akan menggabungkan pesanan menjadi tagihan mingguan.'], ['no' => '05', 'icon' => 'bi-wallet2', 'color' => 'success', 'title' => 'Cicil Fleksibel', 'desc' => 'Ketik nominal bayar sesuai kemampuan via dashboard tagihan.'], ['no' => '06', 'icon' => 'bi-calendar-check', 'color' => 'primary', 'title' => 'Lunas', 'desc' => 'Pastikan tagihan dilunasi sebelum masa tempo 3 bulan habis.']] as $i => $step)
                     <div class="col-6 col-md-4 col-lg-2 mt-3 mt-lg-0">
                         <div class="text-center px-2 pb-4 position-relative">
                             @if ($i < 5)
@@ -474,8 +474,7 @@
                     <div class="d-flex flex-column gap-3">
                         <div class="d-flex align-items-start gap-3">
                             <i class="bi bi-geo-alt text-danger mt-1 flex-shrink-0"></i>
-                            <span class="text-white text-opacity-75 fw-medium" style="font-size:14px;">Jl. Raya
-                                Industri No. 45, Kompleks Pergudangan, Jakarta</span>
+                            <span class="text-white text-opacity-75 fw-medium" style="font-size:14px;">TIK III Blok E4 No. 13, Bandung</span>
                         </div>
                         <div class="d-flex align-items-start gap-3">
                             <i class="bi bi-telephone text-danger mt-1 flex-shrink-0"></i>

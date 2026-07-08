@@ -97,6 +97,15 @@ class KelolaPesananController extends Controller
         return $pdf->download('Faktur_' . $pesanan->nomor . '.pdf');
     }
 
+    public function cetakResi($nomor)
+    {
+        $pesanan = Pesanan::with(['UserPelanggan', 'items.produk'])->where('nomor', $nomor)->firstOrFail();
+        $pdf = PDF::loadView('admin.pesanan.resi', compact('pesanan'));
+        $pdf->setPaper('a6', 'portrait');
+        
+        return $pdf->download('Resi_Pengiriman_' . $pesanan->nomor . '.pdf');
+    }
+
     public function selesai($nomor)
     {
         $pesanan = Pesanan::where('nomor', $nomor)->firstOrFail();

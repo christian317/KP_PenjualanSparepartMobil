@@ -73,7 +73,7 @@ class ProdukController extends Controller
         $request->validate([
             'nama' => 'required|string|max:150',
             'id' => 'required|unique:produk,id|max:30',
-            'harga'       => 'required|numeric|min:0',
+            'harga' => 'required|numeric|min:0',
             'stok' => 'required|numeric|min:0',
             'min_stok'    => 'required|numeric|min:0',
             'unit'        => 'required|string|max:10',

@@ -106,18 +106,15 @@ class PelangganController extends Controller
                     $pembayaran->update(['status' => 1]);
 
                     $nomorPesananAsli = $pembayaran->nomor_pesanan;
-                    
-                    // PERBAIKAN: Ambil pesanan sekaligus relasi kontrabonnya dari tabel pivot
+
                     $pesanan = Pesanan::with('kontrabon')->where('nomor', $nomorPesananAsli)->first();
 
                     $piutang = null;
                     if ($pesanan && $pesanan->kontrabon->isNotEmpty()) {
-                        // Ambil ID kontrabon dari pivot pertama yang berelasi, lalu cari piutangnya
                         $kontrabonTerkait = $pesanan->kontrabon->first();
                         $piutang = Piutang::where('kontrabon_id', $kontrabonTerkait->id)->first();
                     }
 
-                    // Logika Pengurangan Piutang
                     if ($piutang) {
                         $piutang->decrement('sisa_tagihan', $pembayaran->nominal_pembayaran);
                         
@@ -130,26 +127,31 @@ class PelangganController extends Controller
                         }
                     }
 
-                    // Logika Update Status Pembayaran Pesanan
                     if ($pesanan && ($pesanan->metode_pembayaran == 0 || ($piutang && $piutang->fresh()->status == 1))) {
                         $pesanan->update(['status_pembayaran' => 1]);
                     }
 
-                    // Logika Pengurangan Stok jika pembayaran Cash (0)
                     if ($pesanan && $pesanan->metode_pembayaran == 0) {
-                        $items = DetailPesanan::where('nomor_pesanan', $nomorPesananAsli)->get();
+                        $items = DetailPesanan::with('produk')->where('nomor_pesanan', $nomorPesananAsli)->get();
                         $produkIds = $items->pluck('produk_id');
 
                         foreach ($items as $item) {
-                            Produk::where('id', $item->produk_id)->decrement('stok', $item->jumlah);
+                            $produk = $item->produk;
 
-                            PergerakanStok::create([
-                                'produk_id' => $item->produk_id,
-                                'tipe_pergerakan' => 1,
-                                'jumlah' => $item->jumlah,
-                                'tipe_referensi' => 1,
-                                'catatan' => 'Pesanan Cash ' . $nomorPesananAsli
-                            ]);
+                            if ($produk && $produk->preorder == 0) {
+                                if ($produk->stok >= $item->jumlah) {
+                                    $produk->decrement('stok', $item->jumlah);
+                                } else {
+                                    $produk->update(['stok' => 0]);
+                                }
+                                PergerakanStok::create([
+                                    'produk_id' => $item->produk_id,
+                                    'tipe_pergerakan' => 1,
+                                    'jumlah' => $item->jumlah,
+                                    'tipe_referensi' => 1,
+                                    'catatan' => 'Pesanan Cash Lunas ' . $nomorPesananAsli
+                                ]);
+                            } 
                         }
                         
                         Keranjang::where('user_pelanggan_id', $pesanan->user_pelanggan_id)

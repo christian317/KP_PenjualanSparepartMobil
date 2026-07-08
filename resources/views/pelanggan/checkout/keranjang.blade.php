@@ -20,15 +20,15 @@
                     role="alert">
                     <i class="bi bi-exclamation-octagon-fill fs-5 me-3"></i>
                     <div class="fw-bold">{{ session('error') }}</div>
-
                     <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
+            
             <div class="col-md-8">
                 <div class="card border-0 shadow-sm rounded-3">
                     <div class="card-header bg-white d-flex justify-content-between align-items-center py-3 rounded-top-3">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="selectAll" checked>
+                            <input class="form-check-input" type="checkbox" id="selectAll">
                             <label class="form-check-label small fw-semibold" for="selectAll">Pilih Semua</label>
                         </div>
                     </div>
@@ -47,21 +47,21 @@
                                 @forelse($cart as $item)
                                     <tr class="cart-item">
                                         <td class="ps-3">
-                                            {{-- PERBAIKAN: data-id menggunakan kode_produk --}}
+                                            {{-- PERBAIKAN: Menghapus hardcode 'checked' agar bisa diatur oleh JS --}}
                                             <input class="form-check-input item-checkbox" type="checkbox"
-                                                data-id="{{ $item->produk_id }}" data-price="{{ $item->produk->harga }}"
-                                                data-quantity="{{ $item->jumlah }}"
-                                                {{ $item->is_selected ? 'checked' : 'checked' }}>
+                                                data-id="{{ $item->produk_id }}" 
+                                                data-price="{{ $item->produk->harga }}"
+                                                data-quantity="{{ $item->jumlah }}">
                                         </td>
                                         <td>
                                             <div class="d-flex gap-3 align-items-center">
                                                 <img src="{{ asset('storage/produk/' . $item->produk->gambar) }}"
                                                     class="rounded-3" style="width:52px;height:52px;object-fit:cover;">
                                                 <div>
-                                                    {{-- PERBAIKAN: Menggunakan $item->produk->nama (bukan nama_produk) --}}
                                                     <div class="fw-semibold small">{{ $item->produk->nama }}</div>
                                                     <div class="text-muted" style="font-size:11px;">
-                                                        {{ $item->produk->brand->nama }} · SKU: {{ $item->id }}</div>
+                                                        {{ $item->produk->brand->nama ?? '-' }} · SKU: {{ $item->produk_id }}
+                                                    </div>
                                                     <div class="text-danger fw-bold d-md-none" style="font-size:13px;">Rp
                                                         {{ number_format($item->produk->harga, 0, ',', '.') }}</div>
                                                     @if ($item->produk->preorder == 1)
@@ -72,43 +72,27 @@
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            <div class="d-flex align-items-center justify-content-center gap-1">
-                                                {{-- TOMBOL MINUS --}}
-                                                <form action="{{ route('pelanggan.checkout.keranjang.update') }}"
-                                                    method="POST" class="d-inline">
-                                                    @csrf
-                                                    {{-- PERBAIKAN: value menggunakan kode_produk --}}
-                                                    <input type="hidden" name="id" value="{{ $item->produk_id }}">
-                                                    <input type="hidden" name="type" value="minus">
-                                                    <button type="submit"
-                                                        class="btn btn-outline-secondary btn-sm px-2 py-0">−</button>
-                                                </form>
-
-                                                <span class="fw-bold small px-2">{{ $item->jumlah }}</span>
-
-                                                {{-- TOMBOL PLUS --}}
-                                                <form action="{{ route('pelanggan.checkout.keranjang.update') }}"
-                                                    method="POST" class="d-inline">
-                                                    @csrf
-                                                    {{-- PERBAIKAN: value menggunakan kode_produk --}}
-                                                    <input type="hidden" name="id" value="{{ $item->produk_id }}">
-                                                    <input type="hidden" name="type" value="plus">
-                                                    <button type="submit"
-                                                        class="btn btn-outline-secondary btn-sm px-2 py-0">+</button>
-                                                </form>
-                                            </div>
+                                            {{-- PERBAIKAN: Form Tunggal dengan Input yang Bisa Diketik --}}
+                                            <form action="{{ route('pelanggan.checkout.keranjang.update') }}" method="POST" class="d-inline form-qty">
+                                                @csrf
+                                                <input type="hidden" name="id" value="{{ $item->produk_id }}">
+                                                <div class="input-group input-group-sm mx-auto" style="width: 100px;">
+                                                    <button class="btn btn-outline-secondary btn-minus" type="button">−</button>
+                                                    {{-- Input type number agar user bisa mengetik --}}
+                                                    <input type="number" name="qty" class="form-control text-center px-1 input-qty" 
+                                                        value="{{ $item->jumlah }}" min="1" max="{{ $item->produk->preorder == 1 ? 999 : $item->produk->stok }}">
+                                                    <button class="btn btn-outline-secondary btn-plus" type="button">+</button>
+                                                </div>
+                                            </form>
                                         </td>
                                         <td class="text-end fw-bold text-dark item-subtotal">
                                             Rp {{ number_format($item->produk->harga, 0, ',', '.') }}
                                         </td>
                                         <td class="text-center">
-                                            {{-- TOMBOL HAPUS --}}
-                                            <form action="{{ route('pelanggan.checkout.keranjang.hapus') }}" method="POST"
-                                                class="d-inline">
+                                            <form action="{{ route('pelanggan.checkout.keranjang.hapus') }}" method="POST" class="d-inline form-hapus">
                                                 @csrf
-                                                {{-- PERBAIKAN: value menggunakan kode_produk --}}
                                                 <input type="hidden" name="id" value="{{ $item->produk_id }}">
-                                                <button type="submit" class="btn btn-link text-secondary p-0"
+                                                <button type="submit" class="btn btn-link text-secondary p-0 btn-hapus"
                                                     onclick="return confirm('Hapus produk ini?')">
                                                     <i class="bi bi-trash3"></i>
                                                 </button>
@@ -117,8 +101,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center py-5 text-muted small">Keranjang belanja
-                                            kosong</td>
+                                        <td colspan="5" class="text-center py-5 text-muted small">Keranjang belanja kosong</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -160,13 +143,12 @@
         </div>
     </div>
 
-    <form id="formCheckout" action="{{ route('pelanggan.checkout.checkout') }}" method="GET" class="d-none">
-    </form>
+    <form id="formCheckout" action="{{ route('pelanggan.checkout.checkout') }}" method="GET" class="d-none"></form>
     
     <script>
         @if (Session::has('toast_success'))
             document.addEventListener("DOMContentLoaded", function() {
-                showToast("{{ Session::get('toast_success') }}");
+                if(typeof showToast === "function") showToast("{{ Session::get('toast_success') }}");
             });
         @endif
     </script>
@@ -180,11 +162,32 @@
             const checkedCountEl = document.getElementById('checkedCount');
             const btnCheckout = document.getElementById('btnCheckout');
 
+            function saveCheckboxState() {
+                let checkedIds = [];
+                document.querySelectorAll('.item-checkbox:checked').forEach(cb => {
+                    checkedIds.push(cb.getAttribute('data-id'));
+                });
+                sessionStorage.setItem('checkedCartItems', JSON.stringify(checkedIds));
+            }
+
+            function restoreCheckboxState() {
+                let saved = sessionStorage.getItem('checkedCartItems');
+                if (saved) {
+                    let checkedIds = JSON.parse(saved);
+                    checkboxes.forEach(cb => {
+                        cb.checked = checkedIds.includes(cb.getAttribute('data-id'));
+                    });
+                } else {
+                    checkboxes.forEach(cb => cb.checked = true);
+                }
+                updateSelectAllState();
+            }
+
+            restoreCheckboxState();
+
             function formatRupiah(number) {
                 return new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    minimumFractionDigits: 0
+                    style: 'currency', currency: 'IDR', minimumFractionDigits: 0
                 }).format(number);
             }
 
@@ -209,27 +212,71 @@
                 btnCheckout.disabled = (count === 0);
             }
 
+            function updateSelectAllState() {
+                if(checkboxes.length > 0) {
+                    selectAll.checked = Array.from(checkboxes).every(c => c.checked);
+                }
+            }
+
             selectAll.addEventListener('change', function() {
-                checkboxes.forEach(cb => {
-                    cb.checked = this.checked;
-                });
+                checkboxes.forEach(cb => cb.checked = this.checked);
+                saveCheckboxState();
                 calculateTotal();
             });
 
             checkboxes.forEach(cb => {
                 cb.addEventListener('change', function() {
-                    const allChecked = Array.from(checkboxes).every(c => c.checked);
-                    selectAll.checked = allChecked;
+                    updateSelectAllState();
+                    saveCheckboxState();
                     calculateTotal();
                 });
             });
 
             calculateTotal();
 
+            document.querySelectorAll('.form-qty').forEach(form => {
+                const btnMinus = form.querySelector('.btn-minus');
+                const btnPlus = form.querySelector('.btn-plus');
+                const inputQty = form.querySelector('.input-qty');
+
+                btnMinus.addEventListener('click', () => {
+                    let currentQty = parseInt(inputQty.value);
+
+                    if (currentQty > 1) {
+                        inputQty.value = currentQty - 1;
+                        saveCheckboxState(); 
+                        form.submit();
+                    } else if (currentQty === 1) {
+                        if (confirm('Apakah Anda ingin menghapus produk ini dari keranjang?')) {
+                            inputQty.value = 0;
+                            saveCheckboxState(); 
+                            form.submit();
+                        }
+                    }
+                });
+
+                btnPlus.addEventListener('click', () => {
+                    inputQty.value = parseInt(inputQty.value) + 1;
+                    saveCheckboxState();
+                    form.submit();
+                });
+
+                inputQty.addEventListener('change', () => {
+                    if (parseInt(inputQty.value) < 1 || isNaN(inputQty.value)) {
+                        inputQty.value = 1;
+                    }
+                    saveCheckboxState();
+                    form.submit();
+                });
+            });
+
+            document.querySelectorAll('.form-hapus').forEach(form => {
+                form.addEventListener('submit', () => saveCheckboxState());
+            });
+
             btnCheckout.addEventListener('click', function() {
                 const form = document.getElementById('formCheckout');
                 form.innerHTML = '';
-
                 let adaYangDicentang = false;
 
                 checkboxes.forEach(cb => {

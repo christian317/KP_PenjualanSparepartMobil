@@ -51,7 +51,7 @@ class PembelianController extends Controller
     {
         $request->validate([
             'id'                 => 'required|unique:pembelian,id',
-            'nama_supplier'      => 'required|string|max:100',
+            'nama_supplier'      => 'required|string|max:150',
             'tanggal'            => 'required',
             'items'              => 'required|array|min:1',
             'items.*.id'         => 'required|exists:produk,id|distinct',

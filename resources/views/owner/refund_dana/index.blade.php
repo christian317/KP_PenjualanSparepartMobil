@@ -384,6 +384,8 @@
                                             <div class="col-8 fw-semibold"">: {{ $p->refund->nomor_rekening }}</div>
                                             <div class="col-4 text-muted">Atas Nama</div>
                                             <div class="col-8 fw-semibold">: {{ $p->refund->atas_nama }}</div>
+                                            <div class="col-4 text-muted">Alasan Pembatalan</div>
+                                            <div class="col-8 fw-semibold">: {{ $p->refund->alasan_pembatalan }}</div>
                                         </div>
                                     </div>
 

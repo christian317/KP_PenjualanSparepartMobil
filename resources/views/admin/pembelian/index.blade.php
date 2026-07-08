@@ -43,7 +43,7 @@
             </div>
 
             <input type="date" name="tanggal" class="form-control form-control-sm w-auto text-muted"
-                value="{{ request('tanggal') }}" title="Pilih Tanggal" required>
+                value="{{ request('tanggal') }}" title="Pilih Tanggal">
 
             <select name="bulan" class="form-select form-select-sm w-auto text-muted">
                 <option value="">Bulan...</option>
